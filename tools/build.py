@@ -622,7 +622,7 @@ blockquote p { margin: .4em 0; }
       startOnLoad: false, securityLevel: "strict", theme: isDark() ? "dark" : "default",
       fontFamily: "Inter, system-ui, sans-serif",
       flowchart: { htmlLabels: true, curve: "basis" },
-      sequence: { mirrorActors: false, useMaxWidth: true, wrap: true }
+      sequence: { mirrorActors: false, useMaxWidth: true, wrap: true, width: 170, actorMargin: 70, messageFontSize: 14, noteFontSize: 13 }
     });
     window.mermaid.run({ nodes: blocks }).catch(function (e) { console.error(e); });
   }

@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 .venv/
 .vscode/
+.claude/
 .idea/
 .DS_Store
 Thumbs.db

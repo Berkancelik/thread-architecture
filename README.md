@@ -13,6 +13,28 @@ Fiziksel katmandan (radyo, kanallar, modülasyon) başlayıp MAC, 6LoWPAN, IPv6 
 | [`bolumler/`](bolumler/) | Dokümanın kaynak bölümleri (düzenlemeler burada yapılır) |
 | [`tools/build.py`](tools/build.py) | Bölümleri birleştirip MD ve HTML çıktılarını üreten betik |
 
+## İçerik
+
+| # | Bölüm | # | Bölüm |
+|---|---|---|---|
+| 0 | Bu doküman hakkında | 15 | Güvenlik mimarisi |
+| 1 | Thread'e giriş, tarihçe, sürümler | 16 | Devreye alma (MeshCoP, Matter, TCAT, ePSKc) |
+| 2 | Protokol yığını ve genel mimari | 17 | Operational Dataset |
+| 3 | Fiziksel katman (IEEE 802.15.4 PHY) | 18 | Uyuyan cihazlar, enerji ve CSL |
+| 4 | MAC katmanı | 19 | Border Router (OMR, RIO, NAT64, SRP, OTBR) |
+| 5 | 6LoWPAN uyarlama katmanı | 20 | Thread 1.2 / 1.3 / 1.4 gelişmiş özellikleri |
+| 6 | Thread'de IPv6 adresleme | 21 | Ağ teşhisi, izleme ve paket analizi |
+| 7 | Cihaz türleri ve roller | 22 | Uçtan uca haberleşme senaryoları |
+| 8 | Ağ topolojisi ve ölçek | 23 | Matter ve Thread |
+| 9 | MLE (Mesh Link Establishment) | 24 | OpenThread ve yazılım mimarisi |
+| 10 | Yönlendirme (routing) | 25 | Donanım, çipler ve RF tasarımı |
+| 11 | Leader, partition ve Router ID yönetimi | 26 | Ağ tasarımı ve en iyi uygulamalar |
+| 12 | Network Data | 27 | Sorun giderme rehberi |
+| 13 | TMF ve CoAP | 28 | Diğer IoT protokolleriyle karşılaştırma |
+| 14 | Çoklu yayın (multicast) ve MPL | 29 | Ekler: sabitler, portlar, RFC'ler, sözlük, kaynaklar |
+
+Dokümanda 34 Mermaid diyagramı, 170'ten fazla tablo ve bayt seviyesinde çözümlenmiş çerçeve/TLV örnekleri bulunur. Anahtar türetme (HMAC-SHA256) ve PSKc (PBKDF2-AES-CMAC) örnekleri hesaplanarak doğrulanmıştır.
+
 ## HTML sürümünü görüntüleme
 
 Depoyu indirip `Thread-Mimarisi.html` dosyasını tarayıcıda açmanız yeterlidir. Diyagramlar (Mermaid) ve yazı tipleri CDN'den yüklendiği için ilk açılışta internet bağlantısı gerekir; bağlantı yoksa diyagramların kaynak metni gösterilir.
