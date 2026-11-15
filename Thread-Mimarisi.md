@@ -148,6 +148,77 @@ Doküman katmanlı bir sırayla ilerler: önce büyük resim (Bölüm 1–2), so
   - [8.7 Birden Fazla Thread Ağı](#87-birden-fazla-thread-ağı)
   - [8.8 Ölçekleme Değerlendirmeleri](#88-ölçekleme-değerlendirmeleri)
   - [8.9 Bölüm Özeti](#89-bölüm-özeti)
+- [9. MLE — Mesh Link Establishment](#9-mle--mesh-link-establishment)
+  - [9.1 MLE Nedir, Ne İşe Yarar?](#91-mle-nedir-ne-i̇şe-yarar)
+  - [9.2 Taşıma](#92-taşıma)
+  - [9.3 Mesaj Formatı](#93-mesaj-formatı)
+  - [9.4 Komut Türleri](#94-komut-türleri)
+  - [9.5 MLE TLV'leri](#95-mle-tlvleri)
+  - [9.6 Önemli TLV'lerin Ayrıntısı](#96-önemli-tlvlerin-ayrıntısı)
+  - [9.7 Bağlanma (Attach) Süreci](#97-bağlanma-attach-süreci)
+  - [9.8 Router'lar Arası Bağlantı Kurulumu](#98-routerlar-arası-bağlantı-kurulumu)
+  - [9.9 Advertisement ve Trickle Zamanlayıcısı](#99-advertisement-ve-trickle-zamanlayıcısı)
+  - [9.10 Child Update](#910-child-update)
+  - [9.11 Data Request / Data Response ve Ağ Verisinin Yayılması](#911-data-request--data-response-ve-ağ-verisinin-yayılması)
+  - [9.12 Discovery Request / Discovery Response](#912-discovery-request--discovery-response)
+  - [9.13 Announce](#913-announce)
+  - [9.14 Örnek: Parent Request'in Çözümlenmesi](#914-örnek-parent-requestin-çözümlenmesi)
+  - [9.15 MLE Zaman Sabitleri](#915-mle-zaman-sabitleri)
+  - [9.16 Bölüm Özeti](#916-bölüm-özeti)
+- [10. Yönlendirme (Routing)](#10-yönlendirme-routing)
+  - [10.1 Genel Bakış](#101-genel-bakış)
+  - [10.2 Link Margin → Link Quality → Link Cost](#102-link-margin--link-quality--link-cost)
+  - [10.3 Route64 TLV Ayrıntısı](#103-route64-tlv-ayrıntısı)
+  - [10.4 Rota Hesaplama](#104-rota-hesaplama)
+  - [10.5 Rota Bilgisinin Yayılması ve Yakınsama](#105-rota-bilgisinin-yayılması-ve-yakınsama)
+  - [10.6 Paket İletme Algoritması](#106-paket-i̇letme-algoritması)
+  - [10.7 Uç Cihazların ve Çocukların Yönlendirilmesi](#107-uç-cihazların-ve-çocukların-yönlendirilmesi)
+  - [10.8 Ağ Dışına Yönlendirme (Border Router Seçimi)](#108-ağ-dışına-yönlendirme-border-router-seçimi)
+  - [10.9 Uçtan Uca Örnek](#109-uçtan-uca-örnek)
+  - [10.10 Döngü ve Hata Durumları](#1010-döngü-ve-hata-durumları)
+  - [10.11 Bölüm Özeti](#1011-bölüm-özeti)
+- [11. Leader, Partition ve Router ID Yönetimi](#11-leader-partition-ve-router-id-yönetimi)
+  - [11.1 Leader'ın Görevleri](#111-leaderın-görevleri)
+  - [11.2 Leader Nasıl Belirlenir?](#112-leader-nasıl-belirlenir)
+  - [11.3 Leader Data TLV ve Partition Kimliği](#113-leader-data-tlv-ve-partition-kimliği)
+  - [11.4 Partition Karşılaştırma ve Birleşme](#114-partition-karşılaştırma-ve-birleşme)
+  - [11.5 Router ID Atama: Address Solicit](#115-router-id-atama-address-solicit)
+  - [11.6 Router ID Geri Alma: Address Release](#116-router-id-geri-alma-address-release)
+  - [11.7 Leader Kaybı ve Kurtarma](#117-leader-kaybı-ve-kurtarma)
+  - [11.8 Network Data Yönetimi (Leader Tarafı)](#118-network-data-yönetimi-leader-tarafı)
+  - [11.9 Commissioner Oturumunun Yönetimi](#119-commissioner-oturumunun-yönetimi)
+  - [11.10 Bölüm Özeti](#1110-bölüm-özeti)
+- [12. Network Data (Ağ Verisi)](#12-network-data-ağ-verisi)
+  - [12.1 Nedir?](#121-nedir)
+  - [12.2 Yaşam Döngüsü](#122-yaşam-döngüsü)
+  - [12.3 Stable ve Temporary Veri](#123-stable-ve-temporary-veri)
+  - [12.4 TLV Biçimi](#124-tlv-biçimi)
+  - [12.5 Prefix TLV](#125-prefix-tlv)
+  - [12.6 Border Router Alt-TLV'si](#126-border-router-alt-tlvsi)
+  - [12.7 Has Route Alt-TLV'si](#127-has-route-alt-tlvsi)
+  - [12.8 6LoWPAN ID (Context) Alt-TLV'si](#128-6lowpan-id-context-alt-tlvsi)
+  - [12.9 Service ve Server TLV'leri](#129-service-ve-server-tlvleri)
+  - [12.10 Commissioning Data TLV](#1210-commissioning-data-tlv)
+  - [12.11 Örnek: `netdata show` Çıktısı](#1211-örnek-netdata-show-çıktısı)
+  - [12.12 Cihazın Network Data'yı Kullanması](#1212-cihazın-network-datayı-kullanması)
+  - [12.13 Bölüm Özeti](#1213-bölüm-özeti)
+- [13. TMF — Thread Management Framework ve CoAP](#13-tmf--thread-management-framework-ve-coap)
+  - [13.1 TMF Nedir?](#131-tmf-nedir)
+  - [13.2 CoAP'a Kısa Bakış](#132-coapa-kısa-bakış)
+  - [13.3 TMF URI'leri](#133-tmf-urileri)
+  - [13.4 Ağ Katmanı TMF TLV'leri](#134-ağ-katmanı-tmf-tlvleri)
+  - [13.5 Örnek: Address Query Mesajının Baytları](#135-örnek-address-query-mesajının-baytları)
+  - [13.6 Örnek Akış: Address Solicit](#136-örnek-akış-address-solicit)
+  - [13.7 TMF'nin Güvenlik Sınırları](#137-tmfnin-güvenlik-sınırları)
+  - [13.8 Bölüm Özeti](#138-bölüm-özeti)
+- [14. Çoklu Yayın (Multicast) ve MPL](#14-çoklu-yayın-multicast-ve-mpl)
+  - [14.1 Kapsama Göre Çoklu Yayın](#141-kapsama-göre-çoklu-yayın)
+  - [14.2 MPL (Multicast Protocol for Low-Power and Lossy Networks)](#142-mpl-multicast-protocol-for-low-power-and-lossy-networks)
+  - [14.3 Çoklu Yayının Uç Cihazlara Ulaştırılması](#143-çoklu-yayının-uç-cihazlara-ulaştırılması)
+  - [14.4 Hangi Adres Kime Ulaşır?](#144-hangi-adres-kime-ulaşır)
+  - [14.5 Ağ Dışından Çoklu Yayın (Thread 1.2+)](#145-ağ-dışından-çoklu-yayın-thread-12)
+  - [14.6 Matter Grupları ve Çoklu Yayın](#146-matter-grupları-ve-çoklu-yayın)
+  - [14.7 Bölüm Özeti](#147-bölüm-özeti)
 
 ## 1. Thread'e Giriş
 
@@ -883,7 +954,7 @@ Thread yalnızca birkaç MAC komutu kullanır:
 | `0x07` | **Beacon Request** | Active scan (çevredeki 802.15.4 ağlarını bulma) |
 | `0x01`–`0x03`, `0x05`, `0x06`, `0x08`, `0x09` | Association, Disassociation, Orphan, Coordinator Realignment, GTS vb. | **Kullanılmaz** (MLE ile değiştirilmiştir) |
 
-**Thread Beacon (tarihsel):** Thread 1.0'da ağlar, Beacon Request'e MAC beacon ile cevap verip beacon yükünde *Protocol ID (3)*, sürüm, "Joining Permitted" ve "Native Commissioning" bayrakları, *Network Name*, *Extended PAN ID* ve *Steering Data* taşırdı. Thread 1.1 ve sonrası ağ keşfi için **MLE Discovery Request/Response** kullanır (Bölüm 9.13); beacon yükü geriye uyumluluk için isteğe bağlıdır.
+**Thread Beacon (tarihsel):** Thread 1.0'da ağlar, Beacon Request'e MAC beacon ile cevap verip beacon yükünde *Protocol ID (3)*, sürüm, "Joining Permitted" ve "Native Commissioning" bayrakları, *Network Name*, *Extended PAN ID* ve *Steering Data* taşırdı. Thread 1.1 ve sonrası ağ keşfi için **MLE Discovery Request/Response** kullanır (Bölüm 9.12); beacon yükü geriye uyumluluk için isteğe bağlıdır.
 
 ### 4.9 MAC Güvenliği
 
@@ -919,7 +990,7 @@ Security Control:
 |---|---|---|---|---|
 | Normal veri çerçeveleri | **1** | MAC Key (Network Key'den türetilmiş) | `0x0D` | 6 bayt |
 | Joiner Entrust (devreye almada) | **0** | **KEK** (DTLS oturumundan türetilmiş) | `0x05` | 5 bayt |
-| MLE mesajları | MAC'te güvenliksiz; güvenlik **MLE katmanında** (Bölüm 9.4) | MLE Key | — | — |
+| MLE mesajları | MAC'te güvenliksiz; güvenlik **MLE katmanında** (Bölüm 9.3) | MLE Key | — | — |
 
 **Key Index** değeri, mevcut **Key Sequence**'ten türetilir:
 
@@ -1750,3 +1821,1227 @@ Bu durumun sonuçları:
 - Ağ kimliği Extended PAN ID, Network Name, PAN ID, kanal ve Network Key ile tanımlanır.
 - Kopan bölgeler ayrı partition'lar oluşturur; bağlantı gelince birleşirler.
 - Bir evde birden çok bağımsız Thread ağı oluşması verimsizdir; kimlik paylaşımıyla tek ağ hedeflenmelidir.
+
+## 9. MLE — Mesh Link Establishment
+
+### 9.1 MLE Nedir, Ne İşe Yarar?
+
+**MLE (Mesh Link Establishment)**, Thread'in tek atlamalı (link seviyesindeki) kontrol protokolüdür. 802.15.4 MAC'in "association" mekanizmasının yerini alır ve çok daha fazlasını yapar:
+
+| Görev | İlgili MLE mesajları |
+|---|---|
+| Ağa bağlanma (attach) ve ebeveyn seçimi | Parent Request, Parent Response, Child ID Request, Child ID Response |
+| Router'lar arası bağlantı kurma | Link Request, Link Accept, Link Accept And Request, Link Reject |
+| Yönlendirme bilgisinin yayılması | Advertisement (Route64 TLV) |
+| Çocuk bakımı ve canlı tutma | Child Update Request / Response |
+| Ağ verisi ve dataset dağıtımı | Data Request, Data Response |
+| Ağ keşfi | Discovery Request, Discovery Response |
+| Kanal/PAN değişikliği duyurusu | Announce |
+| Bağlantı kalitesi ölçümü (1.2+) | Link Metrics Management Request/Response, Link Probe |
+| Güvenlik senkronizasyonu | Frame counter TLV'leri, Challenge/Response |
+
+**Neden MAC association veya standart IPv6 ND değil?**
+
+- MLE kendi güvenliğine sahiptir; MAC frame counter'ı henüz bilinmeyen bir komşuyla bile güvenli konuşabilir.
+- Her iki yöndeki bağlantı kalitesini (çift yönlü link quality) ölçüp paylaşabilir.
+- Frame counter, ağ verisi, dataset, ağ sürümü gibi Thread'e özgü bilgileri TLV'lerle esnekçe taşır.
+- IPv6/UDP üzerinde çalıştığı için IP tabanlı mimariyle tutarlıdır.
+
+### 9.2 Taşıma
+
+| Özellik | Değer |
+|---|---|
+| Protokol | UDP |
+| Port | **19788** (kaynak ve hedef) |
+| Adresler | **Link-local** tekil (`fe80::…`) veya çoklu yayın (`ff02::1`, `ff02::2`) |
+| Hop Limit | 255 (yalnızca tek atlamalık mesajların kabul edilmesi için; gelen MLE paketinin hop limit'i 255 değilse reddedilir) |
+| MAC güvenliği | **Yok** — güvenlik MLE katmanında uygulanır (MAC çerçevesi güvenliksiz gönderilir) |
+| MLE güvenliği | AES-128-CCM, 4 baytlık MIC, MLE Key ile |
+
+### 9.3 Mesaj Formatı
+
+```text
++----------+------------------------------------+---------+-----------------+------+
+| Security | Auxiliary Security Header          | Command | TLV'ler         | MIC  |
+| Suite    | (802.15.4 biçiminde)               | Type    |                 |      |
+| 1 bayt   | SecCtl(1) FC(4) KeySrc(4) KeyIdx(1)| 1 bayt  | değişken        | 4    |
++----------+------------------------------------+---------+-----------------+------+
+           |<------ yalnızca suite = 0 ------->|<---- şifreli (suite = 0) ---->|
+```
+
+| Alan | Açıklama |
+|---|---|
+| **Security Suite** | `0` = 802.15.4 tarzı güvenlik kullanılıyor · `255` = güvenlik yok (yalnızca Discovery Request/Response) |
+| **Security Control** | Tipik değer `0x15`: güvenlik seviyesi 5 (ENC-MIC-32) + **Key ID Mode 2** |
+| **Frame Counter** | Gönderenin **MLE** frame counter'ı (MAC sayacından ayrıdır) |
+| **Key Source** | Mevcut **Key Sequence** değeri (4 bayt) — alıcı hangi anahtarın kullanıldığını kesin bilir |
+| **Key Index** | `(Key Sequence mod 128) + 1` |
+| **Command Type** | Mesaj türü (aşağıdaki tablo) |
+| **TLV'ler** | Type (1) + Length (1) + Value |
+| **MIC** | 4 baytlık bütünlük kodu |
+
+**Şifreleme ayrıntıları:**
+
+- Anahtar: **MLE Key** (Network Key ve Key Sequence'ten türetilir; Bölüm 15).
+- Nonce: Gönderenin Extended Address'i (link-local IPv6 kaynak adresinin IID'sinden U/L biti geri çevrilerek elde edilir) + Frame Counter + güvenlik seviyesi.
+- Ek doğrulanan veri (AAD): IPv6 **kaynak ve hedef adresleri** + Auxiliary Security Header. Böylece mesaj başka bir adrese yönlendirilip yeniden oynatılamaz.
+- Şifrelenen kısım: Command Type + TLV'ler.
+
+Key ID Mode 2'nin (anahtar dizisinin tamamını taşıyan) kullanılması, bir cihazın uzun süre uyuduktan veya ağdan ayrı kaldıktan sonra bile ağın güncel anahtar dizisini öğrenebilmesini sağlar.
+
+### 9.4 Komut Türleri
+
+| Değer | Komut | Yön / adres | Amaç |
+|---|---|---|---|
+| 0 | **Link Request** | Router → router(lar) | Bağlantı kurma isteği |
+| 1 | **Link Accept** | Tekil | İsteği kabul (ve frame counter bilgisi) |
+| 2 | **Link Accept And Request** | Tekil | Kabul + karşı tarafa istek |
+| 3 | **Link Reject** | Tekil | Reddetme |
+| 4 | **Advertisement** | `ff02::1` | Router/Leader varlığı, Route64 |
+| 5 | (Update — kullanılmıyor) | — | — |
+| 6 | (Update Request — kullanılmıyor) | — | — |
+| 7 | **Data Request** | Tekil | Ağ verisi / dataset isteği |
+| 8 | **Data Response** | Tekil veya `ff02::1` | Ağ verisi / dataset yanıtı veya duyurusu |
+| 9 | **Parent Request** | `ff02::2` | Ebeveyn arama |
+| 10 | **Parent Response** | Tekil | Ebeveyn adayı olma teklifi |
+| 11 | **Child ID Request** | Tekil | Seçilen ebeveyne bağlanma isteği |
+| 12 | **Child ID Response** | Tekil | Bağlanma onayı, RLOC16 ataması |
+| 13 | **Child Update Request** | Tekil | Çocuk bilgilerini güncelleme / canlı tutma |
+| 14 | **Child Update Response** | Tekil | Yanıt |
+| 15 | **Announce** | Yayın (başka kanal) | Ağın kanal/PAN bilgisini duyurma |
+| 16 | **Discovery Request** | `ff02::2` (güvenliksiz) | Ağ keşfi |
+| 17 | **Discovery Response** | Tekil (güvenliksiz) | Ağ bilgisi |
+| 18 | **Link Metrics Management Request** | Tekil | (1.2) Ölçüm serisi yapılandırma |
+| 19 | **Link Metrics Management Response** | Tekil | (1.2) Yanıt |
+| 20 | **Link Probe** | Tekil | (1.2) Ölçüm için sonda mesajı |
+
+### 9.5 MLE TLV'leri
+
+| Tür | TLV | Uzunluk | İçerik / kullanım |
+|---|---|---|---|
+| 0 | **Source Address** | 2 | Gönderenin RLOC16'sı |
+| 1 | **Mode** | 1 | R/D/N bitleri (Bölüm 7.4) |
+| 2 | **Timeout** | 4 | Çocuğun zaman aşımı (s) |
+| 3 | **Challenge** | 4–8 | Rastgele sayı (tazelik kanıtı istemi) |
+| 4 | **Response** | 4–8 | Alınan Challenge'ın aynen geri gönderilmesi |
+| 5 | **Link-layer Frame Counter** | 4 | Gönderenin MAC frame counter'ı |
+| 6 | (Link Quality) | — | Kullanımdan kalktı |
+| 7 | (Network Parameter) | — | Kullanımdan kalktı |
+| 8 | **MLE Frame Counter** | 4 | Gönderenin MLE frame counter'ı |
+| 9 | **Route64** | değişken | ID Sequence, Router Mask, router başına link kalitesi ve rota maliyeti |
+| 10 | **Address16** | 2 | Ebeveynin çocuğa atadığı RLOC16 |
+| 11 | **Leader Data** | 8 | Partition ID, Weighting, Data Version, Stable Data Version, Leader Router ID |
+| 12 | **Network Data** | değişken | Thread Network Data (Bölüm 12) |
+| 13 | **TLV Request** | değişken | Karşı taraftan istenen TLV türlerinin listesi |
+| 14 | **Scan Mask** | 1 | Parent Request'e kimlerin cevap vereceği (R: router'lar, E: REED'ler) |
+| 15 | **Connectivity** | 7–10 | Ebeveyn adayının bağlantı durumu (Parent Priority, LQ sayıları, Leader maliyeti…) |
+| 16 | **Link Margin** | 1 | Alınan mesajın link margin değeri (dB) |
+| 17 | **Status** | 1 | Hata/durum kodu |
+| 18 | **Version** | 2 | Thread sürümü (2=1.1, 3=1.2, 4=1.3, 5=1.4) |
+| 19 | **Address Registration** | değişken | Çocuğun IPv6 adres listesi |
+| 20 | **Channel** | 3 | Kanal sayfası + kanal (Announce) |
+| 21 | **PAN ID** | 2 | PAN ID (Announce) |
+| 22 | **Active Timestamp** | 8 | Active Operational Dataset zaman damgası |
+| 23 | **Pending Timestamp** | 8 | Pending Dataset zaman damgası |
+| 24 | **Active Operational Dataset** | değişken | Dataset TLV'leri |
+| 25 | **Pending Operational Dataset** | değişken | Dataset TLV'leri (+ Delay Timer) |
+| 26 | **Thread Discovery** | değişken | MeshCoP Discovery Request/Response alt-TLV'leri |
+| 27 | **Supervision Interval** | 2 | Çocuk denetim aralığı (s) |
+| 80 | **CSL Channel** | 3 | (1.2) CSL dinleme kanalı |
+| 85 | **CSL Synchronized Timeout** | 4 | (1.2) CSL senkron zaman aşımı |
+| 86 | **CSL Clock Accuracy** | 2 | (1.2) Saat doğruluğu (ppm) ve belirsizlik |
+| 87 | **Link Metrics Query** | değişken | (1.2) Tek seferlik ölçüm sorgusu |
+| 88 | **Link Metrics Management** | değişken | (1.2) Ölçüm serisi yapılandırma |
+| 89 | **Link Metrics Report** | değişken | (1.2) Ölçüm raporu |
+| 90 | **Link Probe** | değişken | (1.2) Sonda verisi |
+
+### 9.6 Önemli TLV'lerin Ayrıntısı
+
+#### Leader Data TLV (8 bayt)
+
+```text
++---------------------+-----------+--------------+--------------------+------------------+
+| Partition ID (4)    | Weighting | Data Version | Stable Data Version| Leader Router ID |
+|                     |    (1)    |     (1)      |        (1)         |       (1)        |
++---------------------+-----------+--------------+--------------------+------------------+
+```
+
+Her Advertisement, Parent Response, Child ID Response ve Data Response bu TLV'yi taşır. Cihazlar bu sayede partition'ı, Leader'ı ve ağ verisinin güncel olup olmadığını hemen anlar.
+
+#### Connectivity TLV
+
+```text
++-------+-----------+-----------+-----------+-------------+--------+---------+--------------+-------------+
+| Flags | LQ3 count | LQ2 count | LQ1 count | Leader Cost | ID Seq | Active  | SED Buffer   | SED Datagram|
+|  (1)  |    (1)    |    (1)    |    (1)    |     (1)     |  (1)   | Routers | Size (2, ops)| Count (1,ops)|
++-------+-----------+-----------+-----------+-------------+--------+---------+--------------+-------------+
+ Flags: bit 7-6 = Parent Priority (+1 yüksek, 0 orta, −1 düşük, −2 = ayrılmış)
+```
+
+Ebeveyn adayının ne kadar "iyi bağlı" olduğunu gösterir: kaç router komşusuyla LQ3/LQ2/LQ1 bağlantısı var, Leader'a maliyeti ne, aktif router sayısı kaç ve SED'ler için ne kadar tampon ayırabilir.
+
+#### Route64 TLV
+
+```text
++--------+--------------------------+------------------------------------------+
+| ID Seq | Router ID Mask (8 bayt)  | Route Data (atanmış her Router ID için 1)|
+|  (1)   | bit i = Router ID i      |  bit 7-6: LQ Out  bit 5-4: LQ In         |
+|        | atanmış mı?              |  bit 3-0: Route Cost (0 = ulaşılamaz)    |
++--------+--------------------------+------------------------------------------+
+```
+
+Yönlendirmenin temelidir; ayrıntıları Bölüm 10'da.
+
+#### Address Registration TLV
+
+Her girdi ya sıkıştırılmış ya da tam adres içerir:
+
+```text
+Sıkıştırılmış :  [C=1 | Context ID (4 bit)] [IID (8 bayt)]       → 9 bayt
+Tam            :  [C=0 | ayrılmış        ] [IPv6 adresi (16 bayt)] → 17 bayt
+```
+
+#### Scan Mask TLV
+
+| Bit | Maske | Anlamı |
+|---|---|---|
+| R | `0x80` | Router'lar cevap versin |
+| E | `0x40` | REED'ler (end device olarak çalışan FTD'ler) cevap versin |
+
+### 9.7 Bağlanma (Attach) Süreci
+
+Ağa ilk kez katılan ya da ebeveynini kaybetmiş bir cihaz (Operational Dataset'i biliyor olmalıdır) şu adımları izler:
+
+```mermaid
+sequenceDiagram
+    participant C as Yeni Cihaz (Child)
+    participant R1 as Router A
+    participant R2 as Router B
+    participant RE as REED
+    participant L as Leader
+    Note over C: Detached
+    C->>R1: Parent Request (ff02::2, Scan Mask = R, Challenge, Mode, Version)
+    C->>R2: (aynı çoklu yayın)
+    Note over R1,R2: Rastgele gecikme (en fazla 0.5 s)
+    R1-->>C: Parent Response (Response, Challenge, Link Margin, Connectivity, Leader Data, frame counter'lar)
+    R2-->>C: Parent Response
+    Note over C: 750 ms bekle. Router cevabı yoksa<br/>Scan Mask = R+E ile tekrar dene (1250 ms)
+    Note over C: En iyi ebeveyni seç
+    C->>R1: Child ID Request (Response, Mode, Timeout, frame counter'lar, Address Registration, TLV Request)
+    R1-->>C: Child ID Response (Address16 = RLOC16, Leader Data, Network Data, Route64 isteğe bağlı)
+    Note over C: Child durumuna geçti
+    Note over RE,L: Seçilen ebeveyn REED olsaydı:<br/>önce Address Solicit ile router olur,<br/>sonra Child ID Response gönderirdi
+```
+
+#### Adım 1 — Parent Request
+
+- Hedef: `ff02::2` (link-local tüm router'lar).
+- İlk denemede **Scan Mask = R**: yalnızca router'lar cevap verir. Cihaz `PARENT_REQUEST_ROUTER_TIMEOUT` (750 ms) bekler.
+- Uygun router cevabı yoksa ikinci denemede **Scan Mask = R + E**: REED'ler de cevap verir; bekleme `PARENT_REQUEST_REED_TIMEOUT` (1250 ms).
+- Mesaj içinde rastgele **Challenge** bulunur; cevaplar bu Challenge'ı **Response** TLV'sinde geri getirmek zorundadır (eski mesajların tekrar oynatılmasına karşı koruma).
+
+#### Adım 2 — Parent Response
+
+Ebeveyn adayları, çoklu yayın fırtınasını önlemek için rastgele bir gecikmeyle (router'lar için en fazla 500 ms, REED'ler dahil en fazla 1000 ms) cevap verir. Cevap şunları içerir:
+
+- **Response** (gelen Challenge), yeni bir **Challenge** (çocuğun bir sonraki mesajında cevaplaması için),
+- **Link-layer** ve **MLE Frame Counter**,
+- Parent Request'in alındığı **Link Margin**,
+- **Connectivity** ve **Leader Data**,
+- **Version** (ve 1.2+'da CSL saat doğruluğu).
+
+#### Adım 3 — Ebeveyn seçimi
+
+Çocuk, gelen cevapları karşılaştırır. Tipik öncelik sırası (OpenThread'in uyguladığı mantığa yakın):
+
+1. **İki yönlü bağlantı kalitesi** (çocuğun ölçtüğü RSS ile ebeveynin bildirdiği Link Margin'in kötüsü) — yüksek olan tercih edilir.
+2. Router'lar REED'lere tercih edilir (REED'in terfi etmesi gerekmesin).
+3. **Parent Priority** (Connectivity TLV) yüksek olan.
+4. Ebeveynin **LQ3 komşu sayısı** fazla olan (iyi bağlı ebeveyn).
+5. Thread sürümü, SED tampon kapasitesi, CSL doğruluğu gibi ikincil kriterler.
+
+Partition seçimi de devrededir: Birden fazla partition'dan cevap gelirse genellikle "daha iyi" partition (Bölüm 11) tercih edilir.
+
+#### Adım 4 — Child ID Request / Response
+
+Child ID Request şunları taşır: **Response**, frame counter'lar, **Mode**, **Timeout**, **Version**, MTD ise **Address Registration**, istenen TLV'ler (**TLV Request**: Address16, Network Data, gerekirse Route64), bilinen **Active/Pending Timestamp**.
+
+Ebeveyn kabul ederse **Child ID Response** ile:
+
+- **Address16**: Çocuğa atanan RLOC16 (ebeveynin Router ID'si + yeni Child ID),
+- **Leader Data**, **Network Data** (çocuk N=0 ise yalnızca stable kısım),
+- İstenmişse **Route64**,
+- Çocuğun dataset'i eskiyse **Active/Pending Operational Dataset**,
+- (1.2+) **Supervision Interval**, CSL parametreleri.
+
+Bu noktadan sonra çocuk RLOC16'sını kullanır, MAC güvenli çerçeveleriyle haberleşir ve **Child** rolündedir.
+
+#### Yeniden bağlanma ve "daha iyi ebeveyn" araması
+
+- **Ebeveyn kaybı**: Çocuk, ebeveyninden belirli sayıda ardışık ACK alamazsa veya child supervision zaman aşımı dolarsa yeniden bağlanma başlatır. İlk denemelerde aynı partition'a bağlanmaya çalışır.
+- **Child Update ile geri dönüş**: Ebeveyn kısa süreli bir kesinti yaşadıysa çocuk önce Child Update Request ile mevcut ebeveynine geri dönmeyi dener; başarılı olursa tam attach gerekmez.
+- **Parent Search**: FTD çocuklar periyodik olarak (OpenThread'de dakikalar mertebesinde) çevreyi dinleyip belirgin şekilde daha iyi bir ebeveyn varsa ona geçebilir.
+
+### 9.8 Router'lar Arası Bağlantı Kurulumu
+
+Bir cihaz router olduğunda (veya yeniden başladığında) komşu router'larla **çift yönlü, güvenli bağlantılar** kurmalıdır:
+
+```mermaid
+sequenceDiagram
+    participant N as Yeni Router
+    participant A as Komşu Router A
+    participant B as Komşu Router B
+    N->>A: Link Request (ff02::2, Source Address, Leader Data, Challenge, Version, TLV Request: Link Margin)
+    N->>B: (aynı çoklu yayın)
+    Note over A,B: Rastgele gecikme (en fazla 1 s)
+    A-->>N: Link Accept And Request (Response, Challenge, frame counter'lar, Link Margin, Leader Data)
+    B-->>N: Link Accept And Request
+    N->>A: Link Accept (Response, frame counter'lar, Link Margin)
+    N->>B: Link Accept
+    Note over N,B: Artık karşılıklı frame counter'lar ve<br/>çift yönlü link kalitesi biliniyor
+```
+
+- **Challenge/Response** çifti, mesajın taze olduğunu ve karşı tarafın gerçekten ağ anahtarına sahip olduğunu kanıtlar.
+- **Frame counter TLV'leri**, MAC katmanındaki tekrar korumasının başlangıç noktalarını belirler.
+- **Link Margin TLV**, karşı tarafın bu cihazı ne kadar iyi duyduğunu bildirir (çift yönlü link kalitesi için).
+- Bir router, Advertisement'ından haberdar olduğu ama bağlantısı olmayan bir router'a doğrudan tekil Link Request de gönderebilir.
+
+### 9.9 Advertisement ve Trickle Zamanlayıcısı
+
+Router'lar ve Leader, `ff02::1` adresine periyodik **Advertisement** gönderir. İçerik: **Source Address**, **Leader Data**, **Route64**.
+
+Gönderim aralığı **Trickle** algoritmasıyla (RFC 6206) belirlenir:
+
+| Parametre | Değer |
+|---|---|
+| `Imin` | 1 saniye |
+| `Imax` | 32 saniye |
+
+- Ağ kararlıyken aralık her seferinde ikiye katlanarak 32 saniyeye kadar uzar → kontrol trafiği azalır.
+- Router kümesi değiştiğinde (yeni router, kaybolan router, ID Sequence değişimi) Trickle **sıfırlanır** ve aralık tekrar 1 saniyeye düşer → değişiklik hızla yayılır.
+
+**REED'ler** de çok daha seyrek Advertisement gönderir (yaklaşık 570–630 saniyede bir; Route64 olmadan). Bu sayede router'lar çevredeki REED'lerden haberdar olur.
+
+**Komşu yaşlanması**: Bir router, bir komşu router'dan `MAX_NEIGHBOR_AGE` (100 s) boyunca hiçbir şey duymazsa o komşuyu tablodan siler.
+
+### 9.10 Child Update
+
+**Child Update Request/Response** çifti çocuk-ebeveyn ilişkisini günceller:
+
+| Kim gönderir? | Ne zaman? | İçerik |
+|---|---|---|
+| Çocuk | Mode değişince (ör. MED → SED), adres listesi değişince, Timeout değişince, canlı tutma (keep-alive) için, ebeveyn yeniden başladıysa | Mode, Address Registration, Timeout, Leader Data, (CSL TLV'leri) |
+| Ebeveyn | Kendi yeniden başlatması sonrası çocuklarını doğrulamak, ağ verisi değişikliğini SED'e bildirmek | Source Address, Leader Data, Challenge |
+
+**Zaman aşımı (child timeout)**: Çocuk, Timeout TLV ile bildirdiği süre içinde ebeveyniyle en az bir kez konuşmazsa ebeveyn onu çocuk tablosundan siler. SED'lerin MAC poll'ları da ebeveyn tarafından etkinlik olarak sayılır; bu yüzden düzenli poll eden bir SED'in ayrıca MLE keep-alive göndermesi gerekmez (Thread 1.2+'da "Enhanced Keep-Alive").
+
+### 9.11 Data Request / Data Response ve Ağ Verisinin Yayılması
+
+Network Data değiştiğinde yeni sürümün tüm ağa yayılması şöyle olur:
+
+1. Leader ağ verisini günceller, **Data Version** (ve gerekiyorsa **Stable Data Version**) değerini artırır.
+2. Leader, yeni ağ verisini içeren **Data Response**'u `ff02::1`'e çoklu yayınla gönderir.
+3. Bunu duyan router'lar ağ verisini günceller ve kısa bir rastgele gecikmeden sonra **kendileri de** Data Response çoklu yayını yapar → veri dalga gibi tüm mesh'e yayılır.
+4. Advertisement'lardaki Leader Data TLV'sinde daha yeni sürüm gören, ama Data Response'u kaçırmış bir router, **Data Request** ile komşusundan güncel veriyi ister.
+5. Rx-on çocuklar (MED/FED) çoklu yayınları doğrudan alır; SED'ler ise ebeveynlerinden gelen Child Update mesajındaki Leader Data'da yeni sürümü görüp **Data Request** gönderir.
+
+Aynı mekanizma **Active/Pending Operational Dataset** dağıtımında da kullanılır (Active/Pending Timestamp TLV'leri ile sürüm karşılaştırması).
+
+### 9.12 Discovery Request / Discovery Response
+
+Ağ keşfi için kullanılan, **güvenliksiz** (Security Suite = 255) mesajlardır; çünkü keşif yapan cihaz henüz ağ anahtarını bilmez.
+
+- **Discovery Request**: Her kanalda `ff02::2`'ye (MAC'te `0xFFFF` yayın, PAN ID `0xFFFF`) gönderilir. Thread Discovery TLV içinde *Discovery Request* alt-TLV'si vardır: sürüm ve **Joiner (J)** bayrağı (yalnızca devreye almaya açık ağlar cevap versin).
+- **Discovery Response**: Router'lar cevap verir. İçerik: *Discovery Response* alt-TLV'si (sürüm, **Native Commissioner (N)** bayrağı), **Extended PAN ID**, **Network Name**, varsa **Steering Data**, **Joiner UDP Port**, **Commissioner UDP Port**.
+- Joiner, Steering Data içinde kendi Joiner ID'sinin olup olmadığını kontrol ederek hangi ağa katılmaya çalışacağına karar verir (Bölüm 16).
+
+### 9.13 Announce
+
+**Announce**, ağın şu anki kanalını ve PAN ID'sini **diğer kanallarda** duyurmak için kullanılır. İçerik: **Channel**, **Active Timestamp**, **PAN ID**.
+
+Kullanım senaryoları:
+
+- Ağ kanal değiştirdikten sonra değişikliği kaçıran (ör. uzun süre uyuyan veya kapalı olan) cihazlar eski kanalda kalır. Announce mesajları onları yeni kanala çağırır.
+- Bir cihaz, daha yeni Active Timestamp'li bir Announce aldığında belirtilen kanala geçip bağlanmayı dener.
+- Commissioner, **Announce Begin** (`c/ab`) yönetim komutuyla belirli cihazlara belirtilen kanal maskesinde Announce göndermelerini söyleyebilir.
+- Announce, MLE anahtarıyla korunur; dolayısıyla yalnızca ağ anahtarını bilenler geçerli Announce üretebilir.
+
+### 9.14 Örnek: Parent Request'in Çözümlenmesi
+
+```text
+--- IPv6/UDP (6LoWPAN ile sıkıştırılmış) ---
+Kaynak  fe80::182b:3c4d:5e6f:7081  port 19788
+Hedef   ff02::2                     port 19788,  Hop Limit 255
+
+--- MLE ---
+00                      Security Suite = 0 (güvenli)
+15                      Security Control: seviye 5, Key ID Mode 2
+2A 01 00 00             MLE Frame Counter = 298 (LE)
+00 00 00 00             Key Source = Key Sequence 0
+01                      Key Index = 1
+=== buradan sonrası MLE Key ile şifreli ===
+09                      Command = Parent Request
+01 01 0B                Mode TLV: R + D + N (rdn)
+03 08 9F 31 C4 7A 0E 55 D2 18   Challenge TLV (8 bayt rastgele)
+0E 01 80                Scan Mask TLV: R (yalnızca router'lar)
+12 02 00 04             Version TLV: 4 (Thread 1.3)
+=== şifreli kısım sonu ===
+xx xx xx xx             MIC (4 bayt)
+```
+
+### 9.15 MLE Zaman Sabitleri
+
+| Sabit | Değer | Açıklama |
+|---|---|---|
+| `ADVERTISEMENT_I_MIN` | 1 s | Trickle en küçük aralık |
+| `ADVERTISEMENT_I_MAX` | 32 s | Trickle en büyük aralık |
+| `MAX_NEIGHBOR_AGE` | 100 s | Router komşusu yaşlanma süresi |
+| `PARENT_REQUEST_ROUTER_TIMEOUT` | 750 ms | Yalnızca router'lara Parent Request sonrası bekleme |
+| `PARENT_REQUEST_REED_TIMEOUT` | 1250 ms | Router + REED Parent Request sonrası bekleme |
+| Parent Response gecikmesi | ≤ 500 ms (router) / ≤ 1000 ms (REED dahil) | Rastgele yanıt gecikmesi |
+| Link Request yanıt gecikmesi | ≤ 1 s | Çoklu yayın Link Request'e rastgele yanıt |
+| `ROUTER_SELECTION_JITTER` | 120 s | REED terfisi öncesi rastgele bekleme üst sınırı |
+| REED Advertisement aralığı | ≈ 570–630 s | REED'lerin varlık ilanı |
+| Varsayılan child timeout | 240 s (OpenThread) | Çocuğun ebeveyniyle konuşması gereken süre |
+
+### 9.16 Bölüm Özeti
+
+- MLE, UDP 19788 üzerinde link-local çalışan, kendi AES-CCM güvenliğine sahip Thread kontrol protokolüdür.
+- Attach süreci: Parent Request → Parent Response → ebeveyn seçimi → Child ID Request → Child ID Response.
+- Router'lar Link Request/Accept ile komşuluk kurar; Advertisement'lar Trickle ile 1–32 s aralıkla Route64 yayar.
+- Challenge/Response ve frame counter TLV'leri tazelik ve tekrar koruması sağlar.
+- Data Request/Response ağ verisini ve dataset'leri; Discovery ağ keşfini; Announce kanal değişikliklerini taşır.
+
+## 10. Yönlendirme (Routing)
+
+### 10.1 Genel Bakış
+
+Thread yönlendirmesi üç temel ilkeye dayanır:
+
+1. **Router'lar arası proaktif mesafe-vektör (distance-vector)**: Her router, ağdaki **her router'a** giden en düşük maliyetli yolu ve bu yolun **sonraki atlamasını** bilir. Bilgi MLE Advertisement'lardaki **Route64 TLV** ile yayılır.
+2. **Uç cihazlar yönlendirme yapmaz**: Her şeyi ebeveynlerine gönderirler. Bir çocuğa giden paket, onun ebeveyn router'ına yönlendirilir (RLOC16'nın üst 6 biti).
+3. **Bağlantı kalitesine dayalı maliyet**: Rota maliyeti atlama sayısı değil, **çift yönlü bağlantı kalitesine** göre hesaplanan link maliyetlerinin toplamıdır.
+
+En fazla 32 router olduğundan tablolar küçüktür ve tüm ağın rotaları birkaç Advertisement turunda yakınsar.
+
+### 10.2 Link Margin → Link Quality → Link Cost
+
+Her router, komşusundan aldığı çerçevelerin RSS değerlerinin ortalamasını tutar ve **link margin** (RSS − gürültü tabanı) hesaplar:
+
+| Link Margin (histerezisli) | Link Quality (LQ) | Link Cost |
+|---|---|---|
+| > 20 dB | **3** | **1** |
+| > 10 dB | **2** | **2** |
+| > 2 dB | **1** | **4** |
+| ≤ 2 dB | **0** | **∞** (kullanılmaz) |
+
+**Çift yönlü kalite:** Radyo bağlantıları asimetrik olabilir (A, B'yi iyi duyar ama B, A'yı zayıf duyar). Bu yüzden Thread iki değeri birlikte kullanır:
+
+- **LQ In**: Bu router'ın komşudan gelen çerçeveler için ölçtüğü kalite.
+- **LQ Out**: Komşunun bu router'dan gelen çerçeveler için ölçtüğü ve Route64 TLV'sinde bildirdiği kalite.
+- **Link cost** = `cost( min(LQ In, LQ Out) )`.
+
+### 10.3 Route64 TLV Ayrıntısı
+
+```text
++--------+-------------------------------+-------------------------------------------+
+| ID Seq | Router ID Mask (64 bit)       | Route Data (Mask'te 1 olan her ID için)    |
+| 1 bayt | bit 0 (ilk baytın MSB'si)=ID 0| 1 bayt: [LQ Out:2][LQ In:2][Route Cost:4] |
++--------+-------------------------------+-------------------------------------------+
+```
+
+- **ID Sequence**: Leader'ın router ID kümesindeki her değişiklikte artırdığı sıra numarası. Daha büyük ID Sequence içeren Route64, daha güncel router kümesini temsil eder.
+- **Router ID Mask**: Hangi Router ID'lerin şu anda atanmış olduğu.
+- **Route Data**: Mask'te atanmış görünen her router için, gönderenin o router'a ilişkin bilgisi:
+    - Komşuysa **LQ Out** ve **LQ In** (komşu değilse 0),
+    - Gönderenin o router'a olan **rota maliyeti** (4 bit; 0 = ulaşılamaz/sonsuz).
+
+**Örnek** — Router 1, Router 2, 3 ve 4'ün atanmış olduğu bir ağda Router 1'in Advertisement'ı:
+
+```text
+09 0D                       Route64 TLV, uzunluk 13
+07                          ID Sequence = 7
+78 00 00 00 00 00 00 00     Router Mask: ID 1, 2, 3, 4 atanmış (0b0111_1000)
+xx                          ID 1 (gönderenin kendisi)
+F1                          ID 2: LQ Out=3, LQ In=3, maliyet 1   (doğrudan, mükemmel)
+53                          ID 3: LQ Out=1, LQ In=1, maliyet 3   (komşu ama R2 üzerinden daha ucuz)
+04                          ID 4: komşu değil,       maliyet 4   (R2 üzerinden)
+```
+
+### 10.4 Rota Hesaplama
+
+Router X, hedef router D için şu değerleri karşılaştırır:
+
+```text
+Doğrudan yol (D komşuysa) : linkCost(X, D)
+N üzerinden yol           : linkCost(X, N) + routeCost_N(D)     (N: her komşu router,
+                                                                 routeCost_N(D): N'nin Route64'te ilan ettiği maliyet)
+En iyi yol                : bunların en küçüğü; eşitlikte doğrudan bağlantı tercih edilir
+Maliyet ≥ 16 (MAX_ROUTE_COST) ise hedef "ulaşılamaz" kabul edilir
+```
+
+**Örnek ağ:**
+
+```mermaid
+flowchart LR
+    A(("R1")) ---|"LQ3 · maliyet 1"| B(("R2"))
+    B ---|"LQ2 · maliyet 2"| C(("R3"))
+    A ---|"LQ1 · maliyet 4"| C
+    C ---|"LQ3 · maliyet 1"| D(("R4"))
+    B ---|"LQ1 · maliyet 4"| D
+```
+
+**R1'in yönlendirme tablosu:**
+
+| Hedef | Doğrudan | R2 üzerinden | R3 üzerinden | Seçim | Sonraki atlama | Maliyet |
+|---|---|---|---|---|---|---|
+| R2 | 1 | — | 4 + 3 = 7 | Doğrudan | R2 | 1 |
+| R3 | 4 | 1 + 2 = 3 | — | R2 üzerinden | R2 | 3 |
+| R4 | — | 1 + 3 = 4 | 4 + 1 = 5 | R2 üzerinden | R2 | 4 |
+
+(R2'nin R4'e maliyeti: doğrudan 4 veya R3 üzerinden 2 + 1 = 3 → **3**.)
+
+Görüldüğü gibi, R1 ile R3 doğrudan komşu olsa da bağlantıları zayıf olduğu için trafik iki atlamalı ama daha kaliteli yoldan gider. Bu, Thread'in "atlama sayısı" yerine "bağlantı kalitesi" optimize ettiğinin somut örneğidir.
+
+### 10.5 Rota Bilgisinin Yayılması ve Yakınsama
+
+- Her router Advertisement'ında kendi en iyi maliyetlerini ilan eder; komşular bunları kendi link maliyetleriyle toplar.
+- Bir değişiklik (yeni router, kopan bağlantı) Trickle zamanlayıcısını sıfırlayarak Advertisement sıklığını artırır; yeni bilgi hızla yayılır.
+- Komşu bir router'dan `MAX_NEIGHBOR_AGE` (100 s) boyunca haber alınamazsa bağlantı silinir ve o router üzerinden geçen rotalar yeniden hesaplanır.
+- **Sonsuza sayma (count-to-infinity)** problemi, 4 bitlik maliyet alanı ve 16'da kesilen maksimum maliyet ile sınırlandırılır; ulaşılamayan hedef birkaç Advertisement turunda "sonsuz" olarak işaretlenir.
+- **ID Sequence**, silinmiş router ID'lerinin eski bilgilerle yeniden canlanmasını önler: Daha küçük ID Sequence içeren Route64 bilgisi router kümesi açısından dikkate alınmaz.
+
+### 10.6 Paket İletme Algoritması
+
+Bir router'ın IPv6 paketi için verdiği kararın sadeleştirilmiş hâli:
+
+```text
+1. Hedef link-local mi? (fe80::/ff02::)
+      → Doğrudan komşuya / yerel yayın olarak gönder. (Yönlendirilmez.)
+
+2. Hedef RLOC16'yı belirle:
+   a) Hedef RLOC veya ALOC ise   → RLOC16 adresin son 16 bitidir
+                                    (ALOC: Leader → Leader Router ID, Service → en yakın sunucu …)
+   b) Hedef mesh-içi bir EID ise → EID→RLOC önbelleği
+                                    (yoksa Address Query gönder, paketi beklet)
+   c) Hedef ağ dışında ise       → Network Data'daki rotalardan uygun Border Router'ı seç
+                                    (en uzun önek eşleşmesi, sonra tercih, sonra yol maliyeti)
+
+3. Hedef RLOC16 benim çocuğum mu?
+      → Rx-on ise doğrudan; uyuyan ise dolaylı iletim kuyruğuna koy.
+
+4. Hedef RLOC16 kendim miyim?   → Yerel olarak teslim et.
+
+5. Hedef router = RLOC16 & 0xFC00
+   Sonraki atlama = yönlendirme tablosundan (hedef router veya ona giden yol)
+
+6. Sonraki atlama nihai hedef değilse 6LoWPAN Mesh Header ekle
+      (Originator = kendi RLOC16'm veya paketi bana veren çocuğun RLOC16'sı,
+       Final Destination = hedef RLOC16)
+
+7. Gerekirse parçala, MAC çerçevesi oluştur (hedef = sonraki atlamanın RLOC16'sı), şifrele, gönder.
+```
+
+**Ara router'daki işlem** çok daha basittir: Mesh Header'daki *Final Destination*'a bakıp sonraki atlamayı bulur, *Hops Left*'i bir azaltır ve çerçeveyi iletir. IPv6 başlığını açmaz, parçaları birleştirmez.
+
+### 10.7 Uç Cihazların ve Çocukların Yönlendirilmesi
+
+- **Çocuktan çıkan paket**: Çocuk (MED/SED/FED/REED), hedef ne olursa olsun paketi MAC seviyesinde **ebeveynine** gönderir. Ebeveyn, paketi kendi göndermiş gibi yönlendirir (Mesh Header'da Originator olarak çocuğun RLOC16'sı yazılır).
+- **Çocuğa giden paket**: Paket, RLOC16'nın üst bitlerinden belirlenen **ebeveyn router'a** yönlendirilir; ebeveyn teslim eder.
+- **FTD çocuklar (REED/FED)** kendi EID→RLOC önbelleklerini tutar ve Address Query yapabilir; ancak paketleri yine ebeveynlerine gönderir.
+- Bir çocuk ebeveyn değiştirdiğinde RLOC16'sı değişir. Eski RLOC16'yı önbelleğinde tutan cihazlar paketi eski ebeveyne gönderir; eski ebeveyn o çocuğu artık tanımadığı için paketi teslim edemez. Kaynaktaki önbellek kaydı geçersiz hâle gelip yenilendiğinde (yeni Address Query veya dinlenen trafikten öğrenme ile) doğru RLOC16 elde edilir; yeni sorguya artık çocuğun **yeni** ebeveyni cevap verir.
+
+### 10.8 Ağ Dışına Yönlendirme (Border Router Seçimi)
+
+Network Data, ağ dışına çıkış noktalarını iki biçimde ilan eder (Bölüm 12):
+
+- **Prefix TLV + Border Router alt-TLV'si**: Bir on-mesh önek ve o önekle ilgili BR'ler (`r` = varsayılan rota bayrağı).
+- **Prefix TLV + Has Route alt-TLV'si**: Belirli bir dış önek için rota sunan BR'ler (ör. `::/0`, `fc00::/7`, NAT64 öneki).
+
+Bir cihaz ağ dışına paket gönderirken:
+
+1. Hedefle **en uzun eşleşen** Has Route öneki bulunur (yoksa `r` bayraklı varsayılan rota).
+2. Birden fazla BR varsa **tercih** (preference: high > medium > low) karşılaştırılır.
+3. Tercihler eşitse **yol maliyeti en düşük** (en yakın) BR seçilir.
+4. Paket o BR'nin RLOC16'sına yönlendirilir; BR paketi altyapı ağına (Wi-Fi/Ethernet) iletir.
+
+### 10.9 Uçtan Uca Örnek
+
+SED `0x5C01` (Router 23'ün çocuğu), SED `0x9402`'ye (Router 37'nin çocuğu) bir UDP paketi göndersin. Router'lar: 23 → 12 → 37.
+
+| Adım | Cihaz | İşlem | MAC kaynak → hedef | Mesh Header |
+|---|---|---|---|---|
+| 1 | SED 0x5C01 | Paketi ebeveynine gönderir | 0x5C01 → 0x5C00 | (yok) |
+| 2 | Router 23 | EID→RLOC: 0x9402; hedef router 37; sonraki atlama 12 | 0x5C00 → 0x3000 | Orig 0x5C01, Final 0x9402, Hops Left = n |
+| 3 | Router 12 | Mesh Header'a bakar; sonraki atlama 37 | 0x3000 → 0x9400 | Hops Left = n − 1 |
+| 4 | Router 37 | Hedef kendi çocuğu; SED olduğu için kuyruğa alır | — | — |
+| 5 | SED 0x9402 | Poll gönderir, ACK'de Frame Pending = 1 görür | 0x9402 → 0x9400 (Data Request) | — |
+| 6 | Router 37 | Paketi teslim eder (Mesh Header kaldırılmış) | 0x9400 → 0x9402 | (yok) |
+
+Her MAC atlamasında çerçeve, gönderenin Extended Address'i ve kendi frame counter'ı ile yeniden şifrelenir (hop-by-hop güvenlik).
+
+### 10.10 Döngü ve Hata Durumları
+
+| Durum | Koruma / tepki |
+|---|---|
+| Geçici yönlendirme döngüsü | Mesh Header **Hops Left** 0'a inince paket atılır |
+| Hedef router ulaşılamaz | Paket atılır; kaynağa ICMPv6 Destination Unreachable dönebilir |
+| EID→RLOC kaydı eski | Paket eski ebeveyne gider ve teslim edilemez; önbellek kaydı yenilenince (yeni Address Query) trafik düzelir |
+| Address Query cevapsız | Paket atılır; aynı EID için yeniden sorgu artan gecikmelerle yapılır |
+| Çok fazla yeniden iletim | Link kalitesi düşer → maliyet artar → alternatif yol seçilir |
+
+### 10.11 Bölüm Özeti
+
+- Router'lar arası yönlendirme, Route64 TLV ile yayılan mesafe-vektör algoritmasıdır.
+- Maliyet, çift yönlü link kalitesine göre 1/2/4/∞ değerlerinden oluşur; atlama sayısı değil kalite optimize edilir.
+- Çocuklara giden trafik ebeveyn router'a yönlendirilir; çocuklar her şeyi ebeveynlerine gönderir.
+- Ara router'lar yalnızca Mesh Header'a bakar; IPv6 paketini açmaz.
+- Ağ dışı trafik Network Data'daki rotalardan, en uzun önek → tercih → yol maliyeti sırasıyla seçilen Border Router'a gider.
+
+## 11. Leader, Partition ve Router ID Yönetimi
+
+### 11.1 Leader'ın Görevleri
+
+| Görev | Mekanizma |
+|---|---|
+| Router ID atama / geri alma | TMF `a/as` (Address Solicit), `a/ar` (Address Release) |
+| Router ID kümesini ve ID Sequence'ı yönetme | Route64 TLV'deki ID Sequence + Router Mask |
+| Network Data'yı toplama ve dağıtma | TMF `a/sd` (Server Data) ile kayıt, MLE Data Response ile dağıtım |
+| 6LoWPAN bağlam ID'lerini atama | Network Data'daki Context alt-TLV'leri |
+| Commissioner oturumunu yetkilendirme | MeshCoP `c/lp` (Leader Petition), `c/la` (Leader Keep Alive) |
+| Operational Dataset değişikliklerini yönetme | MeshCoP `c/as`, `c/ps` (Active/Pending Set) |
+| Partition kimliğini taşıma | Leader Data TLV: Partition ID, Weighting, Leader Router ID |
+| Leader ALOC'unu (`0xFC00`) sahiplenme | Diğer cihazlar Leader'a bu adresle ulaşır |
+
+> [!NOTE]
+> Leader bir "yönetici" ama "darboğaz" değildir: Veri trafiği Leader üzerinden geçmek zorunda değildir. Leader yalnızca kontrol düzlemindeki merkezi kayıtları tutar ve bu kayıtlar tüm router'lara kopyalandığı için (Network Data, Route64) Leader kaybolsa bile ağ çalışmaya devam eder.
+
+### 11.2 Leader Nasıl Belirlenir?
+
+Thread'de açık bir "seçim" (election) protokolü yoktur. Leader, **partition'ı kuran router**dır:
+
+1. Bir router veya REED, bağlı olduğu partition'ın Leader'ına ulaşamadığını fark eder.
+2. Başka bir partition'a bağlanmayı dener (Parent Request).
+3. Hiçbir partition bulamazsa **kendi partition'ını kurar ve Leader olur**: rastgele yeni bir Partition ID seçer, Router ID kümesini başlatır, Network Data'yı (bildiği kadarıyla) oluşturur.
+4. Aynı anda birden fazla router bunu yaparsa geçici olarak birden fazla partition oluşur; bunlar Bölüm 11.4'teki kurallarla tek partition'da birleşir.
+
+### 11.3 Leader Data TLV ve Partition Kimliği
+
+| Alan | Boyut | Açıklama |
+|---|---|---|
+| **Partition ID** | 4 bayt | Leader'ın partition kurarken seçtiği rastgele sayı |
+| **Weighting** | 1 bayt | Partition ağırlığı (varsayılan 64). Leader'ın ağırlığı (leader weight) ile belirlenir |
+| **Data Version** | 1 bayt | Tam Network Data sürümü; her değişiklikte artar (mod 256) |
+| **Stable Data Version** | 1 bayt | Yalnızca kalıcı (stable) Network Data sürümü |
+| **Leader Router ID** | 1 bayt | Leader'ın Router ID'si (Leader ALOC'unun yönlendirileceği router) |
+
+Thread 1.3.1/1.4 ile Leader ağırlığı, cihazın özelliklerine (güç kaynağı tipi — pil/şebeke/kesintisiz, Border Router olup olmadığı vb.) göre otomatik hesaplanabilir. Böylece şebekeye bağlı, kararlı ve BR işlevli cihazların Leader olması teşvik edilir.
+
+### 11.4 Partition Karşılaştırma ve Birleşme
+
+İki partition karşılaştırılırken (OpenThread'in uyguladığı sıra):
+
+1. **Singleton kontrolü**: Yalnızca tek router'dan oluşan (singleton) partition, birden fazla router'ı olan partition'a karşı kaybeder.
+2. **Weighting**: Yüksek ağırlıklı partition kazanır.
+3. **Partition ID**: Ağırlıklar eşitse sayısal olarak büyük Partition ID kazanır.
+
+Bir router, Advertisement'larda kendi partition'ından **daha iyi** bir partition'ın Leader Data'sını görürse o partition'a geçmeye çalışır:
+
+```mermaid
+sequenceDiagram
+    participant A as Router (Partition A, zayıf)
+    participant B as Router (Partition B, güçlü)
+    participant LB as Leader B
+    B->>A: Advertisement (Leader Data: Partition B, Weighting 64)
+    Note over A: Karşılaştır: singleton, weighting, Partition ID<br/>Sonuç: B daha iyi
+    A->>B: Parent Request (daha iyi partition'a bağlanma)
+    B-->>A: Parent Response
+    A->>B: Child ID Request
+    B-->>A: Child ID Response
+    Note over A: Artık Partition B'de çocuk (REED)
+    A->>LB: a/as Address Solicit (eski Router ID'sini isteyerek)
+    LB-->>A: Router ID atandı
+    Note over A: Router oldu, Link Request ile komşularla bağlantı kurar
+    Note over A: A'nın eski çocukları ve diğer router'lar<br/>da aynı yolla B'ye geçer
+```
+
+Birleşme sırasında kısa süreli paket kayıpları olabilir; ancak cihazların EID'leri (ML-EID, OMR) değişmediği için uygulamalar birleşme sonrası kesintisiz devam eder.
+
+### 11.5 Router ID Atama: Address Solicit
+
+Bir REED router olmak istediğinde Leader'a **Address Solicit** gönderir:
+
+```text
+CoAP CON POST  coap://[<Leader ALOC>]:61631/a/as
+Yük (TMF TLV'leri):
+  Ext MAC Address TLV   — isteyenin Extended Address'i
+  Status TLV            — terfi nedeni
+  RLOC16 TLV (isteğe)   — tercih edilen (genellikle önceki) Router ID
+```
+
+**Terfi nedenleri (Status TLV değerleri):**
+
+| Değer | Neden |
+|---|---|
+| 2 | **Too Few Routers** — router sayısı eşik altında |
+| 3 | **Have Child ID Request** — bir cihaz beni ebeveyn seçti |
+| 4 | **Parent Partition Change** — partition değişimi sonrası eski rolüme dönüyorum |
+
+**Leader'ın yanıtı:**
+
+```text
+Status TLV       — 0 = Success, 1 = No Address Available
+RLOC16 TLV       — atanan Router ID (RLOC16 = ID << 10)
+Router Mask TLV  — güncel ID Sequence + atanmış Router ID maskesi
+```
+
+Leader'ın karar mantığı:
+
+- Aktif router sayısı 32 ise → **No Address Available**.
+- İstenen Router ID boştaysa ve yakın zamanda serbest bırakılmamışsa → o ID verilir (cihaz eski kimliğini korur).
+- Aksi hâlde boştaki ID'lerden biri (rastgele) seçilir.
+- Router kümesi değiştiği için **ID Sequence** artırılır ve yeni küme Advertisement'larla yayılır.
+
+### 11.6 Router ID Geri Alma: Address Release
+
+- Router, REED'e dönerken (downgrade) Leader'a **Address Release** (`a/ar`) gönderir: RLOC16 TLV + Ext MAC Address TLV.
+- Leader bir router'dan uzun süre haber alamazsa (yönlendirme bilgisine göre o router'a rota yoksa; `MAX_LEADER_TO_ROUTER_TIMEOUT` = 90 s) ID'yi kendisi serbest bırakır.
+- Serbest bırakılan ID, **`ID_REUSE_DELAY` = 100 s** boyunca başka bir cihaza verilmez. Böylece eski ID'ye ait bayat rota bilgileri ağdan silinmeye fırsat bulur.
+
+### 11.7 Leader Kaybı ve Kurtarma
+
+```mermaid
+sequenceDiagram
+    participant L as Leader
+    participant R1 as Router 1
+    participant R2 as Router 2
+    participant R3 as Router 3
+    Note over L: Leader kapandı
+    Note over R1,R3: Advertisement'lar devam eder ama<br/>Leader'a rota maliyeti sonsuza gider
+    Note over R1,R3: NETWORK_ID_TIMEOUT (120 s) dolar
+    Note over R1: Rastgele bekleme sonrası diğer partition'ları arar.<br/>Bulamaz → yeni partition, Leader olur
+    R1->>R2: Advertisement (yeni Partition ID)
+    R1->>R3: Advertisement (yeni Partition ID)
+    Note over R2,R3: Daha iyi partition'a katıl<br/>(önceki Router ID'lerini isteyerek)
+    R2->>R1: Address Solicit
+    R3->>R1: Address Solicit
+    Note over R1,R3: Border Router'lar Server Data ile<br/>Network Data'yı yeniden kaydeder
+```
+
+- Yeni Leader, eski Network Data'yı ilk etapta kendi kopyasından yeniden oluşturabilir; Border Router'lar ve servis sağlayıcılar kayıtlarını `a/sd` ile yeniler.
+- Cihazların ML-EID ve OMR adresleri değişmez; çoğu router eski Router ID'sini geri alır.
+- Kesinti tipik olarak birkaç dakika mertebesindedir (zaman aşımı + yakınsama).
+
+**Leader'ın kendisi yeniden başlarsa:** Leader durumunu kalıcı bellekte saklar; açıldığında önceki partition'ı ve Router ID'sini geri yüklemeye çalışır (komşularına Link Request göndererek). Bu sayede kısa süreli bir yeniden başlatma ağı bölmeden atlatılır.
+
+### 11.8 Network Data Yönetimi (Leader Tarafı)
+
+- Border Router'lar ve servis sağlayıcılar kendi **yerel Network Data** parçalarını Leader'a **Server Data Notification** (`a/sd`) ile bildirir.
+- Leader bunları birleştirir; her girdinin sahibini (RLOC16) bilir.
+- Değişiklik olduğunda **Data Version** (kalıcı kısım değiştiyse **Stable Data Version** da) artırılır ve Data Response ile dağıtılır.
+- Router ID'si serbest bırakılan bir cihazın girdileri Network Data'dan kaldırılır.
+- Yeni bir on-mesh önek için **bağlam ID'si** (1–15) atanır; önek kaldırıldığında bağlam önce "sıkıştırmada kullanılmaz" (C = 0) yapılır ve ID belirli bir süre (48 saat) yeniden kullanılmaz.
+- Network Data'nın 254 baytı aşmasına izin verilmez; yer yoksa kayıt reddedilir.
+
+### 11.9 Commissioner Oturumunun Yönetimi
+
+- Leader, Network Data içindeki **Commissioning Data TLV**'yi tutar: Border Agent Locator, Commissioner Session ID, Steering Data, Joiner UDP Port.
+- Bir commissioner, Border Agent aracılığıyla **Leader Petition** (`c/lp`) gönderir; Leader aktif commissioner yoksa kabul eder ve yeni bir **Commissioner Session ID** verir.
+- Commissioner belirli aralıklarla **Keep Alive** göndermezse Leader oturumu kapatır ve Commissioning Data'yı temizler. Ayrıntılar Bölüm 16'da.
+
+### 11.10 Bölüm Özeti
+
+- Leader, partition'ı kuran router'dır; açık bir seçim protokolü yoktur.
+- Partition karşılaştırma: singleton < çok router'lı, sonra yüksek weighting, sonra büyük Partition ID.
+- Router ID'ler Address Solicit/Release ile yönetilir; en fazla 32 aktif router, serbest ID'ler 100 s bekletilir.
+- Leader kaybolursa 120 s sonra yeni Leader oluşur, router'lar eski ID'lerini geri isteyerek katılır.
+- Network Data, bağlam ID'leri ve commissioner oturumu Leader'da merkezileşir ama tüm ağa kopyalanır.
+
+## 12. Network Data (Ağ Verisi)
+
+### 12.1 Nedir?
+
+**Thread Network Data**, ağ genelinde paylaşılan yapılandırma bilgisidir. Standart IPv6'daki Router Advertisement'ın Thread'deki karşılığı gibi düşünülebilir, ama çok daha fazlasını taşır:
+
+| İçerik | Örnek |
+|---|---|
+| **On-mesh önekler** | OMR öneki `fd4f:2d3c:ee9b:1::/64` — cihazlar bundan SLAAC adresi üretir |
+| **Dış rotalar** | `::/0` (internet), `fc00::/7`, NAT64 öneki `64:ff9b::/96` |
+| **Border Router bilgileri** | Hangi BR hangi öneği sunuyor, tercih değeri, bayraklar |
+| **6LoWPAN bağlamları** | Önek ↔ bağlam ID eşlemesi (sıkıştırma için) |
+| **Servisler** | SRP sunucusu (anycast/unicast), Backbone Router, diğer servisler |
+| **Commissioning Data** | Aktif commissioner, Border Agent konumu, Steering Data |
+
+### 12.2 Yaşam Döngüsü
+
+```mermaid
+sequenceDiagram
+    participant BR as Border Router
+    participant L as Leader
+    participant R as Router'lar
+    participant S as SED'ler
+    BR->>L: a/sd Server Data Notification (BR'nin yerel Network Data'sı)
+    L-->>BR: ACK (CoAP)
+    Note over L: Birleştir, Data Version++<br/>(stable değiştiyse Stable Data Version++)
+    L->>R: MLE Data Response (ff02::1, yeni Network Data)
+    Note over R: Rastgele gecikme sonrası yeniden yayınla
+    R->>R: MLE Data Response (ff02::1)
+    R->>S: Child Update (Leader Data: yeni sürüm)
+    S->>R: MLE Data Request
+    R-->>S: MLE Data Response (yalnızca stable kısım, N=0 ise)
+```
+
+- **Kayıt**: Veri sağlayıcılar (BR'ler, servis sunucuları) yerel Network Data'larını **Server Data Notification** (`a/sd`) ile Leader'a gönderir. Bir şeyi kaldırmak için güncellenmiş (eksiltilmiş) yerel veriyi yeniden gönderirler.
+- **Birleştirme**: Leader tüm parçaları birleştirir, sürüm numaralarını artırır.
+- **Dağıtım**: MLE Data Response çoklu yayınları ve Data Request/Response çiftleriyle (Bölüm 9.11).
+- **Temizlik**: Router ID'si geçersiz olan sağlayıcıların girdileri Leader tarafından silinir.
+
+### 12.3 Stable ve Temporary Veri
+
+Her Network Data TLV'sinde bir **Stable (S)** biti vardır:
+
+- **Stable (kalıcı)**: Uzun süre geçerli kalması beklenen bilgi (ör. OMR öneki, SLAAC bayrakları, bağlamlar). SED'ler (N = 0) yalnızca bunu alır.
+- **Temporary (geçici)**: Sık değişebilen bilgi (ör. Commissioning Data, bazı rota tercihleri).
+
+Bu ayrım, uyuyan cihazların her küçük değişiklik için uyanıp veri çekmesini önler. SED'ler yalnızca **Stable Data Version** değiştiğinde güncelleme yapar.
+
+### 12.4 TLV Biçimi
+
+```text
++---------------------------+--------+------------------+
+| Type (7 bit) | Stable (1) | Length | Value (alt TLV'ler)|
++---------------------------+--------+------------------+
+```
+
+| Tür | TLV | Nerede |
+|---|---|---|
+| 0 | **Has Route** | Prefix TLV içinde alt-TLV |
+| 1 | **Prefix** | Üst seviye |
+| 2 | **Border Router** | Prefix TLV içinde alt-TLV |
+| 3 | **6LoWPAN ID** (Context) | Prefix TLV içinde alt-TLV |
+| 4 | **Commissioning Data** | Üst seviye |
+| 5 | **Service** | Üst seviye |
+| 6 | **Server** | Service TLV içinde alt-TLV |
+
+Network Data'nın toplam boyutu en fazla **254 bayttır**.
+
+### 12.5 Prefix TLV
+
+```text
++-----------+---------------+-------------------+----------------------------+
+| Domain ID | Prefix Length | Prefix (bit uzun. | Alt-TLV'ler: Border Router,|
+|   (1)     |     (1)       | yuvarlanmış bayt) | Has Route, 6LoWPAN ID      |
++-----------+---------------+-------------------+----------------------------+
+```
+
+Bir önek altında birden çok alt-TLV ve her alt-TLV'de birden çok sağlayıcı girdisi (farklı BR'ler) bulunabilir.
+
+### 12.6 Border Router Alt-TLV'si
+
+Her girdi 4 bayttır: **RLOC16 (2)** + **Bayraklar (2)**.
+
+```text
+ bit: 15 14 | 13 | 12 | 11 | 10 |  9 |  8 |  7 |  6 | 5 … 0
+      Pref  |  p |  a |  d |  c |  r |  o |  n |  D | ayrılmış
+```
+
+| Bayrak | OpenThread harfi | Anlamı |
+|---|---|---|
+| **Pref** (2 bit) | high/med/low | Bu BR'nin tercih değeri (`01` high, `00` medium, `11` low) |
+| **p** (Preferred) | `p` | SLAAC/DHCP ile üretilen adresler "preferred" olarak kullanılabilir |
+| **a** (SLAAC) | `a` | Cihazlar bu önekten **SLAAC** ile adres üretmeli |
+| **d** (DHCP) | `d` | Adresler DHCPv6 ile alınır |
+| **c** (Configure) | `c` | Diğer yapılandırmalar DHCPv6 ile alınabilir |
+| **r** (Default Route) | `r` | Bu BR, bu önekten kaynaklanan paketler için **varsayılan rota** sunar |
+| **o** (On-Mesh) | `o` | Önek **mesh üzerindedir**: bu önekteki hedefler Thread ağı içindedir |
+| **n** (ND DNS) | `n` | DNS bilgisi ND ile sağlanır |
+| **D** (Domain Prefix) | `D` | (1.2) Bu önek bir **Thread Domain** önekidir (DUA için) |
+
+Tipik OMR öneki girdisi: `paros` = Preferred + SLAAC + default Route + On-mesh + Stable.
+
+### 12.7 Has Route Alt-TLV'si
+
+Her girdi 3 bayttır: **RLOC16 (2)** + **Bayraklar (1)**.
+
+| Bayrak | Anlamı |
+|---|---|
+| **Pref** (2 bit, bit 7–6) | Rota tercihi (high/medium/low) |
+| **N** (NAT64, bit 5) | (1.3) Bu önek bir **NAT64** önekidir |
+| **P** (Advertising PIO, bit 4) | (1.4) BR, altyapı ağında ilgili PIO ilanı yapıyor |
+
+Has Route, "bu önekteki hedeflere benim üzerimden ulaşabilirsiniz" anlamına gelir. Örnekler:
+
+| Önek | Anlamı |
+|---|---|
+| `::/0` | İnternet'e (varsayılan) rota — altyapı ağında global IPv6 bağlantısı varsa |
+| `fc00::/7` | Tüm ULA hedeflerine rota — altyapı ağındaki ULA adreslerine erişim |
+| `fd12:3456:789a:1::/64` | Altyapı ağının on-link öneki |
+| `64:ff9b::/96` veya `fdxx:…::/96` + N | NAT64 öneki (IPv4 hedefleri) |
+
+### 12.8 6LoWPAN ID (Context) Alt-TLV'si
+
+```text
++--------------------------------+----------------+
+| ayr.(3) | C (1) | Context ID(4) | Context Length |
++--------------------------------+----------------+
+```
+
+- **C (Compress)**: 1 = bu bağlam sıkıştırmada kullanılabilir.
+- **Context ID**: 1–15 (0, mesh-local önek için ayrılmıştır).
+- **Context Length**: Bağlam olarak kullanılacak önek uzunluğu (bit).
+
+### 12.9 Service ve Server TLV'leri
+
+```text
+Service TLV:
++---+------------+------------------------+--------------+--------------+-----------------+
+| T | Service ID | Enterprise Number (4)  | Service Data | Service Data | Server alt-TLV'leri |
+|(1)|   (4 bit)  | (T=1 ise atlanır)      | Length (1)   |              |                 |
++---+------------+------------------------+--------------+--------------+-----------------+
+
+Server alt-TLV'si:
++------------------+-------------+
+| Server RLOC16 (2)| Server Data |
++------------------+-------------+
+```
+
+- **T = 1** ise kurum numarası atlanır ve **Thread Group'un IANA Enterprise Number'ı 44970** kabul edilir.
+- **Service ID** (0–15), Leader tarafından atanır ve **Service ALOC** (`0xFC10` + Service ID) ile servise anycast erişim sağlar.
+
+**Thread'in tanımladığı servisler (Enterprise 44970):**
+
+| Service Data (ilk bayt) | Servis | İçerik |
+|---|---|---|
+| `0x01` | **Backbone Router** | Server Data: BBR sıra numarası, yeniden kayıt gecikmesi, MLR zaman aşımı |
+| `0x5C` | **DNS/SRP Anycast** | Service Data: sıra numarası. Sunucuya Service ALOC ile ulaşılır |
+| `0x5D` | **DNS/SRP Unicast** | Sunucunun IPv6 adresi ve portu (Service Data'da veya Server Data'da) |
+
+Cihazlar SRP sunucusunu bu girdilerden keşfeder (Bölüm 19).
+
+### 12.10 Commissioning Data TLV
+
+Aktif commissioner varken Leader tarafından eklenir (geçici veri):
+
+| Alt-TLV | Anlamı |
+|---|---|
+| **Border Agent Locator** | Commissioner'a giden trafiğin aktarılacağı Border Agent'ın RLOC16'sı |
+| **Commissioner Session ID** | Aktif oturumun kimliği |
+| **Steering Data** | Hangi joiner'ların kabul edileceğini gösteren Bloom filtresi |
+| **Joiner UDP Port** | Joiner'ların DTLS için kullanacağı port |
+
+Router'lar Discovery Response'larda Steering Data ve Joiner UDP Port'u bu TLV'den alır.
+
+### 12.11 Örnek: `netdata show` Çıktısı
+
+```text
+> netdata show
+Prefixes:
+fd4f:2d3c:ee9b:1::/64 paros med 5c00
+Routes:
+fc00::/7 s med 5c00
+fd8a:93c2:7f01:2:0:0::/96 sn low 5c00
+Services:
+44970 5d fddead00beef00006c1fc63a9a2e3b07d11f s 5c00
+44970 01 36000500000e10 s 5c00
+Contexts:
+fd4f:2d3c:ee9b:1::/64 1 c
+Commissioning:
+37104 5c00 - -
+Done
+```
+
+| Satır | Yorum |
+|---|---|
+| `fd4f:2d3c:ee9b:1::/64 paros med 5c00` | OMR öneki; Router 23 (`0x5C00`) sunuyor; SLAAC ile adres üret, varsayılan rota, on-mesh, stable, tercih orta |
+| `fc00::/7 s med 5c00` | ULA hedefleri için dış rota (s = stable), tercih orta |
+| `fd8a:…::/96 sn low 5c00` | NAT64 öneki (n = NAT64), düşük tercih |
+| `44970 5d …d11f s 5c00` | DNS/SRP unicast servisi: Server Data = sunucunun ML-EID adresi (`fdde:ad00:beef:0:6c1f:c63a:9a2e:3b07`) + port `0xD11F` (53535) |
+| `44970 01 36000500000e10` | Backbone Router servisi: sıra numarası `0x36`, yeniden kayıt gecikmesi 5 s, MLR zaman aşımı 3600 s |
+| `fd4f:2d3c:ee9b:1::/64 1 c` | OMR öneki bağlam ID 1, sıkıştırmaya açık |
+| `37104 5c00 - -` | Commissioner oturum ID 37104, Border Agent `0x5C00` |
+
+> [!NOTE]
+> `netdata show` çıktı biçimi OpenThread sürümleri arasında küçük farklılıklar gösterebilir; ham TLV görmek için `netdata show -x` kullanılabilir.
+
+### 12.12 Cihazın Network Data'yı Kullanması
+
+Bir cihaz yeni Network Data aldığında:
+
+1. **On-mesh öneklerde `a` bayrağı varsa** SLAAC adresi üretir; önek kaybolursa adresi kaldırır.
+2. **Bağlam tablosunu** günceller (sıkıştırma/açma için).
+3. **Rota tablosunu** (dış rotalar, tercihler, BR RLOC16'ları) günceller.
+4. **Servisleri** (SRP sunucusu, BBR) keşfeder; gerekirse SRP kaydını yeni sunucuya taşır.
+5. **Commissioning Data** varsa (router'lar) Discovery Response'larda kullanır.
+
+### 12.13 Bölüm Özeti
+
+- Network Data; önekler, rotalar, bağlamlar, servisler ve devreye alma bilgisinden oluşan ağ geneli yapılandırmadır.
+- Sağlayıcılar `a/sd` ile Leader'a kaydeder; Leader birleştirip MLE ile dağıtır.
+- Stable/Temporary ayrımı uyuyan cihazları gereksiz güncellemelerden korur.
+- Border Router alt-TLV'si (`paros` gibi bayraklar) on-mesh önekleri, Has Route alt-TLV'si dış rotaları tanımlar.
+- Service TLV'leri (Enterprise 44970) SRP sunucusu ve Backbone Router gibi servislerin keşfini sağlar.
+
+## 13. TMF — Thread Management Framework ve CoAP
+
+### 13.1 TMF Nedir?
+
+**TMF (Thread Management Framework)**, Thread ağının mesh genelindeki yönetim mesajlarını taşıyan çerçevedir. MLE tek atlamalık işleri yaparken TMF; adres çözümleme, router ID yönetimi, ağ verisi kaydı, devreye alma ve teşhis gibi **çok atlamalı** yönetim işlerini yapar.
+
+| Özellik | Değer |
+|---|---|
+| Uygulama protokolü | **CoAP** (RFC 7252) |
+| Taşıma | UDP, port **61631** (`0xF0BF`) |
+| Adresler | RLOC, ALOC (ör. Leader ALOC), `ff03::2` gibi realm-local çoklu yayın |
+| Yük | Thread TLV'leri (Network Layer TLV'leri, MeshCoP TLV'leri, Network Diagnostic TLV'leri) |
+| Güvenlik | Ayrı bir şifreleme yok; **MAC katmanı güvenliğine** dayanır. TMF mesajları yalnızca bağlantı katmanı güvenliği ile mesh'ten gelmişse kabul edilir |
+
+### 13.2 CoAP'a Kısa Bakış
+
+CoAP, kısıtlı cihazlar için tasarlanmış, HTTP benzeri (GET/POST/PUT/DELETE) ama UDP üzerinde çalışan, ikili ve kompakt bir protokoldür.
+
+```text
+ 0                   1                   2                   3
++---+---+-------+---------------+-------------------------------+
+|Ver| T |  TKL  |     Code      |          Message ID           |
++---+---+-------+---------------+-------------------------------+
+|   Token (0–8 bayt) ...
++---------------------------------------------------------------+
+|   Options (delta kodlamalı) ...
++---------------+-----------------------------------------------+
+| 0xFF (yük ayracı) |  Payload ...
++---------------+-----------------------------------------------+
+```
+
+| Alan | Açıklama |
+|---|---|
+| **Ver** | 1 |
+| **T** (Type) | 0 = CON (onay ister), 1 = NON (onaysız), 2 = ACK, 3 = RST |
+| **TKL** | Token uzunluğu |
+| **Code** | `0.01` GET, `0.02` POST, `0.03` PUT, `0.04` DELETE; yanıtlar `2.04` Changed, `2.05` Content, `4.04` Not Found … |
+| **Message ID** | Tekrar tespiti ve ACK eşleştirme |
+| **Token** | İstek/yanıt eşleştirme |
+| **Options** | Uri-Path (11), Content-Format (12) vb.; delta kodlamalı |
+
+**Güvenilirlik (CON mesajlar):** Varsayılan `ACK_TIMEOUT` = 2 s, `ACK_RANDOM_FACTOR` = 1.5, `MAX_RETRANSMIT` = 4; ACK gelmezse bekleme süresi her denemede ikiye katlanarak yeniden gönderilir.
+
+TMF'de tekil istekler genellikle **CON**, çoklu yayınlar (ör. Address Query) **NON** olarak gönderilir.
+
+### 13.3 TMF URI'leri
+
+#### Adres ve ağ yönetimi (`a/…`)
+
+| URI | Ad | Yön | Amaç |
+|---|---|---|---|
+| `a/aq` | Address Query | `ff03::2` (NON) | Bir EID'nin RLOC16'sını sorma |
+| `a/an` | Address Notification | Tekil (CON) | Address Query cevabı |
+| `a/ae` | Address Error Notification | Tekil/çoklu | Çakışan adres bildirimi |
+| `a/as` | Address Solicit | Leader ALOC (CON) | Router ID isteme |
+| `a/ar` | Address Release | Leader ALOC (CON) | Router ID bırakma |
+| `a/sd` | Server Data Notification | Leader ALOC (CON) | Yerel Network Data'yı kaydetme |
+
+#### Devreye alma ve dataset (`c/…`, MeshCoP)
+
+| URI | Ad | Amaç |
+|---|---|---|
+| `c/cp` | Commissioner Petition | Commissioner olma isteği (Border Agent'a) |
+| `c/ca` | Commissioner Keep Alive | Commissioner oturumunu canlı tutma |
+| `c/lp` | Leader Petition | Border Agent → Leader petition aktarımı |
+| `c/la` | Leader Keep Alive | Border Agent → Leader keep alive aktarımı |
+| `c/cs` / `c/cg` | Commissioner Set / Get | Commissioning Data'yı (Steering Data vb.) yazma/okuma |
+| `c/as` / `c/ag` | Active Set / Get | Active Operational Dataset'i değiştirme/okuma |
+| `c/ps` / `c/pg` | Pending Set / Get | Pending Operational Dataset'i değiştirme/okuma |
+| `c/dc` | Dataset Changed | Dataset değiştiğini commissioner'a bildirme |
+| `c/rx` | Relay Receive | Joiner Router → Commissioner: Joiner'dan gelen DTLS kaydını aktarma |
+| `c/tx` | Relay Transmit | Commissioner → Joiner Router: Joiner'a gidecek DTLS kaydını aktarma |
+| `c/jf` | Joiner Finalize | Joiner → Commissioner (DTLS içinde): katılım sonlandırma |
+| `c/je` | Joiner Entrust | Joiner Router → Joiner: ağ kimlik bilgilerini (KEK ile) teslim |
+| `c/ab` | Announce Begin | Cihazlara Announce gönderme emri |
+| `c/es` / `c/er` | Energy Scan / Report | Uzaktan enerji taraması ve raporu |
+| `c/pq` / `c/pc` | PAN ID Query / Conflict | PAN ID çakışması sorgusu ve bildirimi |
+| `c/ur` / `c/ut` | Proxy Receive / Transmit | Harici commissioner'ın mesh içindeki cihazlarla UDP üzerinden konuşması (Border Agent vekilliği) |
+
+#### Teşhis (`d/…`)
+
+| URI | Ad | Amaç |
+|---|---|---|
+| `d/dg` | Diagnostic Get | Bir cihazdan teşhis TLV'leri isteme (tekil) |
+| `d/dq` | Diagnostic Get Query | Çoklu yayınla teşhis sorgusu |
+| `d/da` | Diagnostic Get Answer | Sorguya cevap |
+| `d/dr` | Diagnostic Reset | Sayaçları sıfırlama |
+
+#### Thread 1.2+ Backbone (`n/…`, `b/…`)
+
+| URI | Ad | Amaç |
+|---|---|---|
+| `n/dr` | DUA Registration | Domain Unicast Address'i Primary BBR'ye kaydetme |
+| `n/mr` | Multicast Listener Registration | Çoklu yayın aboneliğini Primary BBR'ye kaydetme |
+| `b/bq` | Backbone Query | BBR'ler arası (omurga üzerinden) DUA çakışma/konum sorgusu |
+| `b/ba` | Backbone Answer | Backbone Query cevabı |
+| `b/bmr` | Backbone MLR | BBR'ler arası MLR bilgisi |
+
+### 13.4 Ağ Katmanı TMF TLV'leri
+
+| Tür | TLV | Uzunluk | Kullanım |
+|---|---|---|---|
+| 0 | **Target EID** | 16 | Sorgulanan/bildirilen IPv6 adresi |
+| 1 | **Extended MAC Address** | 8 | Cihazın Extended Address'i |
+| 2 | **RLOC16** | 2 | Routing locator |
+| 3 | **ML-EID** | 8 | ML-EID'nin IID kısmı (çakışma tespiti için) |
+| 4 | **Status** | 1 | Durum/neden kodu |
+| 6 | **Last Transaction Time** | 4 | Çocukla son iletişimden beri geçen süre |
+| 7 | **Router Mask** | 9 | ID Sequence + 64 bit router maskesi |
+| 8 | **ND Option** | değişken | Neighbor Discovery seçenekleri |
+| 9 | **ND Data** | değişken | ND verisi |
+| 10 | **Thread Network Data** | değişken | Server Data Notification içinde yerel Network Data |
+| 11 | **Timeout** | 4 | Zaman aşımı değerleri |
+| 12 | **Network Name** | ≤ 16 | Ağ adı |
+| 14 | **IPv6 Addresses** | değişken | Adres listesi (ör. MLR) |
+| 15 | **Commissioner Session ID** | 2 | Oturum kimliği |
+
+### 13.5 Örnek: Address Query Mesajının Baytları
+
+```text
+--- CoAP ---
+52              Ver=1, Type=NON(1), TKL=2
+02              Code = 0.02 (POST)
+7B 1C           Message ID = 0x7B1C
+A3 E9           Token
+B1 61           Option: Uri-Path (delta 11, uzunluk 1) = "a"
+02 61 71        Option: Uri-Path (delta 0, uzunluk 2)  = "aq"
+FF              Yük ayracı
+--- TMF TLV ---
+00 10           Target EID TLV, uzunluk 16
+FD 4F 2D 3C EE 9B 00 01 8A 43 51 C0 07 6E 21 9D    (hedef OMR adresi)
+```
+
+Bu mesaj UDP 61631 → 61631, IPv6 hedefi `ff03::2` ile gönderilir. 6LoWPAN tarafında iki port birlikte tek bayta, `ff03::2` hedefi ise `ffXX::00XX:XXXX` biçimiyle 4 bayta sıkıştırılır (tek baytlık mod yalnızca `ff02::00XX` adresleri içindir).
+
+**Cevap (Address Notification, CON POST `a/an`):**
+
+```text
+42 02 4F 10 C5 07  B1 61 02 61 6E  FF
+00 10 <16 bayt Target EID>           Target EID TLV
+02 02 94 02                          RLOC16 TLV = 0x9402
+03 08 <8 bayt ML-EID IID>            ML-EID TLV
+06 04 00 00 01 2C                    Last Transaction Time = 300 s (vekil cevap)
+```
+
+### 13.6 Örnek Akış: Address Solicit
+
+```mermaid
+sequenceDiagram
+    participant R as REED
+    participant L as Leader (ALOC 0xFC00)
+    R->>L: CON POST a/as (Ext MAC Address, Status = Too Few Routers, RLOC16 = 0x5C00 istenen)
+    L-->>R: ACK + 2.04 Changed (Status = Success, RLOC16 = 0x5C00, Router Mask: ID Seq 8)
+    Note over R: Router ID 23 ile router oldu
+    R->>R: Link Request (ff02::2) ile komşularla bağlantı
+    Note over L: ID Sequence arttı, Advertisement'larla yayılır
+```
+
+### 13.7 TMF'nin Güvenlik Sınırları
+
+- TMF mesajları ağ içinde yalnızca **MAC güvenliği** ile korunur. Ağ anahtarına sahip her cihaz TMF mesajı üretebilir; bu yüzden Thread'in güven modeli "ağdaki her cihaz güvenilirdir" varsayımına dayanır (Bölüm 15).
+- Ağ dışından (Border Router'ın altyapı tarafından) gelen paketlerin TMF portuna ulaşması engellenir. Harici commissioner'ın TMF/MeshCoP işlemleri yalnızca **Border Agent ile kurulan DTLS oturumu** üzerinden yapılabilir.
+- MeshCoP yönetim komutları (Active/Pending Set gibi) ek olarak **Commissioner Session ID** doğrulaması gerektirir.
+
+### 13.8 Bölüm Özeti
+
+- TMF, UDP 61631 üzerinde CoAP ile taşınan, mesh geneli Thread yönetim mesajlarıdır.
+- URI ön ekleri: `a/` adres ve ağ, `c/` devreye alma ve dataset, `d/` teşhis, `n/` ve `b/` Thread 1.2 omurga işlemleri.
+- Tekil istekler CON, çoklu yayınlar NON olarak gönderilir.
+- TMF mesajlarının yükü Thread TLV'leridir; güvenliği MAC katmanından gelir.
+
+## 14. Çoklu Yayın (Multicast) ve MPL
+
+### 14.1 Kapsama Göre Çoklu Yayın
+
+| Kapsam | Örnek adres | Nasıl iletilir? |
+|---|---|---|
+| **Link-local (2)** | `ff02::1`, `ff02::2`, `ff32:40:<önek>::1` | Tek bir MAC yayın çerçevesi (`0xFFFF`); **iletilmez** |
+| **Realm-local (3)** | `ff03::1`, `ff03::2`, `ff03::fc`, `ff33:40:<önek>::1` | Router'lar tarafından **MPL** ile tüm mesh'e yayılır |
+| **Admin-local (4) ve üstü** | `ff04::…`, `ff05::…`, `ff35:…` | Mesh içinde MPL ile yayılır; Border/Backbone Router ile ağ dışına/dışından taşınır (abonelik kaydı gerekir) |
+
+MAC seviyesinde çoklu yayın çerçeveleri **ACK'lenmez**. Bu yüzden güvenilirlik, tekrar gönderimle sağlanır.
+
+### 14.2 MPL (Multicast Protocol for Low-Power and Lossy Networks)
+
+Thread, realm-local ve daha geniş kapsamlı çoklu yayınları mesh'te yaymak için **MPL**'i (RFC 7731) kullanır. MPL, kontrollü bir "taşma" (flooding) protokolüdür:
+
+1. **Seed (tohum)**: Çoklu yayını başlatan cihaz. Her pakete **MPL Option** (IPv6 Hop-by-Hop seçeneği) ekler:
+    - **Seed ID**: Thread'de gönderenin **RLOC16**'sı (2 bayt),
+    - **Sequence**: Seed başına artan 8 bitlik sıra numarası.
+2. **Forwarder (iletici)**: Router'lar yeni (daha önce görmediği Seed ID + Sequence çiftine sahip) bir MPL paketini alınca:
+    - Paketi yerel olarak işler (aboneyse uygulamaya verir),
+    - **Seed set** tablosuna kaydeder (yinelenen paketleri tanımak için),
+    - Paketi rastgele kısa gecikmelerle **birkaç kez** yeniden yayınlar.
+3. Zaten görülmüş (Seed ID, Sequence) çiftine sahip paketler atılır.
+
+```mermaid
+flowchart LR
+    S(["Seed<br/>RLOC16 0x5C00<br/>Seq 41"]) -->|"yayın"| R1["Router 1"]
+    S -->|"yayın"| R2["Router 2"]
+    R1 -->|"yeniden yayın"| R3["Router 3"]
+    R2 -->|"yeniden yayın"| R3
+    R2 -->|"yeniden yayın"| R4["Router 4"]
+    R3 -->|"yeniden yayın"| R5["Router 5"]
+    R4 -.->|"yinelenen, atılır"| R3
+```
+
+**Kapsülleme kuralı:**
+
+- Hedef **realm-local** ise MPL Option doğrudan paketin Hop-by-Hop başlığına eklenir.
+- Hedef **realm-local'dan geniş** bir kapsamdaysa (ör. `ff05::…`), orijinal paket bir dış IPv6 başlığıyla **kapsüllenir** (IPv6-in-IPv6); dış başlığın hedefi `ff03::fc` (Realm-Local All MPL Forwarders) olur ve MPL Option dış başlığa eklenir. Paket mesh'ten çıkarken (BR'de) dış başlık atılır.
+
+### 14.3 Çoklu Yayının Uç Cihazlara Ulaştırılması
+
+| Cihaz | Nasıl alır? |
+|---|---|
+| Router, REED, FED | Yayın çerçevelerini doğrudan dinler |
+| **MED** | Radyosu açık olduğu için yayın çerçevelerini doğrudan dinler |
+| **SED / SSED** | Radyosu kapalıdır. Ebeveyn, SED'in **abone olduğu** adreslere (ve "All Thread Nodes" adreslerine) gelen çoklu yayınları **her SED için ayrı ayrı** kuyruğa koyar ve **dolaylı iletim** ile (MAC'te tekil çerçeve olarak) teslim eder |
+
+SED'ler abone oldukları çoklu yayın adreslerini **Address Registration TLV** ile ebeveynlerine bildirir.
+
+> [!WARNING]
+> Çoklu yayın, Thread ağındaki **en pahalı** trafik türlerinden biridir: Her router paketi birkaç kez yayınlar ve her uyuyan alıcı için ebeveyn ayrı bir dolaylı iletim yapar. Sık periyodik çoklu yayınlar (ör. her saniye durum yayını) hem kanal kapasitesini hem SED pillerini tüketir. Mümkünse tekil (unicast) iletişim veya abonelik (subscription) modelleri tercih edilmelidir.
+
+### 14.4 Hangi Adres Kime Ulaşır?
+
+| Hedef | Router | REED/FED | MED | SED/SSED |
+|---|---|---|---|---|
+| `ff02::1` (link-local all nodes) | ✔ (komşu ise) | ✔ (komşu ise) | ✔ (komşu ise) | ✘ |
+| `ff02::2` (link-local all routers) | ✔ (komşu ise) | ✔ (komşu ise) | ✘ | ✘ |
+| `ff32:40:<önek>::1` (link-local all Thread nodes) | ✔ | ✔ | ✔ | ✔ (ebeveyn iletir) |
+| `ff03::1` (realm-local all nodes) | ✔ | ✔ | ✔ | ✘ |
+| `ff03::2` (realm-local all routers) | ✔ | ✔ | ✘ | ✘ |
+| `ff33:40:<önek>::1` (realm-local all Thread nodes) | ✔ | ✔ | ✔ | ✔ (ebeveyn iletir) |
+| Uygulama grubu (ör. `ff05::abcd`) | Aboneyse | Aboneyse | Aboneyse | Aboneyse (ebeveyne kayıtlıysa) |
+
+### 14.5 Ağ Dışından Çoklu Yayın (Thread 1.2+)
+
+Bir altyapı ağındaki (Wi-Fi/Ethernet) cihaz, Thread cihazlarının abone olduğu bir gruba çoklu yayın gönderirse:
+
+1. Thread cihazı, admin-local veya daha geniş kapsamlı (scope ≥ 4) bir gruba abone olduğunda bunu **Primary Backbone Router**'a **MLR** (Multicast Listener Registration, `n/mr`) ile kaydeder.
+2. Primary BBR, omurga (altyapı) arayüzünde bu grup için **MLD** ile dinleyici olur.
+3. Altyapıdan gelen eşleşen çoklu yayınlar, BBR tarafından MPL kapsülleme ile mesh'e aktarılır.
+4. Kayıtların bir ömrü vardır (MLR timeout; BBR servis verisinde ilan edilir); cihazlar kayıtlarını periyodik yeniler.
+
+Thread'den dışarı giden çoklu yayınlar için Border Router, scope ≥ 4 olan paketleri (kapsülü açarak) altyapı arayüzüne iletir.
+
+### 14.6 Matter Grupları ve Çoklu Yayın
+
+Matter'ın **grup iletişimi** (ör. "tüm salon lambalarını kapat") IPv6 çoklu yayını kullanır:
+
+- Matter grup adresleri **site-local kapsamlı** (scope 5), önek tabanlı çoklu yayın adresleridir (`ff35:40:fd…` biçiminde; fabric kimliği ve grup kimliğinden türetilir).
+- Thread cihazları bu adreslere abone olur ve (Thread 1.2+ BBR mevcutsa) MLR ile kaydeder.
+- Telefon/hub'dan gönderilen grup komutu Border Router'dan Thread ağına MPL ile yayılır.
+- Grup mesajları Matter'ın grup anahtarlarıyla (operational group key) uygulama katmanında şifrelenir.
+
+### 14.7 Bölüm Özeti
+
+- Link-local çoklu yayın tek atlamadır; realm-local ve daha geniş kapsamlar MPL ile mesh'e yayılır.
+- MPL; Seed ID (RLOC16) + sıra numarası ile yinelenenleri ayıklar, router'lar paketi birkaç kez yeniden yayınlar.
+- SED'lere çoklu yayın, ebeveyn tarafından her cihaza ayrı dolaylı iletimle ulaştırılır; pahalıdır.
+- "All Thread Nodes" adresleri SED'leri de kapsar; `ff02::1`/`ff03::1` kapsamaz.
+- Thread 1.2+ BBR ve MLR ile ağ dışından gelen çoklu yayınlar abone cihazlara taşınır; Matter grupları bunu kullanır.
