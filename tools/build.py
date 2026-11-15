@@ -124,11 +124,21 @@ def read_sources() -> list[Path]:
 # --------------------------------------------------------------------------- #
 #  HTML üretimi
 # --------------------------------------------------------------------------- #
+def _clean_mermaid(src: str) -> str:
+    """Satır içi çoklu boşlukları teke indirir (Mermaid 'wrap' modunda çift boşluk çizimi bozar)."""
+    lines = []
+    for line in src.split("\n"):
+        stripped = line.lstrip(" ")
+        indent = line[: len(line) - len(stripped)]
+        lines.append(indent + re.sub(r" {2,}", " ", stripped))
+    return "\n".join(lines)
+
+
 def post_process(body: str) -> str:
     # Mermaid diyagramları
     body = re.sub(
         r'<pre><code class="language-mermaid">(.*?)</code></pre>',
-        r'<figure class="diagram"><pre class="mermaid">\1</pre></figure>',
+        lambda m: f'<figure class="diagram"><pre class="mermaid">{_clean_mermaid(m.group(1))}</pre></figure>',
         body,
         flags=re.S,
     )
