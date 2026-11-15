@@ -218,7 +218,7 @@ blockquote p { margin: .4em 0; }
     </div>
   </div>
   <div class="spacer"></div>
-  <span class="meta-pill">15 bölüm · 21.261 kelime · ≈118 dk okuma</span>
+  <span class="meta-pill">18 bölüm · 25.931 kelime · ≈144 dk okuma</span>
   <button class="icon-btn" id="themeBtn" aria-label="Açık/koyu tema">◐</button>
 </header>
 <div class="overlay" id="overlay"></div>
@@ -438,6 +438,52 @@ blockquote p { margin: .4em 0; }
 <li><a href="#147-bölüm-özeti">14.7 Bölüm Özeti</a></li>
 </ul>
 </li>
+<li class="toc-ch"><a href="#15-güvenlik-mimarisi">15. Güvenlik Mimarisi</a>
+<ul class="toc-sub">
+<li><a href="#151-güvenlik-hedefleri-ve-temel-model">15.1 Güvenlik Hedefleri ve Temel Model</a></li>
+<li><a href="#152-anahtar-hiyerarşisi">15.2 Anahtar Hiyerarşisi</a></li>
+<li><a href="#153-mac-ve-mle-anahtarlarının-türetilmesi">15.3 MAC ve MLE Anahtarlarının Türetilmesi</a></li>
+<li><a href="#154-key-sequence-ve-anahtar-rotasyonu">15.4 Key Sequence ve Anahtar Rotasyonu</a></li>
+<li><a href="#155-mac-katmanı-güvenliği-özet">15.5 MAC Katmanı Güvenliği (Özet)</a></li>
+<li><a href="#156-mle-güvenliği-özet">15.6 MLE Güvenliği (Özet)</a></li>
+<li><a href="#157-frame-counterlar-ve-tekrar-koruması">15.7 Frame Counter'lar ve Tekrar Koruması</a></li>
+<li><a href="#158-devreye-alma-kimlik-bilgileri">15.8 Devreye Alma Kimlik Bilgileri</a></li>
+<li><a href="#159-security-policy-tlv">15.9 Security Policy TLV</a></li>
+<li><a href="#1510-tehdit-modeli">15.10 Tehdit Modeli</a></li>
+<li><a href="#1511-platform-ve-donanım-güvenliği">15.11 Platform ve Donanım Güvenliği</a></li>
+<li><a href="#1512-en-i̇yi-uygulamalar">15.12 En İyi Uygulamalar</a></li>
+<li><a href="#1513-bölüm-özeti">15.13 Bölüm Özeti</a></li>
+</ul>
+</li>
+<li class="toc-ch"><a href="#16-devreye-alma-commissioning-ve-meshcop">16. Devreye Alma (Commissioning) ve MeshCoP</a>
+<ul class="toc-sub">
+<li><a href="#161-kavramlar">16.1 Kavramlar</a></li>
+<li><a href="#162-meshcop-rolleri">16.2 MeshCoP Rolleri</a></li>
+<li><a href="#163-aşama-1--commissionerın-aktif-olması-petition">16.3 Aşama 1 — Commissioner'ın Aktif Olması (Petition)</a></li>
+<li><a href="#164-joiner-id-ve-steering-data">16.4 Joiner ID ve Steering Data</a></li>
+<li><a href="#165-aşama-2--joinerın-ağı-bulması">16.5 Aşama 2 — Joiner'ın Ağı Bulması</a></li>
+<li><a href="#166-aşama-3--dtls-finalize-ve-entrust">16.6 Aşama 3 — DTLS, Finalize ve Entrust</a></li>
+<li><a href="#167-native-commissioning-ve-on-mesh-commissioner">16.7 Native Commissioning ve On-Mesh Commissioner</a></li>
+<li><a href="#168-matter-ile-devreye-alma-bant-dışı">16.8 Matter ile Devreye Alma (Bant Dışı)</a></li>
+<li><a href="#169-thread-14-tcat">16.9 Thread 1.4: TCAT</a></li>
+<li><a href="#1610-ekosistemler-arası-kimlik-paylaşımı-ve-epskc">16.10 Ekosistemler Arası Kimlik Paylaşımı ve ePSKc</a></li>
+<li><a href="#1611-openthread-cli-ile-örnek-devreye-alma">16.11 OpenThread CLI ile Örnek Devreye Alma</a></li>
+<li><a href="#1612-bölüm-özeti">16.12 Bölüm Özeti</a></li>
+</ul>
+</li>
+<li class="toc-ch"><a href="#17-operational-dataset">17. Operational Dataset</a>
+<ul class="toc-sub">
+<li><a href="#171-kavram">17.1 Kavram</a></li>
+<li><a href="#172-active-dataset-bileşenleri">17.2 Active Dataset Bileşenleri</a></li>
+<li><a href="#173-pending-dataset">17.3 Pending Dataset</a></li>
+<li><a href="#174-zaman-damgaları-ve-sürüm-karşılaştırma">17.4 Zaman Damgaları ve Sürüm Karşılaştırma</a></li>
+<li><a href="#175-dataset-değiştirme">17.5 Dataset Değiştirme</a></li>
+<li><a href="#176-dataset-tlv-kodlaması-tam-örnek">17.6 Dataset TLV Kodlaması: Tam Örnek</a></li>
+<li><a href="#177-diğer-meshcop-tlvleri-referans">17.7 Diğer MeshCoP TLV'leri (Referans)</a></li>
+<li><a href="#178-datasetin-yönetimi-openthread-cli">17.8 Dataset'in Yönetimi (OpenThread CLI)</a></li>
+<li><a href="#179-bölüm-özeti">17.9 Bölüm Özeti</a></li>
+</ul>
+</li>
 </ul>
 </nav>
 <main>
@@ -540,7 +586,7 @@ blockquote p { margin: .4em 0; }
 <blockquote class="callout callout-note"><p class="callout-title">Not</p><p>Thread şartnamesi (Thread Specification) Thread Group tarafından yayımlanır. Bu dokümandaki sabitler ve varsayılan değerler şartname ile yaygın açık kaynak uygulama OpenThread'deki karşılıkları esas alınarak verilmiştir. "OpenThread varsayılanı" ifadesi geçen değerler derleme zamanında veya çalışma anında değiştirilebilir; kesin ürün davranışı için kullandığınız SDK sürümünün belgelerine bakın.</p>
 </blockquote>
 <h2 id="i̇çindekiler">İçindekiler<a class="anchor" href="#i̇çindekiler" aria-label="Bu başlığa bağlantı">#</a></h2>
-<nav class="chapter-grid" aria-label="Bölümler"><a class="card" href="#0-bu-doküman-hakkında"><span class="card-num">0</span><span class="card-title">Bu Doküman Hakkında</span><span class="card-meta">3 alt başlık</span></a><a class="card" href="#1-threade-giriş"><span class="card-num">1</span><span class="card-title">Thread&#x27;e Giriş</span><span class="card-meta">10 alt başlık</span></a><a class="card" href="#2-protokol-yığını-ve-genel-mimari"><span class="card-num">2</span><span class="card-title">Protokol Yığını ve Genel Mimari</span><span class="card-meta">7 alt başlık</span></a><a class="card" href="#3-fiziksel-katman-ieee-802154-phy"><span class="card-num">3</span><span class="card-title">Fiziksel Katman (IEEE 802.15.4 PHY)</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#4-mac-katmanı-ieee-802154-mac"><span class="card-num">4</span><span class="card-title">MAC Katmanı (IEEE 802.15.4 MAC)</span><span class="card-meta">13 alt başlık</span></a><a class="card" href="#5-6lowpan-uyarlama-katmanı"><span class="card-num">5</span><span class="card-title">6LoWPAN Uyarlama Katmanı</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#6-threadde-ipv6-adresleme"><span class="card-num">6</span><span class="card-title">Thread&#x27;de IPv6 Adresleme</span><span class="card-meta">13 alt başlık</span></a><a class="card" href="#7-cihaz-türleri-ve-roller"><span class="card-num">7</span><span class="card-title">Cihaz Türleri ve Roller</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#8-ağ-topolojisi-ve-ölçek"><span class="card-num">8</span><span class="card-title">Ağ Topolojisi ve Ölçek</span><span class="card-meta">9 alt başlık</span></a><a class="card" href="#9-mle--mesh-link-establishment"><span class="card-num">9</span><span class="card-title">MLE — Mesh Link Establishment</span><span class="card-meta">16 alt başlık</span></a><a class="card" href="#10-yönlendirme-routing"><span class="card-num">10</span><span class="card-title">Yönlendirme (Routing)</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#11-leader-partition-ve-router-id-yönetimi"><span class="card-num">11</span><span class="card-title">Leader, Partition ve Router ID Yönetimi</span><span class="card-meta">10 alt başlık</span></a><a class="card" href="#12-network-data-ağ-verisi"><span class="card-num">12</span><span class="card-title">Network Data (Ağ Verisi)</span><span class="card-meta">13 alt başlık</span></a><a class="card" href="#13-tmf--thread-management-framework-ve-coap"><span class="card-num">13</span><span class="card-title">TMF — Thread Management Framework ve CoAP</span><span class="card-meta">8 alt başlık</span></a><a class="card" href="#14-çoklu-yayın-multicast-ve-mpl"><span class="card-num">14</span><span class="card-title">Çoklu Yayın (Multicast) ve MPL</span><span class="card-meta">7 alt başlık</span></a></nav>
+<nav class="chapter-grid" aria-label="Bölümler"><a class="card" href="#0-bu-doküman-hakkında"><span class="card-num">0</span><span class="card-title">Bu Doküman Hakkında</span><span class="card-meta">3 alt başlık</span></a><a class="card" href="#1-threade-giriş"><span class="card-num">1</span><span class="card-title">Thread&#x27;e Giriş</span><span class="card-meta">10 alt başlık</span></a><a class="card" href="#2-protokol-yığını-ve-genel-mimari"><span class="card-num">2</span><span class="card-title">Protokol Yığını ve Genel Mimari</span><span class="card-meta">7 alt başlık</span></a><a class="card" href="#3-fiziksel-katman-ieee-802154-phy"><span class="card-num">3</span><span class="card-title">Fiziksel Katman (IEEE 802.15.4 PHY)</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#4-mac-katmanı-ieee-802154-mac"><span class="card-num">4</span><span class="card-title">MAC Katmanı (IEEE 802.15.4 MAC)</span><span class="card-meta">13 alt başlık</span></a><a class="card" href="#5-6lowpan-uyarlama-katmanı"><span class="card-num">5</span><span class="card-title">6LoWPAN Uyarlama Katmanı</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#6-threadde-ipv6-adresleme"><span class="card-num">6</span><span class="card-title">Thread&#x27;de IPv6 Adresleme</span><span class="card-meta">13 alt başlık</span></a><a class="card" href="#7-cihaz-türleri-ve-roller"><span class="card-num">7</span><span class="card-title">Cihaz Türleri ve Roller</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#8-ağ-topolojisi-ve-ölçek"><span class="card-num">8</span><span class="card-title">Ağ Topolojisi ve Ölçek</span><span class="card-meta">9 alt başlık</span></a><a class="card" href="#9-mle--mesh-link-establishment"><span class="card-num">9</span><span class="card-title">MLE — Mesh Link Establishment</span><span class="card-meta">16 alt başlık</span></a><a class="card" href="#10-yönlendirme-routing"><span class="card-num">10</span><span class="card-title">Yönlendirme (Routing)</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#11-leader-partition-ve-router-id-yönetimi"><span class="card-num">11</span><span class="card-title">Leader, Partition ve Router ID Yönetimi</span><span class="card-meta">10 alt başlık</span></a><a class="card" href="#12-network-data-ağ-verisi"><span class="card-num">12</span><span class="card-title">Network Data (Ağ Verisi)</span><span class="card-meta">13 alt başlık</span></a><a class="card" href="#13-tmf--thread-management-framework-ve-coap"><span class="card-num">13</span><span class="card-title">TMF — Thread Management Framework ve CoAP</span><span class="card-meta">8 alt başlık</span></a><a class="card" href="#14-çoklu-yayın-multicast-ve-mpl"><span class="card-num">14</span><span class="card-title">Çoklu Yayın (Multicast) ve MPL</span><span class="card-meta">7 alt başlık</span></a><a class="card" href="#15-güvenlik-mimarisi"><span class="card-num">15</span><span class="card-title">Güvenlik Mimarisi</span><span class="card-meta">13 alt başlık</span></a><a class="card" href="#16-devreye-alma-commissioning-ve-meshcop"><span class="card-num">16</span><span class="card-title">Devreye Alma (Commissioning) ve MeshCoP</span><span class="card-meta">12 alt başlık</span></a><a class="card" href="#17-operational-dataset"><span class="card-num">17</span><span class="card-title">Operational Dataset</span><span class="card-meta">9 alt başlık</span></a></nav>
 <h2 id="1-threade-giriş">1. Thread'e Giriş<a class="anchor" href="#1-threade-giriş" aria-label="Bu başlığa bağlantı">#</a></h2>
 <h3 id="11-thread-nedir">1.1 Thread Nedir?<a class="anchor" href="#11-thread-nedir" aria-label="Bu başlığa bağlantı">#</a></h3>
 <p><strong>Thread</strong>, nesnelerin interneti (IoT) için tasarlanmış; <strong>IPv6 tabanlı</strong>, <strong>düşük güçlü</strong>, <strong>kablosuz mesh (ağ örgüsü)</strong> ağ protokolüdür. Özellikle akıllı ev ve bina otomasyonu cihazlarının (lambalar, prizler, sensörler, kilitler, termostatlar, perdeler vb.) birbirleriyle ve internetle güvenli, güvenilir ve pil dostu şekilde haberleşmesi için geliştirilmiştir.</p>
@@ -6042,6 +6088,1157 @@ FD 4F 2D 3C EE 9B 00 01 8A 43 51 C0 07 6E 21 9D    (hedef OMR adresi)
 <li>SED'lere çoklu yayın, ebeveyn tarafından her cihaza ayrı dolaylı iletimle ulaştırılır; pahalıdır.</li>
 <li>"All Thread Nodes" adresleri SED'leri de kapsar; <code>ff02::1</code>/<code>ff03::1</code> kapsamaz.</li>
 <li>Thread 1.2+ BBR ve MLR ile ağ dışından gelen çoklu yayınlar abone cihazlara taşınır; Matter grupları bunu kullanır.</li>
+</ul>
+<h2 id="15-güvenlik-mimarisi">15. Güvenlik Mimarisi<a class="anchor" href="#15-güvenlik-mimarisi" aria-label="Bu başlığa bağlantı">#</a></h2>
+<h3 id="151-güvenlik-hedefleri-ve-temel-model">15.1 Güvenlik Hedefleri ve Temel Model<a class="anchor" href="#151-güvenlik-hedefleri-ve-temel-model" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread'in güvenlik tasarımı şu hedeflere dayanır:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hedef</th>
+<th>Nasıl sağlanır?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gizlilik</strong></td>
+<td>Tüm ağ trafiği MAC katmanında AES-128-CCM* ile şifrelenir</td>
+</tr>
+<tr>
+<td><strong>Bütünlük ve kimlik doğrulama</strong></td>
+<td>Her çerçevede MIC; yalnızca ağ anahtarını bilenler geçerli çerçeve üretebilir</td>
+</tr>
+<tr>
+<td><strong>Tekrar (replay) koruması</strong></td>
+<td>Frame counter'lar, MLE Challenge/Response</td>
+</tr>
+<tr>
+<td><strong>Yetkisiz katılımın engellenmesi</strong></td>
+<td>Ağa katılım ya PAKE tabanlı (EC-JPAKE + PSKd) devreye alma ya da güvenli bant dışı kanal (Matter/BLE) ile kimlik bilgisi aktarımı gerektirir</td>
+</tr>
+<tr>
+<td><strong>Yetkili yönetim</strong></td>
+<td>Commissioner olmak için PSKc ile kimlik doğrulama; aynı anda tek commissioner</td>
+</tr>
+<tr>
+<td><strong>Anahtar tazeliği</strong></td>
+<td>Periyodik anahtar rotasyonu (Key Sequence)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Temel model — "ağ üyeliği = güven":</strong> Thread'de bütün cihazlar aynı <strong>Network Key</strong>'i paylaşır. Ağa kabul edilmiş her cihaz, ağ katmanında diğerleriyle eşit güven seviyesindedir. Bu basit ve verimli bir modeldir, fakat iki önemli sonucu vardır:</p>
+<ol>
+<li>Thread güvenliği <strong>hop-by-hop</strong>'tur: Her atlamada çerçeve çözülüp yeniden şifrelenir; ara router'lar yükü düz metin olarak görebilir.</li>
+<li><strong>Uçtan uca (end-to-end) uygulama güvenliği</strong> Thread'in değil, üst katmanın işidir. Matter bunu CASE/PASE oturumlarıyla sağlar: Thread ağına sızmış bir cihaz bile Matter mesajlarını okuyamaz/değiştiremez.</li>
+</ol>
+<h3 id="152-anahtar-hiyerarşisi">15.2 Anahtar Hiyerarşisi<a class="anchor" href="#152-anahtar-hiyerarşisi" aria-label="Bu başlığa bağlantı">#</a></h3>
+<figure class="diagram"><pre class="mermaid">flowchart TB
+    PASS[&quot;Commissioning Passphrase&lt;br/&gt;(insan tarafından seçilen)&quot;] --&gt;|&quot;PBKDF2-AES-CMAC&lt;br/&gt;16384 tur&quot;| PSKC[&quot;PSKc (128 bit)&lt;br/&gt;Commissioner kimlik doğrulaması&quot;]
+    NK[&quot;Network Key (128 bit)&lt;br/&gt;Operational Dataset'te&quot;] --&gt;|&quot;HMAC-SHA256&lt;br/&gt;(Key Sequence, 'Thread')&quot;| DER[&quot;32 baytlık çıktı&quot;]
+    DER --&gt; MLEK[&quot;MLE Key&lt;br/&gt;(ilk 16 bayt)&quot;]
+    DER --&gt; MACK[&quot;MAC Key&lt;br/&gt;(son 16 bayt)&quot;]
+    PSKD[&quot;PSKd — Joiner Credential&lt;br/&gt;(cihaz etiketinde)&quot;] --&gt;|&quot;EC-JPAKE&lt;br/&gt;(DTLS)&quot;| DTLS[&quot;Joiner DTLS oturumu&quot;]
+    DTLS --&gt;|&quot;SHA-256 (anahtar bloğu)&quot;| KEK[&quot;KEK (128 bit)&lt;br/&gt;Joiner Entrust şifreleme&quot;]
+    PSKC --&gt;|&quot;EC-JPAKE&lt;br/&gt;(DTLS)&quot;| BADTLS[&quot;Commissioner ↔ Border Agent&lt;br/&gt;DTLS oturumu&quot;]
+    NK -.-&gt;|&quot;HKDF (1.3+)&quot;| TREL[&quot;TREL anahtarı&quot;]
+</pre></figure>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Anahtar</th>
+<th>Boyut</th>
+<th>Nereden gelir?</th>
+<th>Ne korur?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Network Key</strong></td>
+<td>128 bit</td>
+<td>Ağ kurulurken rastgele üretilir; Operational Dataset ile dağıtılır</td>
+<td>Tüm türetilmiş anahtarların kökü</td>
+</tr>
+<tr>
+<td><strong>MAC Key</strong></td>
+<td>128 bit</td>
+<td>Network Key + Key Sequence</td>
+<td>802.15.4 veri çerçeveleri</td>
+</tr>
+<tr>
+<td><strong>MLE Key</strong></td>
+<td>128 bit</td>
+<td>Network Key + Key Sequence</td>
+<td>MLE mesajları</td>
+</tr>
+<tr>
+<td><strong>PSKc</strong></td>
+<td>128 bit</td>
+<td>Passphrase + Extended PAN ID + Network Name</td>
+<td>Commissioner ↔ Border Agent DTLS</td>
+</tr>
+<tr>
+<td><strong>PSKd</strong></td>
+<td>6–32 karakter</td>
+<td>Cihaz üreticisi (etiket/QR)</td>
+<td>Joiner ↔ Commissioner DTLS</td>
+</tr>
+<tr>
+<td><strong>KEK</strong></td>
+<td>128 bit</td>
+<td>Joiner DTLS oturumu</td>
+<td>Joiner Entrust mesajı (kimlik bilgisi teslimi)</td>
+</tr>
+<tr>
+<td><strong>TREL Key</strong></td>
+<td>128 bit</td>
+<td>Network Key'den HKDF ile</td>
+<td>Thread 1.3 TREL (Wi-Fi/Ethernet üzerinden Thread)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="153-mac-ve-mle-anahtarlarının-türetilmesi">15.3 MAC ve MLE Anahtarlarının Türetilmesi<a class="anchor" href="#153-mac-ve-mle-anahtarlarının-türetilmesi" aria-label="Bu başlığa bağlantı">#</a></h3>
+<pre><code class="language-text">HMAC-SHA256( anahtar = Network Key,
+             veri    = Key Sequence (4 bayt, big-endian) ‖ &quot;Thread&quot; (ASCII: 54 68 72 65 61 64) )
+    → 32 bayt
+         bayt  0–15 : MLE Key
+         bayt 16–31 : MAC Key
+</code></pre>
+<p><strong>Hesaplanmış örnek</strong> (Network Key = <code>00112233445566778899aabbccddeeff</code>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key Sequence</th>
+<th>MLE Key</th>
+<th>MAC Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>5445f4158fd75912175809f8b57a66a4</code></td>
+<td><code>de89c53af382b421e0fde5a9bae3bef0</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>8f4cd1a27d95c07d12db8974bd615c13</code></td>
+<td><code>9be0d1af7bd87350deabcdd07febb9d5</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Bu tasarımın avantajları:</p>
+<ul>
+<li>Network Key hiçbir zaman doğrudan çerçeve şifrelemede kullanılmaz.</li>
+<li>Key Sequence artırıldığında <strong>yeni anahtarlar</strong> hiçbir mesaj gönderilmeden her cihazda yerel olarak hesaplanır.</li>
+<li>MAC ve MLE için ayrı anahtarlar, iki katmanın kriptografik olarak birbirinden ayrılmasını sağlar.</li>
+</ul>
+<h3 id="154-key-sequence-ve-anahtar-rotasyonu">15.4 Key Sequence ve Anahtar Rotasyonu<a class="anchor" href="#154-key-sequence-ve-anahtar-rotasyonu" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li><strong>Key Sequence</strong>: 32 bitlik sayaç. Her cihaz mevcut değeri bilir.</li>
+<li><strong>Key Index</strong> (MAC ve MLE başlıklarında): <code>(Key Sequence mod 128) + 1</code>.</li>
+<li><strong>Key Rotation Time</strong>: Security Policy'deki süre (saat cinsinden; varsayılan <strong>672 saat = 28 gün</strong>). Süre dolunca cihaz Key Sequence'ı <strong>kendiliğinden</strong> bir artırır.</li>
+<li><strong>Key Switch Guard Time</strong>: Bir cihazın, kısa süre içinde birden çok kez anahtar değiştirmesini engelleyen koruma süresi (OpenThread'de rotasyon süresinin yaklaşık %93'ü).</li>
+</ul>
+<p><strong>Geçiş sırasında uyum:</strong> Ağdaki cihazların saatleri tam senkron değildir. Bu yüzden:</p>
+<ul>
+<li>Alıcılar <strong>önceki</strong> (Key Sequence − 1), <strong>mevcut</strong> ve <strong>sonraki</strong> (Key Sequence + 1) anahtarlarla gelen çerçeveleri doğrulayabilir.</li>
+<li>Bir cihaz, <strong>daha yüksek</strong> Key Sequence ile şifrelenmiş ve doğrulaması başarılı bir çerçeve aldığında (koruma süresi izin veriyorsa) kendi Key Sequence'ını o değere çeker.</li>
+<li>MLE mesajları (Key ID Mode 2) Key Sequence'ın <strong>tamamını</strong> taşıdığı için, uzun süre ağdan kopuk kalmış bir cihaz bile ağın anahtar dizisini yakalayabilir.</li>
+</ul>
+<blockquote class="callout callout-important"><p class="callout-title">Önemli</p><p>Anahtar rotasyonu <strong>ileri gizlilik (forward secrecy) sağlamaz</strong>: Network Key'i ele geçiren bir saldırgan tüm geçmiş ve gelecek Key Sequence anahtarlarını hesaplayabilir. Rotasyonun amacı, frame counter'ların tükenmemesini ve aynı anahtarla şifrelenen veri miktarının sınırlanmasını sağlamaktır. Network Key'in sızdığından şüpheleniliyorsa <strong>Network Key'in kendisi</strong> Pending Dataset ile değiştirilmelidir.</p>
+</blockquote>
+<h3 id="155-mac-katmanı-güvenliği-özet">15.5 MAC Katmanı Güvenliği (Özet)<a class="anchor" href="#155-mac-katmanı-güvenliği-özet" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Algoritma</td>
+<td>AES-128-CCM*</td>
+</tr>
+<tr>
+<td>Güvenlik seviyesi</td>
+<td>5 (ENC-MIC-32): şifreleme + 32 bit MIC</td>
+</tr>
+<tr>
+<td>Key ID Mode</td>
+<td>1 (Key Index) — veri çerçeveleri; 0 — KEK ile Joiner Entrust</td>
+</tr>
+<tr>
+<td>Nonce</td>
+<td>Kaynak Extended Address (8) ‖ Frame Counter (4) ‖ Security Level (1)</td>
+</tr>
+<tr>
+<td>Doğrulanan veri</td>
+<td>MAC başlığı (+ Aux Security Header, IE'ler)</td>
+</tr>
+<tr>
+<td>Şifrelenen veri</td>
+<td>MAC yükü</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ayrıntılar: Bölüm 4.9.</p>
+<h3 id="156-mle-güvenliği-özet">15.6 MLE Güvenliği (Özet)<a class="anchor" href="#156-mle-güvenliği-özet" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Algoritma</td>
+<td>AES-128-CCM, 32 bit MIC</td>
+</tr>
+<tr>
+<td>Key ID Mode</td>
+<td>2 (Key Source = Key Sequence, Key Index)</td>
+</tr>
+<tr>
+<td>Frame counter</td>
+<td>MAC sayacından bağımsız <strong>MLE frame counter</strong></td>
+</tr>
+<tr>
+<td>Doğrulanan veri</td>
+<td>IPv6 kaynak + hedef adresleri + Aux Security Header</td>
+</tr>
+<tr>
+<td>Güvenliksiz istisnalar</td>
+<td>Yalnızca Discovery Request/Response (Security Suite 255)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ayrıntılar: Bölüm 9.3.</p>
+<h3 id="157-frame-counterlar-ve-tekrar-koruması">15.7 Frame Counter'lar ve Tekrar Koruması<a class="anchor" href="#157-frame-counterlar-ve-tekrar-koruması" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Konu</th>
+<th>Ayrıntı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sayaçlar</td>
+<td>Her cihazın bir <strong>MAC</strong> ve bir <strong>MLE</strong> frame counter'ı vardır (32 bit)</td>
+</tr>
+<tr>
+<td>Gönderim</td>
+<td>Her güvenli mesajda sayaç 1 artar; aynı (anahtar, nonce) çifti asla tekrar kullanılmaz</td>
+</tr>
+<tr>
+<td>Alım</td>
+<td>Her komşu için son kabul edilen sayaç tutulur; daha küçük/eşit sayaçlı mesajlar reddedilir</td>
+</tr>
+<tr>
+<td>Senkronizasyon</td>
+<td>Komşuluk kurulurken (Parent/Child ID, Link Request/Accept) <strong>Link-layer Frame Counter</strong> ve <strong>MLE Frame Counter</strong> TLV'leri değiş tokuş edilir</td>
+</tr>
+<tr>
+<td>Anahtar değişimi</td>
+<td>Yeni Key Sequence ile sayaçlar sıfırlanabilir (anahtar değiştiği için nonce benzersizliği korunur)</td>
+</tr>
+<tr>
+<td>Kalıcılık</td>
+<td>Sayaçlar kalıcı belleğe ileriye doğru bir payla yazılır; yeniden başlatmada geri gitmez</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout callout-caution"><p class="callout-title">Dikkat</p><p>Bir Border Router'ı <strong>eski bir yedekten</strong> geri yüklemek (ör. ayar dosyası veya disk imajı ile) frame counter'ların geriye gitmesine neden olabilir. Komşular bu cihazın çerçevelerini "tekrar saldırısı" sanıp reddeder ve cihaz ağla haberleşemez. Bu durumda frame counter'ın ileri alınması veya Key Sequence'ın artırılması gerekir. Yedekleme/taşıma araçları bu yüzden genellikle frame counter'ı güvenli bir payla ileri alır.</p>
+</blockquote>
+<h3 id="158-devreye-alma-kimlik-bilgileri">15.8 Devreye Alma Kimlik Bilgileri<a class="anchor" href="#158-devreye-alma-kimlik-bilgileri" aria-label="Bu başlığa bağlantı">#</a></h3>
+<h4 id="pskc-pre-shared-key-for-the-commissioner">PSKc (Pre-Shared Key for the Commissioner)<a class="anchor" href="#pskc-pre-shared-key-for-the-commissioner" aria-label="Bu başlığa bağlantı">#</a></h4>
+<p>Commissioner'ın Border Agent'a kendini doğrulamak için kullandığı 128 bitlik anahtar. İnsanların hatırlayabileceği bir <strong>passphrase</strong>'ten türetilir:</p>
+<pre><code class="language-text">PSKc = PBKDF2( PRF        = AES-CMAC-PRF-128,
+               parola     = Commissioning Passphrase (6–255 karakter, UTF-8),
+               tuz (salt) = &quot;Thread&quot; ‖ Extended PAN ID (8 bayt) ‖ Network Name,
+               tur sayısı = 16384,
+               uzunluk    = 128 bit )
+</code></pre>
+<p><strong>Doğrulanmış test vektörü:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Girdi</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Passphrase</td>
+<td><code>12SECRETPASSWORD34</code></td>
+</tr>
+<tr>
+<td>Extended PAN ID</td>
+<td><code>0001020304050607</code></td>
+</tr>
+<tr>
+<td>Network Name</td>
+<td><code>Test Network</code></td>
+</tr>
+<tr>
+<td><strong>PSKc</strong></td>
+<td><strong><code>c3f59368445a1b6106be420a706d4cc9</code></strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Tuz olarak ağa özgü değerlerin kullanılması, aynı passphrase'in farklı ağlarda farklı PSKc üretmesini ve önceden hesaplanmış sözlük saldırılarının işe yaramamasını sağlar. 16384 tur, kaba kuvvet denemelerini yavaşlatır.</p>
+<h4 id="pskd-joining-device-credential">PSKd (Joining Device Credential)<a class="anchor" href="#pskd-joining-device-credential" aria-label="Bu başlığa bağlantı">#</a></h4>
+<p>Yeni cihazın (Joiner) kimlik bilgisidir; genellikle ürün etiketinde veya QR kodda bulunur.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kural</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uzunluk</td>
+<td>6–32 karakter</td>
+</tr>
+<tr>
+<td>Karakter kümesi</td>
+<td>Büyük harf ve rakam (<code>0–9</code>, <code>A–Z</code>)</td>
+</tr>
+<tr>
+<td>Hariç tutulan harfler</td>
+<td><code>I</code>, <code>O</code>, <code>Q</code>, <code>Z</code> (1, 0 ve 2 ile karışmaması için)</td>
+</tr>
+<tr>
+<td>Örnek</td>
+<td><code>J01NME</code>, <code>THREAD8TEST</code> gibi</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="ec-jpake-ve-dtls">EC-JPAKE ve DTLS<a class="anchor" href="#ec-jpake-ve-dtls" aria-label="Bu başlığa bağlantı">#</a></h4>
+<p>Hem commissioner ↔ Border Agent hem de joiner ↔ commissioner oturumları <strong>DTLS 1.2</strong> üzerinde <strong>EC-JPAKE</strong> anahtar değişimi kullanır:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Şifre takımı</td>
+<td><code>TLS_ECJPAKE_WITH_AES_128_CCM_8</code> (<code>0xC0FF</code>)</td>
+</tr>
+<tr>
+<td>Eğri</td>
+<td>NIST P-256 (secp256r1)</td>
+</tr>
+<tr>
+<td>Kimlik doğrulama</td>
+<td>Ortak parola (PSKc veya PSKd); sertifika gerekmez</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Neden PAKE?</strong> Parola doğrulamalı anahtar değişimi (Password-Authenticated Key Exchange), kısa ve düşük entropili bir parolayla (6 karakterlik PSKd gibi) bile güçlü bir oturum anahtarı kurar. Pasif dinleyici, el sıkışmayı kaydetse bile parolayı çevrimdışı kaba kuvvetle deneyemez; her tahmin için aktif bir el sıkışma yapması gerekir.</p>
+<h4 id="kek-key-encryption-key">KEK (Key Encryption Key)<a class="anchor" href="#kek-key-encryption-key" aria-label="Bu başlığa bağlantı">#</a></h4>
+<p>Joiner DTLS el sıkışması tamamlandığında her iki taraf da oturumun anahtar malzemesinden (key block) SHA-256 ile 128 bitlik <strong>KEK</strong>'i türetir. Commissioner bu KEK'i Joiner Router'a iletir; Joiner Router, ağ kimlik bilgilerini içeren <strong>Joiner Entrust</strong> mesajını MAC katmanında <strong>KEK ile (Key ID Mode 0)</strong> şifreleyerek Joiner'a gönderir (Bölüm 16).</p>
+<h3 id="159-security-policy-tlv">15.9 Security Policy TLV<a class="anchor" href="#159-security-policy-tlv" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Operational Dataset'in parçasıdır; ağın güvenlik davranışını belirler.</p>
+<pre><code class="language-text">0C 04 02A0 F7 F8
+│  │  │    │  └── Bayrak baytı 2
+│  │  │    └───── Bayrak baytı 1
+│  │  └────────── Key Rotation Time = 0x02A0 = 672 saat
+│  └───────────── Uzunluk = 4
+└──────────────── Tür = 12 (Security Policy)
+</code></pre>
+<p><strong>Bayrak baytı 1:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>Ad</th>
+<th>Anlamı (1 olduğunda)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td><strong>O</strong> — Obtain Network Key</td>
+<td>Harici commissioner Network Key'i okuyabilir</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>N</strong> — Native Commissioning</td>
+<td>Ağ içi (native) commissioner'a izin verilir</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>R</strong> — Routers</td>
+<td>Cihazlar router olabilir (0 ise ağ yalnızca mevcut router'larla çalışır)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>C</strong> — External Commissioning</td>
+<td>Harici commissioner'a (Border Agent üzerinden) izin verilir</td>
+</tr>
+<tr>
+<td>3</td>
+<td>(B)</td>
+<td>Thread 1.1'de "beacons enabled"; 1.2'den itibaren ayrılmış</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>CCM</strong></td>
+<td>Ticari devreye alma (Commercial Commissioning) — <strong>ters mantık</strong>: 0 = etkin</td>
+</tr>
+<tr>
+<td>1</td>
+<td><strong>AE</strong></td>
+<td>Autonomous Enrollment — ters mantık</td>
+</tr>
+<tr>
+<td>0</td>
+<td><strong>NP</strong></td>
+<td>Network Key Provisioning — ters mantık</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Bayrak baytı 2 (Thread 1.2+):</strong> Non-CCM Routers (ters mantık), ayrılmış bitler ve <strong>VR</strong> (Version Threshold for Routing, 3 bit): Router olabilmek için gereken asgari Thread sürümü.</p>
+<p>Thread 1.2 ile eklenen bitlerin "0 = etkin" şeklinde ters kodlanmasının sebebi geriye uyumluluktur: Thread 1.1 cihazları ayrılmış bitleri 1 olarak yazar; böylece 1.1 ağlarında yeni özellikler varsayılan olarak "kapalı" görünür.</p>
+<p>Varsayılan <code>F7 F8</code> değeri: O, N, R, C açık; CCM ile ilgili özellikler kapalı; sürüm eşiği 0. OpenThread bunu <code>672 onrc 0</code> olarak gösterir.</p>
+<h3 id="1510-tehdit-modeli">15.10 Tehdit Modeli<a class="anchor" href="#1510-tehdit-modeli" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tehdit</th>
+<th>Thread'in koruması</th>
+<th>Kalan risk / not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pasif dinleme</td>
+<td>AES-CCM* şifreleme</td>
+<td>Şifreleme olmayan Discovery mesajları ağ adını ve Extended PAN ID'yi açığa çıkarır</td>
+</tr>
+<tr>
+<td>Çerçeve sahteciliği / değiştirme</td>
+<td>MIC</td>
+<td>Ağ anahtarı olan bir cihaz geçerli çerçeve üretebilir</td>
+</tr>
+<tr>
+<td>Tekrar saldırısı</td>
+<td>Frame counter, Challenge/Response</td>
+<td>Yedekten geri yükleme hataları (bkz. 15.7)</td>
+</tr>
+<tr>
+<td>Yetkisiz cihazın katılması</td>
+<td>PSKd + EC-JPAKE veya bant dışı devreye alma</td>
+<td>Zayıf/varsayılan PSKd; uzun süre açık bırakılan joiner penceresi</td>
+</tr>
+<tr>
+<td>Sahte commissioner</td>
+<td>PSKc + EC-JPAKE; aynı anda tek commissioner</td>
+<td>Zayıf passphrase</td>
+</tr>
+<tr>
+<td>Network Key sızması</td>
+<td>Anahtar rotasyonu sınırlı koruma sağlar</td>
+<td>Tüm ağ trafiği çözülebilir; Network Key değiştirilmelidir</td>
+</tr>
+<tr>
+<td>Ele geçirilmiş ağ cihazı</td>
+<td>— (ağ içi herkes güvenilir)</td>
+<td>Uygulama katmanı uçtan uca güvenlik (Matter CASE) şart</td>
+</tr>
+<tr>
+<td>Radyo karıştırma (jamming)</td>
+<td>—</td>
+<td>Kanal değiştirme sınırlı yardımcı olur; fiziksel tedbir gerekir</td>
+</tr>
+<tr>
+<td>Kaynak tüketme (DoS)</td>
+<td>Hız sınırlama, uygulama düzeyi korumalar</td>
+<td>Güvenliksiz Discovery Request seli, sahte Parent Request'ler</td>
+</tr>
+<tr>
+<td>Cihazdan fiziksel anahtar çıkarma</td>
+<td>Platform güvenliği (güvenli depolama, debug kilidi)</td>
+<td>Donanım tasarımına bağlıdır</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="1511-platform-ve-donanım-güvenliği">15.11 Platform ve Donanım Güvenliği<a class="anchor" href="#1511-platform-ve-donanım-güvenliği" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Protokol güvenliği, anahtarların cihazda nasıl saklandığı kadar güçlüdür:</p>
+<ul>
+<li><strong>Güvenli anahtar depolama</strong>: Network Key ve PSKc gibi değerler, mümkünse düz metin flash yerine güvenli depolama (ör. PSA Internal Trusted Storage, güvenli eleman veya TrustZone) içinde tutulmalı ve <strong>anahtar referanslarıyla</strong> kullanılmalıdır. OpenThread, platform anahtar referanslarını destekler.</li>
+<li><strong>Güvenli önyükleme (secure boot)</strong> ve imzalı yazılım güncellemeleri (OTA).</li>
+<li><strong>Hata ayıklama arayüzlerinin</strong> (SWD/JTAG) üretimde kilitlenmesi.</li>
+<li><strong>Rastgele sayı üreteci</strong>: Anahtar üretimi ve EC-JPAKE için gerçek donanım RNG'si (TRNG) şarttır.</li>
+</ul>
+<h3 id="1512-en-i̇yi-uygulamalar">15.12 En İyi Uygulamalar<a class="anchor" href="#1512-en-i̇yi-uygulamalar" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ol>
+<li>Her ağ için <strong>rastgele</strong> Network Key, Extended PAN ID ve PSKc kullanın (<code>dataset init new</code>); asla örnek/varsayılan değerleri üretimde kullanmayın.</li>
+<li>Commissioning passphrase'ini güçlü seçin; PSKc'yi gizli tutun.</li>
+<li>Cihaz başına <strong>benzersiz PSKd</strong> kullanın; tüm cihazlarda aynı PSKd kullanmayın.</li>
+<li>Joiner izin penceresini (commissioner <code>joiner add</code> süresi) <strong>kısa</strong> tutun ve mümkünse joiner'ı EUI-64/Joiner ID ile sınırlandırın (joker <code>*</code> yerine).</li>
+<li>Operational Dataset'i (özellikle Network Key) yalnızca güvenli kanallarla paylaşın; log dosyalarına yazdırmayın.</li>
+<li>Uygulama katmanında uçtan uca güvenlik kullanın (Matter zaten zorunlu kılar).</li>
+<li>Network Key sızıntısı şüphesinde Pending Dataset ile yeni Network Key'e geçin.</li>
+<li>Border Router yedeklerini geri yüklerken frame counter ve Key Sequence durumuna dikkat edin.</li>
+</ol>
+<h3 id="1513-bölüm-özeti">15.13 Bölüm Özeti<a class="anchor" href="#1513-bölüm-özeti" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>Thread, tek bir Network Key'den HMAC-SHA256 ile türetilen MAC ve MLE anahtarlarıyla hop-by-hop güvenlik sağlar.</li>
+<li>Key Sequence periyodik olarak artar (varsayılan 28 gün); cihazlar önceki/sonraki anahtarları da kabul ederek uyumlu geçiş yapar.</li>
+<li>PSKc (PBKDF2-AES-CMAC, 16384 tur) commissioner'ı, PSKd joiner'ı EC-JPAKE/DTLS ile doğrular; KEK kimlik bilgilerinin teslimini korur.</li>
+<li>Ağdaki her cihaz güvenilir kabul edilir; uçtan uca güvenlik üst katmanın (Matter) sorumluluğudur.</li>
+<li>Güvenli anahtar depolama ve doğru yedekleme pratikleri protokol güvenliği kadar önemlidir.</li>
+</ul>
+<h2 id="16-devreye-alma-commissioning-ve-meshcop">16. Devreye Alma (Commissioning) ve MeshCoP<a class="anchor" href="#16-devreye-alma-commissioning-ve-meshcop" aria-label="Bu başlığa bağlantı">#</a></h2>
+<h3 id="161-kavramlar">16.1 Kavramlar<a class="anchor" href="#161-kavramlar" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Devreye alma (commissioning)</strong>, yeni bir cihazın Thread ağına <strong>güvenli şekilde</strong> katılması, yani ağın kimlik bilgilerini (Network Key, Extended PAN ID, kanal vb. — Operational Dataset) yetkisiz kişilere sızdırmadan alması sürecidir.</p>
+<p>Thread, bunun için <strong>MeshCoP (Mesh Commissioning Protocol)</strong> protokolünü tanımlar. Günümüzde iki ana yol vardır:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Yöntem</th>
+<th>Nasıl?</th>
+<th>Nerede kullanılır?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MeshCoP (Thread-native)</strong></td>
+<td>Joiner, radyo üzerinden DTLS + EC-JPAKE (PSKd) ile commissioner'a kendini doğrular; kimlik bilgilerini Joiner Entrust ile alır</td>
+<td>Saf Thread ürünleri, geliştirme, OpenThread CLI</td>
+</tr>
+<tr>
+<td><strong>Bant dışı (out-of-band)</strong></td>
+<td>Kimlik bilgileri (Operational Dataset) başka bir güvenli kanalla verilir; cihaz doğrudan MLE ile bağlanır</td>
+<td><strong>Matter</strong> (BLE + PASE), TCAT (Thread 1.4), üretimde önceden yükleme</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="162-meshcop-rolleri">16.2 MeshCoP Rolleri<a class="anchor" href="#162-meshcop-rolleri" aria-label="Bu başlığa bağlantı">#</a></h3>
+<figure class="diagram"><pre class="mermaid">flowchart LR
+    C[&quot;Commissioner&lt;br/&gt;(telefon uygulaması)&quot;] &lt;--&gt;|&quot;DTLS (PSKc)&lt;br/&gt;Wi-Fi / IP&quot;| BA[&quot;Border Agent&lt;br/&gt;(Border Router üzerinde)&quot;]
+    BA &lt;--&gt;|&quot;TMF / Thread mesh&quot;| L[&quot;Leader&quot;]
+    BA &lt;--&gt;|&quot;TMF / Thread mesh&lt;br/&gt;RLY_RX / RLY_TX&quot;| JR[&quot;Joiner Router&quot;]
+    JR &lt;--&gt;|&quot;802.15.4, MAC güvenliksiz&lt;br/&gt;yalnızca Joiner portu&quot;| J[&quot;Joiner&lt;br/&gt;(yeni cihaz)&quot;]
+</pre></figure>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Görev</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Commissioner</strong></td>
+<td>Katılım isteklerini doğrular ve yetkilendirir; ağda aynı anda <strong>bir</strong> aktif commissioner olabilir. <strong>Harici</strong> (ağ dışında, ör. telefon) veya <strong>native</strong> (ağ içinde) olabilir.</td>
+</tr>
+<tr>
+<td><strong>Border Agent</strong></td>
+<td>Harici commissioner ile Thread ağı arasında güvenli köprü; DTLS sunucusu; MeshCoP mesajlarını Leader'a ve Joiner Router'lara aktarır.</td>
+</tr>
+<tr>
+<td><strong>Leader</strong></td>
+<td>Commissioner oturumunu kabul eder/sonlandırır; Commissioning Data'yı tutar.</td>
+</tr>
+<tr>
+<td><strong>Joiner Router</strong></td>
+<td>Joiner'ın komşusu olan router; Joiner'ın güvenliksiz DTLS paketlerini TMF içinde paketleyerek commissioner'a aktarır.</td>
+</tr>
+<tr>
+<td><strong>Joiner</strong></td>
+<td>Ağa katılmak isteyen cihaz; PSKd'ye sahiptir.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="163-aşama-1--commissionerın-aktif-olması-petition">16.3 Aşama 1 — Commissioner'ın Aktif Olması (Petition)<a class="anchor" href="#163-aşama-1--commissionerın-aktif-olması-petition" aria-label="Bu başlığa bağlantı">#</a></h3>
+<figure class="diagram"><pre class="mermaid">sequenceDiagram
+    participant C as Harici Commissioner
+    participant BA as Border Agent
+    participant L as Leader
+    C-&gt;&gt;BA: mDNS ile _meshcop._udp servisini keşfet (ağ adı, Ext PAN ID, port)
+    C-&gt;&gt;BA: DTLS el sıkışması (EC-JPAKE, ortak parola = PSKc)
+    BA--&gt;&gt;C: DTLS oturumu kuruldu
+    C-&gt;&gt;BA: COMM_PET.req (c/cp) — Commissioner ID
+    BA-&gt;&gt;L: LEAD_PET.req (c/lp) — Commissioner ID
+    L--&gt;&gt;BA: LEAD_PET.rsp — State = Accept, Commissioner Session ID
+    BA--&gt;&gt;C: COMM_PET.rsp — State = Accept, Session ID
+    Note over L: Network Data'ya Commissioning Data eklenir&lt;br/&gt;(Border Agent Locator, Session ID)
+    C-&gt;&gt;BA: MGMT_COMMISSIONER_SET (c/cs) — Steering Data, Joiner UDP Port
+    BA-&gt;&gt;L: aktarılır
+    L--&gt;&gt;C: State = Accept (Border Agent üzerinden)
+    loop Oturum boyunca periyodik
+        C-&gt;&gt;BA: COMM_KA.req (c/ca)
+        BA-&gt;&gt;L: LEAD_KA.req (c/la)
+        L--&gt;&gt;BA: LEAD_KA.rsp
+        BA--&gt;&gt;C: COMM_KA.rsp
+    end
+</pre></figure>
+<ul>
+<li>Zaten aktif bir commissioner varsa Leader yeni petition'ı <strong>reddeder</strong>.</li>
+<li>Commissioner keep-alive göndermeyi bırakırsa (yaklaşık 50 saniyelik zaman aşımı) Leader oturumu kapatır ve Commissioning Data'yı Network Data'dan kaldırır.</li>
+<li>Commissioner kapanırken <code>State = Reject</code> içeren bir keep-alive ile oturumu kendisi de sonlandırabilir.</li>
+</ul>
+<h3 id="164-joiner-id-ve-steering-data">16.4 Joiner ID ve Steering Data<a class="anchor" href="#164-joiner-id-ve-steering-data" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Joiner ID</strong>, Joiner'ın fabrika EUI-64'ünden türetilen 64 bitlik kimliktir:</p>
+<pre><code class="language-text">Joiner ID = SHA-256(EUI-64)'ün ilk 8 baytı, ilk baytta 0x02 biti (U/L) 1 yapılarak
+
+Örnek: EUI-64 = 00 11 22 33 44 55 66 77
+       SHA-256 = d1a5f998fa6ed82d…  →  Joiner ID = d3a5f998fa6ed82d
+</code></pre>
+<p>Joiner, katılım süresince MAC <strong>Extended Address</strong> olarak bu Joiner ID'yi kullanır. Böylece commissioner ve Joiner Router, Joiner'ı EUI-64'ünü açığa çıkarmadan tanır.</p>
+<p><strong>Steering Data</strong>, commissioner'ın "şu cihazların katılmasına izin veriyorum" bilgisini ağın tamamına küçük bir alanla yaymasını sağlayan bir <strong>Bloom filtresi</strong>dir:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uzunluk</td>
+<td>1–16 bayt</td>
+</tr>
+<tr>
+<td>Hash fonksiyonları</td>
+<td>Joiner ID üzerinde <strong>CRC16-CCITT</strong> ve <strong>CRC16-ANSI</strong></td>
+</tr>
+<tr>
+<td>Bit indeksleri</td>
+<td>Her CRC değeri mod (uzunluk × 8) → ilgili bit 1 yapılır</td>
+</tr>
+<tr>
+<td>Tüm bitler 1</td>
+<td><strong>Her</strong> joiner kabul edilir (joker, <code>*</code>)</td>
+</tr>
+<tr>
+<td>Tüm bitler 0</td>
+<td>Hiçbir joiner kabul edilmez</td>
+</tr>
+</tbody>
+</table></div>
+<p>Joiner, Discovery Response'taki Steering Data'da kendi Joiner ID'sinin iki bitinin de 1 olup olmadığına bakar. İkisi de 1 ise "bu ağ beni kabul ediyor olabilir" der (Bloom filtresi olduğundan yanlış pozitif mümkündür; asıl doğrulama DTLS'te PSKd ile yapılır).</p>
+<p>Thread 1.2 ile Joiner ID'ye alternatif olarak, uzunluğu ayarlanabilir bir <strong>Joiner Discerner</strong> değeri de kullanılabilir (ör. üretim hattında seri numarası tabanlı tanımlama için).</p>
+<h3 id="165-aşama-2--joinerın-ağı-bulması">16.5 Aşama 2 — Joiner'ın Ağı Bulması<a class="anchor" href="#165-aşama-2--joinerın-ağı-bulması" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ol>
+<li>Joiner tüm kanallarda (veya yapılandırılmış kanal maskesinde) <strong>MLE Discovery Request</strong> gönderir (Joiner bayrağı = 1).</li>
+<li>Devreye almaya açık ağların router'ları <strong>Discovery Response</strong> ile cevap verir: Extended PAN ID, Network Name, Steering Data, Joiner UDP Port, Commissioner UDP Port, sürüm, Native Commissioner bayrağı.</li>
+<li>Joiner, Steering Data'sı kendisini kapsayan ağları sıralar (sinyal kalitesine göre) ve bir <strong>Joiner Router</strong> seçer.</li>
+</ol>
+<h3 id="166-aşama-3--dtls-finalize-ve-entrust">16.6 Aşama 3 — DTLS, Finalize ve Entrust<a class="anchor" href="#166-aşama-3--dtls-finalize-ve-entrust" aria-label="Bu başlığa bağlantı">#</a></h3>
+<figure class="diagram"><pre class="mermaid">sequenceDiagram
+    participant J as Joiner
+    participant JR as Joiner Router
+    participant BA as Border Agent
+    participant C as Commissioner
+    J-&gt;&gt;JR: DTLS ClientHello (UDP → Joiner UDP Port, MAC güvenliksiz)
+    JR-&gt;&gt;BA: RLY_RX.ntf (c/rx): Joiner UDP Port, Joiner IID, Joiner Router Locator, Joiner DTLS Encapsulation
+    BA-&gt;&gt;C: RLY_RX.ntf (commissioner DTLS oturumu içinde)
+    C-&gt;&gt;BA: RLY_TX.ntf (c/tx): DTLS kayıtları (ServerHello, EC-JPAKE)
+    BA-&gt;&gt;JR: RLY_TX.ntf
+    JR-&gt;&gt;J: DTLS kayıtları
+    Note over J,C: EC-JPAKE el sıkışması, ortak parola = PSKd&lt;br/&gt;Tüm DTLS kayıtları bu röle yolundan gider
+    J-&gt;&gt;C: JOIN_FIN.req (c/jf, DTLS içinde): Vendor Name, Model, SW Version, Stack Version, Provisioning URL
+    C--&gt;&gt;J: JOIN_FIN.rsp: State = Accept
+    Note over J,C: Her iki taraf DTLS anahtar malzemesinden KEK türetir
+    C-&gt;&gt;BA: RLY_TX.ntf + Joiner Router KEK TLV
+    BA-&gt;&gt;JR: RLY_TX.ntf + KEK
+    JR-&gt;&gt;J: JOIN_ENT.ntf (c/je), MAC'te KEK ile şifreli (Key ID Mode 0)
+    Note over J: Network Key, Key Sequence, Ext PAN ID, Network Name,&lt;br/&gt;Mesh-Local Prefix, Channel Mask, PSKc, Security Policy, Active Timestamp
+    J--&gt;&gt;JR: JOIN_ENT.rsp
+    Note over J: DTLS kapatılır. Joiner artık ağın kimlik bilgilerine sahip
+    J-&gt;&gt;JR: MLE Parent Request (normal attach, Bölüm 9.7)
+</pre></figure>
+<p><strong>Önemli ayrıntılar:</strong></p>
+<ul>
+<li>Joiner henüz ağ anahtarına sahip olmadığı için Joiner ile Joiner Router arasındaki çerçeveler <strong>MAC'te güvenliksizdir</strong>. Joiner Router, güvenliksiz çerçeveleri yalnızca <strong>Joiner UDP portuna</strong> giden/gelen trafik için kabul eder; diğer her şeyi reddeder.</li>
+<li>DTLS kayıtları Joiner Router ile commissioner arasında TMF mesajlarının içinde (<strong>Joiner DTLS Encapsulation TLV</strong>) taşınır; Joiner Router DTLS'i çözemez.</li>
+<li><strong>JOIN_FIN</strong> mesajında commissioner, Joiner'ın üretici/model/yazılım bilgisine bakarak kabul veya red kararı verebilir. Provisioning URL, uygulama düzeyinde ek kurulum adresini taşıyabilir.</li>
+<li><strong>JOIN_ENT</strong> (Joiner Entrust) mesajı, ağın kimlik bilgilerini içerir ve <strong>KEK</strong> ile MAC seviyesinde şifrelenir. Böylece kimlik bilgileri havada düz metin olarak hiç görünmez.</li>
+</ul>
+<h3 id="167-native-commissioning-ve-on-mesh-commissioner">16.7 Native Commissioning ve On-Mesh Commissioner<a class="anchor" href="#167-native-commissioning-ve-on-mesh-commissioner" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li><strong>On-mesh commissioner</strong>: Commissioner'ın kendisi Thread ağındaki bir cihazdır (ör. OpenThread CLI ile <code>commissioner start</code>). Border Agent gerekmez; Leader'a doğrudan petition yapar.</li>
+<li><strong>Native commissioning</strong>: Security Policy'deki N bayrağı ile kontrol edilir; ağ içi bir commissioner'ın PSKc ile kimlik doğrulamasına izin verir.</li>
+</ul>
+<h3 id="168-matter-ile-devreye-alma-bant-dışı">16.8 Matter ile Devreye Alma (Bant Dışı)<a class="anchor" href="#168-matter-ile-devreye-alma-bant-dışı" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Matter ekosistemlerinde Thread cihazları genellikle MeshCoP joiner akışını <strong>kullanmaz</strong>. Bunun yerine:</p>
+<figure class="diagram"><pre class="mermaid">sequenceDiagram
+    participant U as Kullanıcı / Telefon (Matter Commissioner)
+    participant BR as Border Router
+    participant D as Yeni Matter Cihazı
+    U-&gt;&gt;D: QR kodu okut (discriminator, setup passcode)
+    U-&gt;&gt;D: BLE ile bağlan, PASE (SPAKE2+, setup passcode)
+    U-&gt;&gt;D: Cihaz doğrulama (DAC/PAI sertifikaları), NOC yükleme
+    U-&gt;&gt;BR: Thread kimlik bilgilerini al (platform API / yerel depo)
+    U-&gt;&gt;D: Network Commissioning: AddOrUpdateThreadNetwork(Operational Dataset TLV'leri)
+    U-&gt;&gt;D: ConnectNetwork(Extended PAN ID)
+    D-&gt;&gt;BR: MLE Parent Request … Child ID Response (doğrudan attach)
+    D-&gt;&gt;BR: SRP ile servis kaydı (_matter._tcp)
+    U-&gt;&gt;D: CASE oturumu (IPv6 üzerinden), CommissioningComplete
+</pre></figure>
+<ul>
+<li>Güvenli kanal <strong>BLE üzerindeki PASE</strong> oturumudur; Thread Operational Dataset'i bu şifreli oturumla cihaza verilir.</li>
+<li>Cihaz, dataset'i aldıktan sonra doğrudan MLE attach yapar; Joiner/Commissioner/Joiner Router rolleri devreye girmez.</li>
+<li>Bu yöntemin ön koşulu, Matter commissioner'ın (telefon/hub) Thread ağının dataset'ine sahip olmasıdır. Ekosistemler bunu kendi Border Router'larından ve işletim sistemi API'lerinden (kimlik bilgisi paylaşımı) sağlar. Ayrıntılar Bölüm 23.</li>
+</ul>
+<h3 id="169-thread-14-tcat">16.9 Thread 1.4: TCAT<a class="anchor" href="#169-thread-14-tcat" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>TCAT (Thread Commissioning over Authenticated TLS)</strong>, Thread 1.4 ile tanımlanan, cihazı radyo dışı bir taşıyıcı (tipik olarak <strong>BLE</strong>) üzerinden <strong>sertifika tabanlı TLS</strong> ile devreye alma yöntemidir:</p>
+<ul>
+<li>Cihazda bir <strong>TCAT Agent</strong>, yönetici tarafında bir <strong>TCAT Commander</strong> bulunur.</li>
+<li>Kimlik doğrulama X.509 sertifikalarıyla yapılır; yetkilendirme sertifikadaki izinlere göre belirlenir.</li>
+<li>Commander, cihaza dataset yükleme, ağa katılma/ayrılma, teşhis bilgisi okuma gibi komutlar gönderebilir.</li>
+<li>Matter kullanmayan profesyonel/ticari Thread ürünleri için standart bir bant dışı devreye alma yolu sağlar.</li>
+</ul>
+<h3 id="1610-ekosistemler-arası-kimlik-paylaşımı-ve-epskc">16.10 Ekosistemler Arası Kimlik Paylaşımı ve ePSKc<a class="anchor" href="#1610-ekosistemler-arası-kimlik-paylaşımı-ve-epskc" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Bir evde farklı üreticilerin Border Router'ları varsa, hepsinin <strong>aynı Thread ağını</strong> kullanması idealdir. Bunun için:</p>
+<ul>
+<li><strong>İşletim sistemi API'leri</strong>: Mobil platformlar, uygulamaların "tercih edilen" Thread ağının kimlik bilgilerini güvenli şekilde saklayıp paylaşmasına izin veren API'ler sunar (ör. Apple'ın ThreadNetwork çerçevesi, Google Play services Thread Network API'si). Bir ekosistemin uygulaması, kullanıcı izniyle diğer ekosistemin ağına katılmak için bu bilgileri kullanabilir.</li>
+<li><strong>ePSKc (Ephemeral PSKc, Thread 1.4)</strong>: Border Agent, kullanıcı istediğinde <strong>kısa ömürlü</strong> bir PSKc (ekranda gösterilen sayısal bir kod) üretir. Başka bir ekosistemin commissioner'ı bu geçici kodla Border Agent'a bağlanıp (ayrı bir mDNS servisi üzerinden, <code>_meshcop-e._udp</code>) ağın kimlik bilgilerini alabilir. Kod belirli bir süre sonra veya kullanımdan sonra geçersiz olur; kalıcı PSKc açığa çıkmaz.</li>
+</ul>
+<h3 id="1611-openthread-cli-ile-örnek-devreye-alma">16.11 OpenThread CLI ile Örnek Devreye Alma<a class="anchor" href="#1611-openthread-cli-ile-örnek-devreye-alma" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Commissioner tarafı (ağdaki bir cihaz):</strong></p>
+<pre><code class="language-text">&gt; commissioner start
+Commissioner: petitioning
+Commissioner: active
+Done
+&gt; commissioner joiner add d3a5f998fa6ed82d J01NME 120
+Done
+</code></pre>
+<p>(<code>joiner add</code> için Joiner ID yerine EUI-64 veya tüm cihazlar için <code>*</code> de verilebilir; son parametre saniye cinsinden izin süresidir.)</p>
+<p><strong>Joiner tarafı (yeni cihaz):</strong></p>
+<pre><code class="language-text">&gt; ifconfig up
+Done
+&gt; joiner start J01NME
+Done
+Join success
+&gt; thread start
+Done
+&gt; state
+child
+</code></pre>
+<h3 id="1612-bölüm-özeti">16.12 Bölüm Özeti<a class="anchor" href="#1612-bölüm-özeti" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>MeshCoP; Commissioner, Border Agent, Leader, Joiner Router ve Joiner rollerinden oluşur.</li>
+<li>Harici commissioner PSKc ile Border Agent'a DTLS/EC-JPAKE bağlanır ve Leader'dan oturum alır.</li>
+<li>Joiner, Discovery ile ağı bulur; Steering Data (Bloom filtresi) izin verilen joiner'ları gösterir.</li>
+<li>Joiner ↔ Commissioner DTLS'i (PSKd) Joiner Router ve Border Agent üzerinden rölelenir; kimlik bilgileri KEK ile şifreli JOIN_ENT ile teslim edilir.</li>
+<li>Matter, BLE + PASE ile bant dışı devreye alma yapar; Thread 1.4 TCAT ve ePSKc yeni standart yollar ekler.</li>
+</ul>
+<h2 id="17-operational-dataset">17. Operational Dataset<a class="anchor" href="#17-operational-dataset" aria-label="Bu başlığa bağlantı">#</a></h2>
+<h3 id="171-kavram">17.1 Kavram<a class="anchor" href="#171-kavram" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Operational Dataset</strong>, bir Thread ağının tüm kimlik ve çalışma parametrelerini içeren TLV kümesidir. Bir cihazın ağa bağlanabilmesi için bu dataset'e sahip olması gerekir; bu yüzden pratikte "Thread ağının kimlik bilgileri" (credentials) dendiğinde kastedilen budur.</p>
+<p>İki tür dataset vardır:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Active Operational Dataset</strong></td>
+<td>Ağın <strong>şu anda</strong> kullandığı parametreler</td>
+</tr>
+<tr>
+<td><strong>Pending Operational Dataset</strong></td>
+<td><strong>Gelecekte</strong> (bir gecikme süresi sonunda) geçerli olacak parametreler; ağ genelinde koordineli değişiklik için</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="172-active-dataset-bileşenleri">17.2 Active Dataset Bileşenleri<a class="anchor" href="#172-active-dataset-bileşenleri" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>MeshCoP TLV türü</th>
+<th>Bileşen</th>
+<th>Boyut</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>14</td>
+<td><strong>Active Timestamp</strong></td>
+<td>8</td>
+<td>Dataset sürümü: 48 bit saniye + 15 bit "tick" (1/32768 s) + 1 bit U (authoritative)</td>
+</tr>
+<tr>
+<td>0</td>
+<td><strong>Channel</strong></td>
+<td>3</td>
+<td>Kanal sayfası (1) + kanal (2)</td>
+</tr>
+<tr>
+<td>53</td>
+<td><strong>Channel Mask</strong></td>
+<td>değişken</td>
+<td>Ağın kullanabileceği kanallar (sayfa + maske)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Extended PAN ID</strong></td>
+<td>8</td>
+<td>Ağın benzersiz kimliği</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Mesh-Local Prefix</strong></td>
+<td>8</td>
+<td>/64 mesh-local önek</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Network Key</strong></td>
+<td>16</td>
+<td>Ağ anahtarı</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Network Name</strong></td>
+<td>1–16</td>
+<td>Ağ adı</td>
+</tr>
+<tr>
+<td>1</td>
+<td><strong>PAN ID</strong></td>
+<td>2</td>
+<td>MAC PAN ID</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>PSKc</strong></td>
+<td>16</td>
+<td>Commissioner anahtarı</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Security Policy</strong></td>
+<td>3–4</td>
+<td>Rotasyon süresi + bayraklar (Bölüm 15.9)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="173-pending-dataset">17.3 Pending Dataset<a class="anchor" href="#173-pending-dataset" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Pending Dataset, Active Dataset bileşenlerine ek olarak şunları içerir:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>TLV türü</th>
+<th>Bileşen</th>
+<th>Boyut</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>51</td>
+<td><strong>Pending Timestamp</strong></td>
+<td>8</td>
+<td>Pending dataset'in sürümü</td>
+</tr>
+<tr>
+<td>52</td>
+<td><strong>Delay Timer</strong></td>
+<td>4</td>
+<td>Pending dataset'in Active olmasına kalan süre (milisaniye)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Pending Dataset içindeki <strong>Active Timestamp</strong>, geçiş sonrası Active Dataset'in alacağı sürümdür ve mevcut olandan büyük olmalıdır.</p>
+<p><strong>Delay Timer</strong> ağ genelinde geri sayar. Süre dolduğunda <strong>tüm cihazlar aynı anda</strong> Pending Dataset'i Active yapar. Varsayılan gecikme tipik olarak <strong>300 saniyedir</strong>; bu süre, uyuyan cihazların da yeni dataset'i (poll/Data Request ile) almasına zaman tanır. Çok kısa gecikmeler bazı cihazların geride kalmasına neden olabilir.</p>
+<h3 id="174-zaman-damgaları-ve-sürüm-karşılaştırma">17.4 Zaman Damgaları ve Sürüm Karşılaştırma<a class="anchor" href="#174-zaman-damgaları-ve-sürüm-karşılaştırma" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>Cihazlar MLE mesajlarında <strong>Active/Pending Timestamp</strong> TLV'lerini taşır.</li>
+<li>Bir cihaz, komşusunda kendisininkinden <strong>daha büyük</strong> zaman damgası görürse <strong>Data Request</strong> ile yeni dataset'i ister.</li>
+<li>Daha küçük zaman damgalı bir dataset asla daha büyüğünün yerine geçmez. Bu sayede eski bir dataset'le açılan cihaz ağı geri götüremez.</li>
+<li>İki partition farklı dataset'lerle birleşirse, kazanan partition'ın (ve daha yeni zaman damgasının) dataset'i yayılır.</li>
+</ul>
+<h3 id="175-dataset-değiştirme">17.5 Dataset Değiştirme<a class="anchor" href="#175-dataset-değiştirme" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Yıkıcı olmayan değişiklikler</strong> (Network Name, PSKc, Security Policy, Channel Mask gibi) <strong>MGMT_ACTIVE_SET</strong> (<code>c/as</code>) ile, daha büyük bir Active Timestamp kullanılarak doğrudan yapılabilir.</p>
+<p><strong>Yıkıcı değişiklikler</strong> — <strong>Channel, PAN ID, Mesh-Local Prefix, Network Key</strong> — ağın tamamının aynı anda geçiş yapmasını gerektirir. Bunlar Active Set ile yapılamaz; <strong>MGMT_PENDING_SET</strong> (<code>c/ps</code>) ile Pending Dataset üzerinden yapılır:</p>
+<figure class="diagram"><pre class="mermaid">sequenceDiagram
+    participant C as Commissioner / BR (kanal yöneticisi)
+    participant L as Leader
+    participant R as Router'lar
+    participant S as SED'ler
+    C-&gt;&gt;L: MGMT_PENDING_SET (c/ps): yeni Channel, Pending Timestamp, Delay Timer = 300 s, Active Timestamp (yeni)
+    L--&gt;&gt;C: State = Accept
+    L-&gt;&gt;R: MLE Data Response (Pending Timestamp)
+    R-&gt;&gt;L: Data Request (Pending Dataset)
+    R-&gt;&gt;S: Child Update / Data Response (Pending Timestamp)
+    S-&gt;&gt;R: Data Request (Pending Dataset)
+    Note over L,S: Herkes Delay Timer'ı geri sayar
+    Note over L,S: Süre doldu: Pending → Active (yeni kanal)
+    Note over L,S: Ağ yeni kanalda çalışmaya devam eder
+    L-&gt;&gt;R: Announce (eski kanallarda, geride kalanlar için)
+</pre></figure>
+<p><strong>Geride kalan cihazlar:</strong> Değişiklik sırasında kapalı olan veya uzun süre uyuyan cihazlar eski kanalda kalabilir. Bu cihazlar:</p>
+<ul>
+<li>Ebeveynlerini bulamayınca diğer kanalları tarayıp <strong>Announce</strong> mesajlarını yakalar ve yeni kanala geçer,</li>
+<li>veya commissioner/BR'nin <strong>Announce Begin</strong> (<code>c/ab</code>) ile tetiklediği duyuruları dinler.</li>
+</ul>
+<h3 id="176-dataset-tlv-kodlaması-tam-örnek">17.6 Dataset TLV Kodlaması: Tam Örnek<a class="anchor" href="#176-dataset-tlv-kodlaması-tam-örnek" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Aşağıdaki onaltılık dize, OpenThread belgelerinde sıkça kullanılan örnek bir Active Dataset'tir (gerçek bir ağda <strong>asla</strong> bu değerleri kullanmayın):</p>
+<pre><code class="language-text">0e080000000000010000000300000f35060004001fffe0020811111111222222220708fdad70bfe5aa15dd
+051000112233445566778899aabbccddeeff030e4f70656e54687265616444656d6f010212340410445f2b
+5ca6f2a93a55ce570a70efeecb0c0402a0f7f8
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ham TLV</th>
+<th>Tür</th>
+<th>Bileşen</th>
+<th>Çözümlenmiş değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0e 08 0000000000010000</code></td>
+<td>14</td>
+<td>Active Timestamp</td>
+<td>saniye = 1, tick = 0, U = 0</td>
+</tr>
+<tr>
+<td><code>00 03 00000f</code></td>
+<td>0</td>
+<td>Channel</td>
+<td>sayfa 0, kanal <strong>15</strong></td>
+</tr>
+<tr>
+<td><code>35 06 00 04 001fffe0</code></td>
+<td>53</td>
+<td>Channel Mask</td>
+<td>sayfa 0, 4 baytlık maske; MSB-ilk bit sırasıyla kanal 11–26</td>
+</tr>
+<tr>
+<td><code>02 08 1111111122222222</code></td>
+<td>2</td>
+<td>Extended PAN ID</td>
+<td><code>1111111122222222</code></td>
+</tr>
+<tr>
+<td><code>07 08 fdad70bfe5aa15dd</code></td>
+<td>7</td>
+<td>Mesh-Local Prefix</td>
+<td><code>fdad:70bf:e5aa:15dd::/64</code></td>
+</tr>
+<tr>
+<td><code>05 10 00112233…ddeeff</code></td>
+<td>5</td>
+<td>Network Key</td>
+<td><code>00112233445566778899aabbccddeeff</code></td>
+</tr>
+<tr>
+<td><code>03 0e 4f70656e…6d6f</code></td>
+<td>3</td>
+<td>Network Name</td>
+<td>"OpenThreadDemo" (14 bayt)</td>
+</tr>
+<tr>
+<td><code>01 02 1234</code></td>
+<td>1</td>
+<td>PAN ID</td>
+<td><code>0x1234</code></td>
+</tr>
+<tr>
+<td><code>04 10 445f2b5c…efeecb</code></td>
+<td>4</td>
+<td>PSKc</td>
+<td><code>445f2b5ca6f2a93a55ce570a70efeecb</code></td>
+</tr>
+<tr>
+<td><code>0c 04 02a0 f7f8</code></td>
+<td>12</td>
+<td>Security Policy</td>
+<td>672 saat, <code>onrc</code>, sürüm eşiği 0</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout callout-note"><p class="callout-title">Not</p><p>Channel Mask TLV'sinde bitler <strong>MSB-ilk</strong> sıralanır (ilk baytın en yüksek biti = kanal 0). Bu yüzden 11–26 kanalları TLV'de <code>0x001FFFE0</code> olarak görünür; OpenThread CLI ise aynı maskeyi alışılmış bit sırasıyla <code>0x07fff800</code> (bit n = kanal n) olarak gösterir.</p>
+</blockquote>
+<p>Aynı dataset OpenThread CLI'de şöyle görünür:</p>
+<pre><code class="language-text">&gt; dataset active
+Active Timestamp: 1
+Channel: 15
+Channel Mask: 0x07fff800
+Ext PAN ID: 1111111122222222
+Mesh Local Prefix: fdad:70bf:e5aa:15dd::/64
+Network Key: 00112233445566778899aabbccddeeff
+Network Name: OpenThreadDemo
+PAN ID: 0x1234
+PSKc: 445f2b5ca6f2a93a55ce570a70efeecb
+Security Policy: 672 onrc 0
+Done
+</code></pre>
+<h3 id="177-diğer-meshcop-tlvleri-referans">17.7 Diğer MeshCoP TLV'leri (Referans)<a class="anchor" href="#177-diğer-meshcop-tlvleri-referans" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tür</th>
+<th>TLV</th>
+<th>Kullanım</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6</td>
+<td>Network Key Sequence</td>
+<td>Joiner Entrust'ta güncel Key Sequence</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Steering Data</td>
+<td>Commissioning Data, Discovery Response</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Border Agent Locator</td>
+<td>Commissioning Data</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Commissioner ID</td>
+<td>Petition</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Commissioner Session ID</td>
+<td>Oturum doğrulama</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Get</td>
+<td>MGMT_*_GET: istenen TLV türleri</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Commissioner UDP Port</td>
+<td>Discovery Response</td>
+</tr>
+<tr>
+<td>16</td>
+<td>State</td>
+<td>Accept (1) / Pending (0) / Reject (−1)</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Joiner DTLS Encapsulation</td>
+<td>RLY_RX/TX içinde DTLS kaydı</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Joiner UDP Port</td>
+<td>Discovery Response, RLY_RX/TX</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Joiner IID</td>
+<td>RLY_RX/TX: Joiner'ın link-local IID'si</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Joiner Router Locator</td>
+<td>RLY_RX/TX: Joiner Router'ın RLOC16'sı</td>
+</tr>
+<tr>
+<td>21</td>
+<td>Joiner Router KEK</td>
+<td>RLY_TX: Joiner Entrust için KEK</td>
+</tr>
+<tr>
+<td>32</td>
+<td>Provisioning URL</td>
+<td>JOIN_FIN</td>
+</tr>
+<tr>
+<td>33–37</td>
+<td>Vendor Name / Model / SW Version / Data / Stack Version</td>
+<td>JOIN_FIN</td>
+</tr>
+<tr>
+<td>48</td>
+<td>UDP Encapsulation</td>
+<td>Proxy (c/ur, c/ut)</td>
+</tr>
+<tr>
+<td>49</td>
+<td>IPv6 Address</td>
+<td>Proxy</td>
+</tr>
+<tr>
+<td>54–57</td>
+<td>Count / Period / Scan Duration / Energy List</td>
+<td>Energy Scan, PAN ID Query</td>
+</tr>
+<tr>
+<td>128</td>
+<td>Discovery Request</td>
+<td>Thread Discovery TLV içinde</td>
+</tr>
+<tr>
+<td>129</td>
+<td>Discovery Response</td>
+<td>Thread Discovery TLV içinde</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="178-datasetin-yönetimi-openthread-cli">17.8 Dataset'in Yönetimi (OpenThread CLI)<a class="anchor" href="#178-datasetin-yönetimi-openthread-cli" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Komut</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dataset init new</code></td>
+<td>Rastgele değerlerle yeni bir dataset hazırlar (geçici tampon)</td>
+</tr>
+<tr>
+<td><code>dataset channel 20</code>, <code>dataset networkname Ev</code> …</td>
+<td>Tampondaki alanları düzenler</td>
+</tr>
+<tr>
+<td><code>dataset commit active</code></td>
+<td>Tamponu Active Dataset olarak kaydeder</td>
+</tr>
+<tr>
+<td><code>dataset active -x</code></td>
+<td>Active Dataset'i onaltılık TLV dizisi olarak yazar (paylaşmak için)</td>
+</tr>
+<tr>
+<td><code>dataset set active &lt;hex&gt;</code></td>
+<td>Onaltılık TLV dizisinden Active Dataset yükler</td>
+</tr>
+<tr>
+<td><code>dataset mgmtsetcommand pending …</code></td>
+<td>Ağdaki Leader'a MGMT_PENDING_SET gönderir</td>
+</tr>
+<tr>
+<td><code>dataset updater start</code></td>
+<td>(OpenThread) Pending Dataset ile güvenli değişiklik başlatır</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="179-bölüm-özeti">17.9 Bölüm Özeti<a class="anchor" href="#179-bölüm-özeti" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>Operational Dataset, ağın kimlik bilgileridir: kanal, PAN ID, Extended PAN ID, ağ adı, mesh-local önek, Network Key, PSKc, Security Policy, zaman damgası.</li>
+<li>Zaman damgası büyük olan dataset kazanır; eskiler asla yenilerin yerine geçmez.</li>
+<li>Kanal, PAN ID, mesh-local önek ve Network Key değişiklikleri Pending Dataset + Delay Timer ile tüm ağda eşzamanlı yapılır.</li>
+<li>Geride kalan cihazlar Announce mesajlarıyla yeni kanala çağrılır.</li>
+<li>Dataset, onaltılık TLV dizisi olarak kolayca dışa/içe aktarılır; bu dizi gizli bilgi içerir ve korunmalıdır.</li>
 </ul>
     <footer class="page-footer">
       Bu sayfa <code>tools/build.py</code> ile <code>bolumler/</code> klasöründeki Markdown kaynaklarından üretilmiştir · Derleme tarihi: 15.11.2026
