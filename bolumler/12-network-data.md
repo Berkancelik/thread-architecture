@@ -180,7 +180,7 @@ Prefixes:
 fd4f:2d3c:ee9b:1::/64 paros med 5c00
 Routes:
 fc00::/7 s med 5c00
-fd8a:93c2:7f01:2:0:0::/96 sn low 5c00
+fd4f:2d3c:ee9b:2:0:0::/96 sn low 5c00
 Services:
 44970 5d fddead00beef00006c1fc63a9a2e3b07d11f s 5c00
 44970 01 36000500000e10 s 5c00
@@ -195,7 +195,7 @@ Done
 |---|---|
 | `fd4f:2d3c:ee9b:1::/64 paros med 5c00` | OMR öneki; Router 23 (`0x5C00`) sunuyor; SLAAC ile adres üret, varsayılan rota, on-mesh, stable, tercih orta |
 | `fc00::/7 s med 5c00` | ULA hedefleri için dış rota (s = stable), tercih orta |
-| `fd8a:…::/96 sn low 5c00` | NAT64 öneki (n = NAT64), düşük tercih |
+| `fd4f:2d3c:ee9b:2:0:0::/96 sn low 5c00` | NAT64 öneki (n = NAT64), düşük tercih — BR'nin kendi ULA /48'inden türetilmiş |
 | `44970 5d …d11f s 5c00` | DNS/SRP unicast servisi: Server Data = sunucunun ML-EID adresi (`fdde:ad00:beef:0:6c1f:c63a:9a2e:3b07`) + port `0xD11F` (53535) |
 | `44970 01 36000500000e10` | Backbone Router servisi: sıra numarası `0x36`, yeniden kayıt gecikmesi 5 s, MLR zaman aşımı 3600 s |
 | `fd4f:2d3c:ee9b:1::/64 1 c` | OMR öneki bağlam ID 1, sıkıştırmaya açık |

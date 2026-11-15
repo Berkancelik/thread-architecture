@@ -256,6 +256,44 @@ Doküman katmanlı bir sırayla ilerler: önce büyük resim (Bölüm 1–2), so
   - [17.7 Diğer MeshCoP TLV'leri (Referans)](#177-diğer-meshcop-tlvleri-referans)
   - [17.8 Dataset'in Yönetimi (OpenThread CLI)](#178-datasetin-yönetimi-openthread-cli)
   - [17.9 Bölüm Özeti](#179-bölüm-özeti)
+- [18. Uyuyan Cihazlar, Enerji Yönetimi ve CSL](#18-uyuyan-cihazlar-enerji-yönetimi-ve-csl)
+  - [18.1 Enerji Tüketiminin Kaynakları](#181-enerji-tüketiminin-kaynakları)
+  - [18.2 SED Çalışma Modeli](#182-sed-çalışma-modeli)
+  - [18.3 Enerji Bütçesi Örneği](#183-enerji-bütçesi-örneği)
+  - [18.4 Child Timeout ve Canlı Tutma](#184-child-timeout-ve-canlı-tutma)
+  - [18.5 Child Supervision (Çocuk Denetimi)](#185-child-supervision-çocuk-denetimi)
+  - [18.6 Enhanced Frame Pending (Thread 1.2+)](#186-enhanced-frame-pending-thread-12)
+  - [18.7 CSL — Coordinated Sampled Listening (Thread 1.2+)](#187-csl--coordinated-sampled-listening-thread-12)
+  - [18.8 Matter ICD (Intermittently Connected Device)](#188-matter-icd-intermittently-connected-device)
+  - [18.9 Enerji Tasarımı İpuçları](#189-enerji-tasarımı-i̇puçları)
+  - [18.10 Bölüm Özeti](#1810-bölüm-özeti)
+- [19. Border Router](#19-border-router)
+  - [19.1 Görevi](#191-görevi)
+  - [19.2 OMR Öneki (Off-Mesh Routable Prefix)](#192-omr-öneki-off-mesh-routable-prefix)
+  - [19.3 Altyapı Ağına Yönelik Yönlendirme: RA, RIO ve PIO](#193-altyapı-ağına-yönelik-yönlendirme-ra-rio-ve-pio)
+  - [19.4 NAT64 ve IPv4 Erişimi](#194-nat64-ve-ipv4-erişimi)
+  - [19.5 Servis Keşfi: SRP, Advertising Proxy, Discovery Proxy](#195-servis-keşfi-srp-advertising-proxy-discovery-proxy)
+  - [19.6 Border Agent ve mDNS İlanı](#196-border-agent-ve-mdns-i̇lanı)
+  - [19.7 Birden Fazla Border Router](#197-birden-fazla-border-router)
+  - [19.8 OpenThread Border Router (OTBR) Mimarisi](#198-openthread-border-router-otbr-mimarisi)
+  - [19.9 Güvenlik Duvarı ve Giriş Filtreleme](#199-güvenlik-duvarı-ve-giriş-filtreleme)
+  - [19.10 Bölüm Özeti](#1910-bölüm-özeti)
+- [20. Thread 1.2, 1.3 ve 1.4 Gelişmiş Özellikleri](#20-thread-12-13-ve-14-gelişmiş-özellikleri)
+  - [20.1 Sürümlere Göre Özellik Matrisi](#201-sürümlere-göre-özellik-matrisi)
+  - [20.2 Thread 1.2](#202-thread-12)
+  - [20.3 Thread 1.3](#203-thread-13)
+  - [20.4 Thread 1.4](#204-thread-14)
+  - [20.5 Sürüm Uyumluluğu Nasıl Yönetilir?](#205-sürüm-uyumluluğu-nasıl-yönetilir)
+  - [20.6 Gelecek Yönelimleri](#206-gelecek-yönelimleri)
+  - [20.7 Bölüm Özeti](#207-bölüm-özeti)
+- [21. Ağ Teşhisi, İzleme ve Paket Analizi](#21-ağ-teşhisi-i̇zleme-ve-paket-analizi)
+  - [21.1 Network Diagnostics (Ağ Teşhis) Protokolü](#211-network-diagnostics-ağ-teşhis-protokolü)
+  - [21.2 Teşhis İçin OpenThread CLI Komutları](#212-teşhis-i̇çin-openthread-cli-komutları)
+  - [21.3 İzlenmesi Gereken Göstergeler](#213-i̇zlenmesi-gereken-göstergeler)
+  - [21.4 Paket Yakalama (Sniffing)](#214-paket-yakalama-sniffing)
+  - [21.5 Matter Üzerinden Thread Teşhisi](#215-matter-üzerinden-thread-teşhisi)
+  - [21.6 Diğer Araçlar](#216-diğer-araçlar)
+  - [21.7 Bölüm Özeti](#217-bölüm-özeti)
 
 ## 1. Thread'e Giriş
 
@@ -2776,7 +2814,7 @@ Prefixes:
 fd4f:2d3c:ee9b:1::/64 paros med 5c00
 Routes:
 fc00::/7 s med 5c00
-fd8a:93c2:7f01:2:0:0::/96 sn low 5c00
+fd4f:2d3c:ee9b:2:0:0::/96 sn low 5c00
 Services:
 44970 5d fddead00beef00006c1fc63a9a2e3b07d11f s 5c00
 44970 01 36000500000e10 s 5c00
@@ -2791,7 +2829,7 @@ Done
 |---|---|
 | `fd4f:2d3c:ee9b:1::/64 paros med 5c00` | OMR öneki; Router 23 (`0x5C00`) sunuyor; SLAAC ile adres üret, varsayılan rota, on-mesh, stable, tercih orta |
 | `fc00::/7 s med 5c00` | ULA hedefleri için dış rota (s = stable), tercih orta |
-| `fd8a:…::/96 sn low 5c00` | NAT64 öneki (n = NAT64), düşük tercih |
+| `fd4f:2d3c:ee9b:2:0:0::/96 sn low 5c00` | NAT64 öneki (n = NAT64), düşük tercih — BR'nin kendi ULA /48'inden türetilmiş |
 | `44970 5d …d11f s 5c00` | DNS/SRP unicast servisi: Server Data = sunucunun ML-EID adresi (`fdde:ad00:beef:0:6c1f:c63a:9a2e:3b07`) + port `0xD11F` (53535) |
 | `44970 01 36000500000e10` | Backbone Router servisi: sıra numarası `0x36`, yeniden kayıt gecikmesi 5 s, MLR zaman aşımı 3600 s |
 | `fd4f:2d3c:ee9b:1::/64 1 c` | OMR öneki bağlam ID 1, sıkıştırmaya açık |
@@ -3706,3 +3744,804 @@ Done
 - Kanal, PAN ID, mesh-local önek ve Network Key değişiklikleri Pending Dataset + Delay Timer ile tüm ağda eşzamanlı yapılır.
 - Geride kalan cihazlar Announce mesajlarıyla yeni kanala çağrılır.
 - Dataset, onaltılık TLV dizisi olarak kolayca dışa/içe aktarılır; bu dizi gizli bilgi içerir ve korunmalıdır.
+
+## 18. Uyuyan Cihazlar, Enerji Yönetimi ve CSL
+
+### 18.1 Enerji Tüketiminin Kaynakları
+
+Pille çalışan bir Thread cihazında enerjinin büyük kısmı radyoya gider. Tipik akım değerleri (çipe ve gerilime göre değişir):
+
+| Durum | Tipik akım | Not |
+|---|---|---|
+| Derin uyku (RAM korumalı, RTC çalışıyor) | ≈ 1–3 µA | Cihaz zamanının > %99'unu burada geçirir |
+| MCU aktif | ≈ 2–6 mA | Çip ve saat frekansına bağlı |
+| Radyo alma (RX) | ≈ 4–10 mA | DC/DC dönüştürücü ile daha düşük |
+| Radyo gönderme (TX, 0 dBm) | ≈ 5–10 mA | +8…+10 dBm'de 10–20 mA; FEM ile çok daha fazla |
+| Kristal/radyo başlatma | kısa süreli tepe | Her uyanmada ek maliyet |
+
+Enerji = akım × süre olduğu için tasarımın amacı, radyonun **açık kalma süresini** en aza indirmektir.
+
+### 18.2 SED Çalışma Modeli
+
+**Sleepy End Device (SED)** radyosunu kapalı tutar ve iki durumda uyanır:
+
+1. **Uygulama olayı**: Sensör değeri değişti, düğmeye basıldı → veri gönderir.
+2. **Poll zamanlayıcısı**: Belirli aralıklarla (**poll period**) ebeveynine **MAC Data Request** gönderip bekleyen veri olup olmadığını sorar (Bölüm 4.7).
+
+| Parametre | Açıklama | Etkisi |
+|---|---|---|
+| **Poll period** | İki sorgu arasındaki süre | Kısa → düşük gecikme, yüksek tüketim; uzun → yüksek gecikme, düşük tüketim |
+| **Child timeout** | Ebeveynin, sessiz kalan çocuğu silmeden önce beklediği süre (Timeout TLV) | Poll period'dan belirgin şekilde uzun olmalı |
+| **Fast poll** | Bir istek gönderdikten sonra cevabı hızlı almak için geçici olarak sık poll | Cevap gecikmesini düşürür |
+
+**Gecikme ilişkisi:** Bir SED'e giden mesaj, en kötü durumda bir poll period kadar ebeveynde bekler. 30 saniyelik poll period'lu bir kapı kilidine gönderilen "kilitle" komutu 30 saniye gecikebilir — bu yüzden etkileşimli cihazlarda kısa poll period, CSL veya Matter ICD'nin "aktif mod" mekanizmaları kullanılır.
+
+### 18.3 Enerji Bütçesi Örneği
+
+Kaba bir hesap (değerler örnek amaçlıdır):
+
+```text
+Uyku akımı              : 2 µA
+Bir poll'un yükü        : ≈ 3 ms boyunca ortalama ≈ 10 mA   →  ≈ 30 µC
+                          (kristal başlatma + CSMA + TX Data Request + ACK bekleme)
+
+Poll period = 30 s      : 30 µC / 30 s = 1.0 µA
+Ortalama                : 2 + 1.0 = 3.0 µA
+
+Pil: CR2032 ≈ 220 mAh   : 220 mAh / 3.0 µA ≈ 73 000 saat ≈ 8 yıl (yalnızca poll + uyku)
+```
+
+Gerçek ömür; sensör ölçümleri, raporlar (ör. her 5 dakikada bir Matter raporu), yeniden iletimler, pilin kendi kendine boşalması ve sıcaklık etkileriyle bunun altında kalır. Yine de hesap, **poll period'un ve uyanma maliyetinin** ömrü belirleyen ana etkenler olduğunu gösterir:
+
+| Poll period | Ortalama poll akımı (30 µC/poll) | Toplam (2 µA uyku ile) |
+|---|---|---|
+| 0.25 s | 120 µA | 122 µA (≈ 2.5 ay) |
+| 1 s | 30 µA | 32 µA (≈ 9 ay) |
+| 5 s | 6 µA | 8 µA (≈ 3 yıl) |
+| 30 s | 1 µA | 3 µA (≈ 8 yıl) |
+| 300 s | 0.1 µA | 2.1 µA (≈ 12 yıl) |
+
+### 18.4 Child Timeout ve Canlı Tutma
+
+- Çocuk, **Timeout TLV** ile ebeveynine bir zaman aşımı değeri bildirir (OpenThread varsayılanı 240 s).
+- Ebeveyn bu süre boyunca çocuktan **hiçbir şey** duymazsa onu çocuk tablosundan siler ve onun için kuyruktaki paketleri atar.
+- SED'in **poll'ları** etkinlik sayılır; ayrıca bir şey göndermesi gerekmez.
+- Çocuk, kendi tarafında da zaman aşımından önce mutlaka bir mesaj (poll veya Child Update Request) gönderecek şekilde zamanlama yapar.
+- Thread 1.2+ **Enhanced Keep-Alive**: Ebeveyne giden herhangi bir MAC veri çerçevesi canlılık göstergesi sayılır; MLE Child Update'e duyulan ihtiyaç azalır.
+
+### 18.5 Child Supervision (Çocuk Denetimi)
+
+Sorun: Ebeveyn kapanırsa, seyrek poll eden (veya hiç poll etmeyip yalnızca olay olduğunda veri gönderen) bir SED bunu uzun süre fark etmeyebilir; bu sürede ona gönderilen her şey kaybolur.
+
+Çözüm — **Child Supervision**:
+
+- Ebeveyn, bir çocuğa **supervision interval** süresince hiç çerçeve göndermediyse ona boş bir "denetim" çerçevesi kuyruğa koyar (çocuk poll edince alır).
+- Çocuk, **supervision check timeout** süresince ebeveyninden hiçbir çerçeve almazsa ebeveynin kaybolduğunu varsayar ve yeniden bağlanma sürecini başlatır.
+- Thread 1.3 ile denetim aralığı **Supervision Interval TLV** (MLE) ile çocuk tarafından ebeveyne bildirilir.
+
+| Parametre | OpenThread varsayılanı |
+|---|---|
+| Supervision interval (ebeveyn) | 129 s |
+| Supervision check timeout (çocuk) | 190 s |
+
+### 18.6 Enhanced Frame Pending (Thread 1.2+)
+
+Klasik 802.15.4'te Frame Pending biti yalnızca **Data Request**'e verilen ACK'de anlamlıdır. Thread 1.2 ile ebeveyn, SED'in gönderdiği **herhangi bir veri çerçevesinin** (Enhanced) ACK'inde Frame Pending = 1 ayarlayarak "senin için veri var" diyebilir. SED böylece ayrı bir Data Request göndermeden alıcısını açık tutar → bir uyanma ve bir TX tasarruf edilir. Özellikle istek-cevap trafiğinde (SED soru sorar, cevap hemen gelir) etkilidir.
+
+### 18.7 CSL — Coordinated Sampled Listening (Thread 1.2+)
+
+**CSL**, uyuyan cihazlara **düşük gecikmeyle ve düşük enerjiyle** veri ulaştırmak için tasarlanmış bir mekanizmadır. CSL kullanan uç cihaza **SSED (Synchronized Sleepy End Device)** denir.
+
+#### Fikir
+
+- SSED, **düzenli aralıklarla** (CSL period) çok kısa bir süre (birkaç milisaniye) kanalı **dinler** (sample). Gönderme yapmaz.
+- Ebeveyn, SSED'in bir sonraki dinleme anını **bilir** ve göndereceği çerçeveyi tam o ana **zamanlar** (timed transmission).
+- Poll'daki "TX Data Request + CSMA + ACK bekleme" maliyeti ortadan kalkar; her döngüde yalnızca kısa bir RX penceresi açılır.
+
+```text
+SSED radyosu:   ▁▁▁█▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁   (█ = kısa dinleme penceresi)
+                   |<-- CSL period -->|
+Ebeveyn TX:                           ▓                       (çerçeve, pencereye denk gelecek şekilde)
+```
+
+#### Senkronizasyon
+
+| Bilgi | Taşıyıcı | Açıklama |
+|---|---|---|
+| **CSL Period** | MAC **CSL IE** (SSED'den ebeveyne giden çerçevelerde) | Dinleme periyodu, 10 sembol (160 µs) biriminde |
+| **CSL Phase** | MAC **CSL IE** | Çerçevenin gönderildiği andan bir sonraki dinleme anına kalan süre (160 µs biriminde) |
+| **CSL Channel** | MLE **CSL Channel TLV** | Dinlemenin yapılacağı kanal (genellikle ağ kanalı) |
+| **CSL Synchronized Timeout** | MLE TLV | SSED'in en geç ne kadar sürede yeniden senkronizasyon sağlayacağı |
+| **CSL Clock Accuracy** | MLE TLV | Saat doğruluğu (ppm) ve belirsizlik |
+
+- SSED'in ebeveynine gönderdiği her çerçeve (veri veya ACK'li çerçeveler) CSL IE taşıdığı için ebeveyn zamanlamayı sürekli tazeler.
+- SSED, **CSL Synchronized Timeout** süresi içinde hiçbir şey göndermezse ebeveyn senkronu kaybolmuş sayar; SSED bu süreden önce en az bir çerçeve (ör. boş veri veya poll) gönderir.
+
+#### Saat kayması (drift) ve pencere genişliği
+
+İki cihazın saatleri farklı hızlarda çalışır. Son senkrondan bu yana geçen süre arttıkça belirsizlik büyür:
+
+```text
+Belirsizlik ≈ geçen_süre × (ppm_ebeveyn + ppm_SSED) × 10⁻⁶ + sabit belirsizlik
+
+Örnek: son senkrondan 60 s sonra, ±20 ppm + ±20 ppm saatler
+       60 s × 40 × 10⁻⁶ = 2.4 ms  →  pencere her iki yönde ≈ 2.4 ms genişletilmeli
+```
+
+Bu yüzden CSL; doğru düşük frekans kristalleri (32.768 kHz, ±20–50 ppm) ve sık senkronizasyon ister. Ebeveyn, gönderimi pencerenin ortasına denk getirmek için kendi hesabını yapar.
+
+#### SED (poll) ile SSED (CSL) karşılaştırması
+
+| Özellik | SED (poll) | SSED (CSL) |
+|---|---|---|
+| Aşağı yön veri alma | Cihaz sorar (TX + RX) | Ebeveyn zamanlar, cihaz sadece dinler (RX) |
+| Her döngünün maliyeti | ≈ birkaç ms TX/RX + CSMA | ≈ 1–2 ms RX penceresi |
+| Tipik gecikme | Poll period (saniyeler–dakikalar) | CSL period (yüz milisaniyeler) |
+| Ebeveyn gereksinimi | Her Thread router | Thread 1.2+ ebeveyn, zamanlı gönderim destekli radyo |
+| Saat gereksinimi | Gevşek | Hassas (ppm), senkronizasyon |
+
+**Örnek karşılaştırma (500 ms gecikme hedefi):**
+
+```text
+SED, poll = 500 ms   : 30 µC × 2 Hz            ≈ 60 µA
+SSED, CSL = 500 ms   : ≈ 1.5 ms × 6 mA × 2 Hz  ≈ 18 µA   (+ periyodik senkron çerçeveleri)
+```
+
+### 18.8 Matter ICD (Intermittently Connected Device)
+
+Matter, Thread uyuyan cihazlarının davranışını uygulama seviyesinde **ICD** (Intermittently Connected Device) kavramıyla standartlaştırır:
+
+| Kavram | Açıklama | Thread karşılığı |
+|---|---|---|
+| **Idle Mode** | Cihaz çoğu zaman bu moddadır; seyrek uyanır | Uzun poll period (yavaş poll) |
+| **Active Mode** | Etkileşim sırasında; hızlı cevap verir | Kısa poll period (hızlı poll) |
+| **Idle Mode Duration** | Idle moddaki uyanma aralığı | Slow poll interval |
+| **Active Mode Duration / Threshold** | Etkileşimden sonra aktif kalma süresi | Fast poll süresi |
+| **SIT ICD** (Short Idle Time) | Yavaş poll aralığı kısa (≤ 15 s mertebesinde); denetleyici her an ulaşabilir | Klasik SED |
+| **LIT ICD** (Long Idle Time) | Çok uzun uyku; denetleyiciye **Check-In** mesajlarıyla haber verir | Çok uzun poll period |
+
+Matter'ın **MRP** (Message Reliability Protocol) yeniden iletim zamanlamaları da cihazın uyku/aktif aralıklarına göre ayarlanır; bu aralıklar DNS-SD kayıtlarında (`SII`, `SAI` anahtarları) ilan edilir. Ayrıntılar Bölüm 23.
+
+### 18.9 Enerji Tasarımı İpuçları
+
+1. **Mümkün olan en uzun poll period**'u seçin; etkileşim gerektiğinde fast poll / ICD aktif modunu kullanın.
+2. **Ağ verisinden yalnızca stable kısmı** isteyin (Mode N = 0); gereksiz uyanmaları azaltır.
+3. **Çoklu yayından kaçının**; SED'e ulaşan her çoklu yayın ayrı bir dolaylı iletimdir.
+4. **İyi bir ebeveyn** seçimini sağlayın: Zayıf bağlantı = yeniden iletimler = boşa enerji. Kurulumda en az bir iyi router'ın yakında olduğundan emin olun.
+5. **TX gücünü** ihtiyaca göre ayarlayın; gereğinden yüksek güç pil tüketir, gereğinden düşük güç yeniden iletim artırır.
+6. **Raporları toplu gönderin**: Birden çok ölçümü tek mesajda birleştirin; her mesajın sabit bir uyanma maliyeti vardır.
+7. **Uygulama yükünü küçük tutun**: Parçalanan paketler birden çok TX demektir.
+8. **CSL** gerektiren cihazlarda düşük frekans kristalinin doğruluğuna dikkat edin.
+9. **Matter abonelik (subscription) aralıklarını** (min/max interval) cihazın uyku profiline uygun seçin.
+
+### 18.10 Bölüm Özeti
+
+- Pilli cihazlarda enerjinin çoğu radyoya gider; hedef, radyonun açık kalma süresini en aza indirmektir.
+- SED, poll period ile gecikme/enerji dengesi kurar; child timeout ve child supervision bağlantının sağlığını korur.
+- Thread 1.2 Enhanced Frame Pending ve Enhanced Keep-Alive gereksiz uyanmaları azaltır.
+- CSL, ebeveynin zamanlanmış gönderimiyle SSED'lere düşük gecikmeli ve verimli veri ulaştırır; hassas saat gerektirir.
+- Matter ICD; aktif/boşta modları ve Check-In ile uyuyan cihaz davranışını uygulama seviyesinde standartlaştırır.
+
+## 19. Border Router
+
+### 19.1 Görevi
+
+**Thread Border Router (BR)**, Thread mesh ağını Wi-Fi veya Ethernet gibi başka IP ağlarına (**altyapı ağı / infrastructure link**) bağlayan cihazdır. Önemli nokta: BR bir **protokol çeviricisi (gateway)** değil, bir **IP yönlendiricisidir**. Thread cihazları zaten IPv6 konuştuğu için BR paketleri çevirmeden yönlendirir (IPv4 erişimi için NAT64 istisnadır).
+
+Thread 1.3 ile standartlaşan ve 1.4 ile zorunlu hâle gelen BR işlevleri:
+
+| İşlev | Amaç |
+|---|---|
+| **IPv6 yönlendirme** | Thread ↔ altyapı ağı arasında paket iletimi |
+| **OMR önek yönetimi** | Thread cihazlarına dışarıdan erişilebilir (Off-Mesh Routable) adres öneki sağlamak |
+| **RA / RIO ilanları** | Altyapı ağındaki cihazlara Thread öneklerine giden yolu öğretmek |
+| **On-link önek** | Altyapı ağında IPv6 yoksa ona IPv6 öneki sağlamak |
+| **NAT64** | Thread cihazlarının IPv4 hedeflere erişmesi |
+| **SRP sunucusu** | Thread cihazlarının servis (DNS-SD) kaydı |
+| **Advertising Proxy** | Kayıtlı servisleri altyapı ağında mDNS ile duyurmak |
+| **Discovery Proxy** | Thread cihazlarının altyapı ağındaki servisleri keşfetmesi |
+| **Border Agent** | Harici commissioner erişimi (MeshCoP) |
+| **Backbone Router** (1.2+) | Çoklu yayın (MLR) ve DUA desteği |
+| **TREL** (1.3+) | Thread'i Wi-Fi/Ethernet üzerinden taşımak |
+| **DHCPv6-PD** (1.4) | ISS'den global önek alarak Thread cihazlarına global IPv6 sağlamak |
+
+```mermaid
+flowchart LR
+    subgraph INFRA["Altyapı ağı (Wi-Fi / Ethernet)"]
+        PH["Telefon / Denetleyici"]
+        WR["Ev router'ı"]
+    end
+    subgraph BRBOX["Border Router"]
+        RM["Yönlendirme yöneticisi<br/>(OMR, RA/RIO, rotalar)"]
+        SRP["SRP sunucusu +<br/>Advertising Proxy"]
+        DP["Discovery Proxy /<br/>DNS"]
+        N64["NAT64"]
+        BA["Border Agent<br/>(MeshCoP)"]
+        BBR["Backbone Router<br/>(MLR, DUA)"]
+        OT["Thread yığını<br/>(wpan arayüzü)"]
+    end
+    subgraph TH["Thread mesh"]
+        D1["Thread cihazları"]
+    end
+    PH <--> WR
+    WR <--> RM
+    RM <--> OT
+    SRP <--> OT
+    DP <--> OT
+    N64 <--> OT
+    BA <--> OT
+    BBR <--> OT
+    OT <-->|"802.15.4"| D1
+```
+
+### 19.2 OMR Öneki (Off-Mesh Routable Prefix)
+
+Mesh-local adresler (ML-EID, RLOC) ağ dışına yönlendirilmez. Thread cihazlarının dış dünyayla konuşabilmesi için **OMR öneki** gerekir:
+
+1. **Kaynak seçimi**:
+    - Altyapı ağı **DHCPv6-PD** (prefix delegation) sunuyorsa (Thread 1.4), BR bir **global** /64 alır → Thread cihazları global IPv6 adreslerine sahip olur.
+    - Aksi hâlde BR, kendi rastgele **ULA /48** öneğinden bir /64 türetir (ör. `fd4f:2d3c:ee9b:1::/64`).
+2. **İlan**: BR öneki Network Data'ya `paros` bayraklarıyla (Preferred, SLAAC, default Route, On-mesh, Stable) ekler.
+3. **Adres oluşturma**: Thread cihazları SLAAC ile bu önekten **OMR adresi** üretir.
+4. **Birden çok BR**: Her BR kendi önekini yayınlarsa cihazlar çok sayıda adres üretirdi. Bunun yerine BR'ler Network Data'daki önekleri karşılaştırıp **tek bir "tercih edilen" (favored) OMR öneki** üzerinde uzlaşır (önce tercih değeri, sonra sayısal karşılaştırma); diğerleri kendi öneklerini geri çeker.
+
+### 19.3 Altyapı Ağına Yönelik Yönlendirme: RA, RIO ve PIO
+
+Wi-Fi'daki bir telefonun, `fd4f:2d3c:ee9b:1::/64` önekindeki bir Thread cihazına nasıl ulaşacağını bilmesi gerekir. BR bunu **ICMPv6 Router Advertisement (RA)** ile sağlar:
+
+| RA seçeneği | İçerik | Etkisi |
+|---|---|---|
+| **RIO** (Route Information Option, RFC 4191) | OMR öneki (/64) + ömür + tercih | Altyapıdaki cihazlar "bu öneğe BR'nin link-local adresi üzerinden git" rotası ekler |
+| **PIO** (Prefix Information Option) | On-link önek (yalnızca altyapıda IPv6 öneki yoksa) | Altyapıdaki cihazlar bu önekten adres alır; böylece IPv6 ile Thread'e konuşabilir |
+| RA bayrakları | Thread BR'ler kendilerini "stub router" olarak tanıtır | Varsayılan yönlendirici gibi davranmaz; yalnızca belirli öneklere rota sunar |
+
+**Ters yön (Thread → altyapı):** BR, Network Data'ya **Has Route** girdileri ekler:
+
+- Altyapı ağının on-link öneki veya `fc00::/7` (ULA hedefleri),
+- Altyapı ağında global IPv6 internet bağlantısı varsa `::/0`,
+- NAT64 öneki (`/96`, N bayrağı ile).
+
+> [!WARNING]
+> Altyapı ağındaki cihazların **RIO'yu kabul etmesi** gerekir. Bazı işletim sistemleri veya yapılandırmalar RIO'yu varsayılan olarak yok sayar. Örneğin Linux'ta (ör. Home Assistant sunucusu) `net.ipv6.conf.<arayüz>.accept_ra_rt_info_max_plen` değeri en az 64 olmalı, IPv6 yönlendirme (forwarding) açıksa `accept_ra = 2` gerekir. Aksi hâlde denetleyici Thread cihazlarına ulaşamaz ve Matter cihazları "yanıt vermiyor" görünür.
+
+### 19.4 NAT64 ve IPv4 Erişimi
+
+Thread yalnızca IPv6 konuşur; ama birçok bulut servisi hâlâ yalnızca IPv4 ile erişilebilir. Çözüm **NAT64**:
+
+1. BR bir **NAT64 öneki** (/96) belirler:
+    - Altyapı ağı NAT64 sunuyorsa (RA'daki PREF64 seçeneği, RFC 8781, veya `ipv4only.arpa` sorgusu ile keşfedilen) onu kullanır,
+    - yoksa kendi yerel NAT64 önekini (ör. `fd4f:2d3c:ee9b:2::/96`) oluşturur ve kendi NAT64 çeviricisini çalıştırır.
+2. Önek Network Data'ya **Has Route + N bayrağı** ile eklenir.
+3. Thread cihazı `93.184.216.34` IPv4 adresine ulaşmak istediğinde **IPv4-gömülü IPv6** adresi (RFC 6052) oluşturur: `fd4f:2d3c:ee9b:2::5db8:d822` veya iyi bilinen önekle `64:ff9b::5db8:d822`.
+4. Paket BR'ye gider; BR IPv6 başlığını IPv4'e çevirip (durumlu NAT64, RFC 6146) gönderir; cevabı geri çevirir.
+5. DNS tarafında IPv4-yalnız alan adları için AAAA kaydı sentezi (DNS64) ya cihazda (NAT64 önekini kullanarak) ya da BR'nin DNS hizmetinde yapılır.
+
+### 19.5 Servis Keşfi: SRP, Advertising Proxy, Discovery Proxy
+
+Klasik yerel ağlarda servis keşfi **mDNS** (çoklu yayın DNS) ile yapılır. Thread'de mDNS kullanmak kötü bir fikirdir: çoklu yayın pahalıdır ve uyuyan cihazlar sorgulara cevap veremez. Thread 1.3 bu sorunu **unicast DNS-SD** ile çözer:
+
+#### SRP (Service Registration Protocol, RFC 9665)
+
+- Thread cihazı, servislerini (ör. `_matter._tcp`) BR üzerindeki **SRP sunucusuna** DNS Update mesajlarıyla **kaydeder**.
+- Kayıtlar cihazın açık anahtarıyla imzalanır (SIG(0), ECDSA P-256); aynı ismi başka bir cihaz ele geçiremez.
+- Kayıtların bir **ömrü (lease)** vardır (ör. 2 saat) ve cihaz bunları periyodik yeniler; anahtar kaydı daha uzun ömürlüdür (ör. 14 gün).
+- Cihazlar SRP sunucusunu Network Data'daki **DNS/SRP servis** girdilerinden (anycast `0x5C` veya unicast `0x5D`) bulur.
+- Varsayılan alan adı: `default.service.arpa.`
+
+#### Advertising Proxy
+
+BR, SRP ile kaydedilen servisleri **altyapı ağında mDNS** ile yeniden yayınlar. Böylece Wi-Fi'daki bir telefon, Thread'deki bir Matter cihazını sıradan mDNS ile bulur — Thread'deki cihaz bu süreçte uyanmak zorunda kalmaz.
+
+#### Discovery Proxy (RFC 8766)
+
+Ters yönde, Thread cihazı altyapı ağındaki servisleri (ör. bir Matter denetleyicisi, yazıcı) bulmak isterse BR'ye **unicast DNS sorgusu** gönderir; BR bunu altyapıda mDNS sorgusuna çevirir ve sonuçları döner.
+
+```mermaid
+sequenceDiagram
+    participant D as Thread Cihazı
+    participant BR as Border Router (SRP + Adv. Proxy)
+    participant P as Telefon (Wi-Fi)
+    Note over D: Network Data'dan SRP sunucusunu bul
+    D->>BR: SRP Update: host "abcd1234", AAAA = OMR adresi,<br/>servis _matter._tcp, SRV port 5540, TXT, lease 2 saat
+    BR-->>D: Update başarılı
+    BR->>P: mDNS ilanı (altyapı ağında): _matter._tcp, AAAA kaydı
+    P->>BR: (gerekirse) mDNS sorgusu _matter._tcp
+    BR-->>P: mDNS cevabı (Thread cihazının OMR adresi)
+    P->>BR: Matter mesajı → OMR adresi (RIO rotası ile BR'ye)
+    BR->>D: Thread mesh üzerinden ilet
+```
+
+### 19.6 Border Agent ve mDNS İlanı
+
+Border Agent, harici commissioner'ların ağı bulabilmesi için kendini altyapı ağında **`_meshcop._udp`** servisi olarak mDNS ile duyurur. TXT kaydındaki tipik anahtarlar:
+
+| Anahtar | Anlamı |
+|---|---|
+| `rv` | Kayıt sürümü |
+| `tv` | Thread sürümü (ör. `1.4.0`) |
+| `nn` | Network Name |
+| `xp` | Extended PAN ID |
+| `xa` | Border Agent cihazının Extended Address'i |
+| `sb` | Durum bit eşlemi (bağlantı modu, Thread arayüz durumu, BBR durumu, ePSKc desteği vb.) |
+| `at` | Active Timestamp |
+| `pt` | Partition ID |
+| `vn` / `mn` | Üretici adı / model adı |
+| `id` | Border Agent kimliği (yeniden başlatmalarda sabit) |
+| `sq` / `bb` / `dn` | BBR sıra numarası / BBR portu / Thread Domain adı (BBR etkinse) |
+
+SRV kaydı Border Agent'ın UDP portunu (OTBR varsayılanı 49191) verir. Thread 1.4 ePSKc için ayrı bir servis (`_meshcop-e._udp`) yalnızca geçici kod etkinken ilan edilir.
+
+### 19.7 Birden Fazla Border Router
+
+Bir Thread ağında birden çok BR bulunması **önerilir** (yedeklilik):
+
+- Her BR kendi rota/önek/servis girdilerini Network Data'ya ekler; BR'ler OMR öneki, NAT64 öneki ve SRP sunucusu gibi konularda **uzlaşma kuralları** (tercih + sayısal karşılaştırma + sıra numarası) ile tek bir seçim üzerinde anlaşır.
+- Thread cihazları dışarı giden trafik için **en yakın** (yol maliyeti en düşük) uygun BR'yi seçer.
+- Bir BR kapanırsa Leader onun girdilerini Network Data'dan kaldırır; trafik otomatik olarak diğer BR'ye kayar. OMR öneki BR'ler arasında ortak olduğu için cihazların adresleri değişmez.
+- SRP kayıtlarının tek bir BR'de kalmaması için cihazlar, SRP sunucusu değiştiğinde kayıtlarını yeni sunucuya yeniden yapar.
+
+> [!TIP]
+> Farklı ekosistemlerin BR'lerinin **aynı Thread ağında** olması, yedekliliğin gerçekten işe yaraması için şarttır. Ayrı ağlar kuran BR'ler birbirinin yedeği olamaz. Kurulumdan sonra BR'lerin aynı Extended PAN ID'yi gösterdiğini (ör. ekosistem uygulamalarından veya `_meshcop._udp` ilanlarından) kontrol edin.
+
+### 19.8 OpenThread Border Router (OTBR) Mimarisi
+
+Linux tabanlı BR'lerin referans uygulaması **ot-br-posix**'tir:
+
+```mermaid
+flowchart TB
+    subgraph HOST["Linux Host (ör. Raspberry Pi, Wi-Fi router)"]
+        AG["otbr-agent<br/>(OpenThread çekirdeği POSIX'te çalışır)"]
+        WPAN["wpan0<br/>(TUN arayüzü)"]
+        MDNS["mDNS<br/>(Avahi / mDNSResponder / dahili)"]
+        WEB["Web arayüzü / REST API"]
+        DBUS["D-Bus API"]
+        CTL["ot-ctl (CLI)"]
+        FW["Güvenlik duvarı / NAT64"]
+        ETH["eth0 / wlan0"]
+    end
+    RCP["RCP<br/>(802.15.4 radyo + sub-MAC)<br/>ör. nRF52840, EFR32, ESP32-H2"]
+    AG <-->|"Spinel / HDLC<br/>UART · SPI · USB"| RCP
+    AG <--> WPAN
+    AG <--> MDNS
+    AG <--> WEB
+    AG <--> DBUS
+    CTL <--> AG
+    WPAN <--> FW <--> ETH
+```
+
+| Bileşen | Görev |
+|---|---|
+| **otbr-agent** | OpenThread yığınını (FTD) Linux üzerinde çalıştırır; RCP ile Spinel protokolüyle konuşur; BR mantığı (Routing Manager, SRP, Border Agent, BBR, NAT64) buradadır |
+| **RCP** | Radyo eş işlemcisi: yalnızca 802.15.4 PHY/MAC alt katmanını (CSMA, ACK, zamanlama, şifreleme hızlandırma) çalıştırır |
+| **wpan0** | Thread ağını Linux'a sıradan bir ağ arayüzü olarak gösteren TUN arayüzü |
+| **mDNS** | Advertising/Discovery Proxy ve Border Agent ilanları |
+| **REST API / Web** | Yönetim ve izleme (ör. dataset okuma/yazma, teşhis) |
+| **Güvenlik duvarı** | Altyapıdan Thread'e yalnızca izin verilen trafiğin (ör. OMR hedefli) geçmesini sağlar; mesh-local öneki korur |
+
+Örnek radyo URL'si: `spinel+hdlc+uart:///dev/ttyACM0?uart-baudrate=460800`
+
+### 19.9 Güvenlik Duvarı ve Giriş Filtreleme
+
+BR, altyapı ağından Thread'e giden trafiği filtreler:
+
+- **Mesh-local önekli** hedeflere dışarıdan gelen paketler engellenir.
+- Yalnızca Thread'deki **OMR/on-mesh** önekli hedeflere giden paketler iletilir.
+- TMF (61631) ve MLE (19788) gibi Thread kontrol portlarına dışarıdan erişim kapalıdır.
+- Kaynak adresi Thread öneklerinden biri gibi görünen sahte (spoofed) paketler reddedilir.
+
+### 19.10 Bölüm Özeti
+
+- Border Router, Thread ile Wi-Fi/Ethernet arasında çeviri değil IPv6 yönlendirme yapar.
+- OMR öneki (ULA veya DHCPv6-PD ile global) Thread cihazlarına dışarıdan erişilebilir adres verir; RIO ile altyapıya duyurulur.
+- NAT64 ile IPv4 erişimi, SRP + Advertising/Discovery Proxy ile multicast'siz servis keşfi sağlanır.
+- Border Agent `_meshcop._udp` ile ilan edilir; Thread 1.4 ePSKc geçici erişim sunar.
+- Birden fazla BR uzlaşma kurallarıyla tek OMR öneki ve SRP sunucusu üzerinde birleşir; yedeklilik ancak aynı ağdaysalar işe yarar.
+- OTBR: otbr-agent (Linux) + RCP (radyo) + Spinel; Home Assistant gibi sistemler bunu kullanır.
+
+## 20. Thread 1.2, 1.3 ve 1.4 Gelişmiş Özellikleri
+
+### 20.1 Sürümlere Göre Özellik Matrisi
+
+| Özellik | 1.1 | 1.2 | 1.3 | 1.4 |
+|---|---|---|---|---|
+| Temel mesh, MLE, 6LoWPAN, MeshCoP | ✔ | ✔ | ✔ | ✔ |
+| 802.15.4-2015 çerçeveleri, Enhanced ACK, Header IE | | ✔ | ✔ | ✔ |
+| CSL (SSED), Enhanced Frame Pending, Enhanced Keep-Alive | | ✔ | ✔ | ✔ |
+| Link Metrics | | ✔ | ✔ | ✔ |
+| Thread Domain, Backbone Router, DUA, MLR | | ✔ | ✔ | ✔ |
+| Commercial Commissioning (CCM) | | ✔ | ✔ | ✔ |
+| Thread Border Router şartnamesi (OMR, RA/RIO, SRP, proxy'ler, NAT64) | | | ✔ | ✔ |
+| TREL (Wi-Fi/Ethernet üzerinden Thread) | | | ✔ | ✔ |
+| SRP istemcisi / DNS istemcisi (cihaz tarafı) | | | ✔ | ✔ |
+| TCP desteği | | | ✔ | ✔ |
+| Supervision Interval TLV | | | ✔ | ✔ |
+| Zorunlu ve birlikte çalışabilir BR yetenekleri | | | | ✔ |
+| ePSKc (geçici commissioner anahtarı), kimlik paylaşımı | | | | ✔ |
+| DHCPv6-PD ile global OMR öneki | | | | ✔ |
+| Gelişmiş ağ teşhisi (yeni TLV'ler, sorgu/cevap) | | | | ✔ |
+| TCAT (TLS tabanlı devreye alma) | | | | ✔ |
+
+### 20.2 Thread 1.2
+
+Thread 1.2'nin iki ana teması vardı: **daha verimli uyuyan cihazlar** ve **daha büyük/kurumsal ağlar**.
+
+#### 20.2.1 802.15.4-2015 Özellikleri
+
+- **Enhanced ACK**: IE taşıyabilen, güvenli olabilen ACK çerçevesi. CSL fazı ve Link Metrics verisini taşır.
+- **Header IE'ler**: CSL IE, vendor-specific IE (Link Metrics) vb. (Bölüm 4.10).
+- **Çerçeve sürümü 2015**: Yalnızca bu özellikleri destekleyen eşler arasında kullanılır; 1.1 cihazlarla 2006 sürümü kullanılmaya devam eder.
+
+#### 20.2.2 Enerji Özellikleri
+
+- **CSL** ve **SSED** (Bölüm 18.7),
+- **Enhanced Frame Pending** (Bölüm 18.6),
+- **Enhanced Keep-Alive**: Veri çerçeveleri canlılık sinyali sayılır.
+
+#### 20.2.3 Link Metrics (Bağlantı Ölçümleri)
+
+Bir cihazın (Initiator) bir komşusundan (Subject) bağlantı kalitesi ölçümleri istemesini sağlar.
+
+| Ölçüm türü | Nasıl çalışır? |
+|---|---|
+| **Single Probe** | Initiator, MLE Data Request içinde **Link Metrics Query** gönderir; Subject o mesaja ait ölçümleri **Link Metrics Report** ile döner |
+| **Forward Tracking Series** | Initiator, **Link Metrics Management Request** ile bir ölçüm serisi tanımlar (hangi çerçeve türleri sayılacak); ardından **Link Probe** mesajları/veri çerçeveleri gönderir; sonra seriyi sorgular ve birikmiş (ortalama) sonuçları alır |
+| **Enhanced-ACK Based Probing** | Initiator, Subject'ten her Enhanced ACK'in içine ölçüm koymasını ister (vendor-specific Header IE); sürekli ve ek mesajsız izleme sağlar |
+
+**Ölçülebilen değerler:** Layer 2 PDU sayısı, **LQI**, **Link Margin**, **RSSI**.
+
+**Kullanım alanları:** SSED'lerin ebeveyn bağlantısını izlemesi ve gerekirse CSL/TX gücü ayarlaması, ağ teşhisi, daha iyi ebeveyn seçimi.
+
+```mermaid
+sequenceDiagram
+    participant I as Initiator (ör. SSED)
+    participant S as Subject (ebeveyn)
+    I->>S: Link Metrics Management Request (Forward Series ID 1, ölçümler: LQI + Link Margin)
+    S-->>I: Link Metrics Management Response (Status = Success)
+    loop Ölçüm süresince
+        I->>S: Link Probe / veri çerçeveleri
+    end
+    I->>S: Data Request + Link Metrics Query (Series ID 1)
+    S-->>I: Data Response + Link Metrics Report (ortalama LQI, Link Margin)
+```
+
+#### 20.2.4 Thread Domain, Backbone Router ve DUA
+
+**Problem:** Büyük bir binada tek Thread ağı yetmez (32 router sınırı, atlama sayısı, kanal kapasitesi). Birden fazla Thread ağı kurulur; ama bu ağlardaki cihazların birbirine ve bina ağına **tek bir IPv6 alanı** gibi ulaşabilmesi istenir.
+
+**Çözüm:** Birden çok Thread ağı, ortak bir **omurga bağlantısı (backbone link)** (tipik olarak Ethernet) üzerinden birleşerek bir **Thread Domain** oluşturur.
+
+```mermaid
+flowchart TB
+    BB["Omurga bağlantısı (Ethernet / IPv6)<br/>Domain öneki: fd00:7d03:7d03:7d03::/64"]
+    subgraph T1["Thread Ağı 1 (kat 1)"]
+        P1["Primary BBR 1"]
+        S1["Secondary BBR"]
+        D1["Cihaz A<br/>DUA: fd00:7d03:7d03:7d03::a"]
+    end
+    subgraph T2["Thread Ağı 2 (kat 2)"]
+        P2["Primary BBR 2"]
+        D2["Cihaz B<br/>DUA: fd00:7d03:7d03:7d03::b"]
+    end
+    P1 --- BB
+    S1 --- BB
+    P2 --- BB
+    D1 -.- P1
+    D2 -.- P2
+```
+
+| Kavram | Açıklama |
+|---|---|
+| **Backbone Router (BBR)** | Thread ağını omurgaya bağlayan BR işlevi. Network Data'ya BBR servisi olarak kaydolur (sıra numarası, yeniden kayıt gecikmesi, MLR zaman aşımı). |
+| **Primary BBR (PBBR)** | Her Thread ağında aktif olan tek BBR; ALOC'u `0xFC38`. Diğer BBR'ler **Secondary** olarak bekler ve Primary kaybolursa devralır. |
+| **Domain Prefix** | Domain genelinde ortak /64 önek; Network Data'da **D** bayrağıyla ilan edilir. |
+| **DUA (Domain Unicast Address)** | Cihazın Domain Prefix'ten oluşturduğu adres. Cihaz Domain içinde başka bir Thread ağına geçse bile aynı kalabilir. |
+
+**DUA kaydı akışı:**
+
+1. Cihaz Domain Prefix'i görünce bir **DUA** oluşturur.
+2. **DUA.req** (`n/dr`) ile Primary BBR'ye kaydeder (ML-EID'si ile birlikte).
+3. PBBR, omurga üzerinde diğer BBR'lere **Backbone Query** (`b/bq`) göndererek adresin başka yerde kullanılıp kullanılmadığını denetler (Duplicate Address Detection).
+4. Çakışma yoksa kaydı kabul eder ve omurgada bu adres için **ND Proxy** olarak davranır: omurgadaki cihazlar DUA'ya NS gönderdiğinde PBBR kendi adına cevap verir ve paketleri Thread ağına yönlendirir.
+5. Cihaz kaydını periyodik olarak yeniler.
+
+**MLR (Multicast Listener Registration):** Cihazlar admin-local ve daha geniş kapsamlı çoklu yayın aboneliklerini **MLR.req** (`n/mr`) ile PBBR'ye kaydeder; PBBR omurgada MLD dinleyicisi olur ve eşleşen çoklu yayınları Thread'e aktarır (Bölüm 14.5).
+
+#### 20.2.5 Commercial Commissioning Mode (CCM)
+
+Ticari binalarda yüzlerce cihazı tek tek PSKd ile devreye almak pratik değildir. CCM, **sertifika tabanlı otonom kayıt** sağlar:
+
+- Cihazlar üretimde bir **IDevID** (üreticinin imzaladığı cihaz kimlik sertifikası) ile gelir.
+- Domain'deki bir **Registrar** (genellikle BBR/BR üzerinde), cihazın kimliğini üreticinin doğrulama servisi (voucher mantığı, BRSKI benzeri) ile doğrular.
+- Cihaza Domain'e özgü bir **LDevID** sertifikası (EST benzeri bir süreçle, CoAP üzerinden) verilir ve ağ anahtarı güvenli şekilde sağlanır.
+- Security Policy'deki CCM ile ilgili bayraklar (Bölüm 15.9) bu davranışları kontrol eder.
+
+CCM özellikle kurumsal/bina otomasyonu senaryoları içindir; tüketici akıllı evlerinde Matter devreye alması yaygındır.
+
+### 20.3 Thread 1.3
+
+Thread 1.3'ün ana teması **Border Router standardizasyonu ve Matter ile uyum**dur.
+
+#### 20.3.1 Thread Border Router Özellikleri
+
+OMR önek yönetimi, RA/RIO, on-link önek, NAT64, SRP sunucusu, Advertising Proxy, Discovery Proxy, çoklu yayın yönlendirme — ayrıntılar Bölüm 19.
+
+#### 20.3.2 Cihaz Tarafı Servisler
+
+- **SRP istemcisi**: Cihazlar servislerini BR'ye kaydeder (Matter için zorunlu).
+- **DNS istemcisi**: Cihazlar BR üzerinden unicast DNS / DNS-SD sorguları yapabilir.
+- **TCP**: Düşük güçlü cihazlar için optimize edilmiş bir TCP uygulaması (OpenThread'de TCPlp) tanımlanmıştır.
+
+#### 20.3.3 TREL — Thread Radio Encapsulation Link
+
+**TREL**, Thread'in MAC çerçevelerini **UDP/IPv6 içinde** altyapı ağları (Wi-Fi/Ethernet) üzerinden taşıyan ikinci bir "radyo" bağlantısıdır.
+
+```mermaid
+flowchart LR
+    subgraph ODA1["Salon"]
+        BR1["Border Router 1<br/>802.15.4 + TREL"]
+        A["Thread cihazları"]
+    end
+    subgraph ODA2["Bodrum"]
+        BR2["Border Router 2<br/>802.15.4 + TREL"]
+        B["Thread cihazları"]
+    end
+    A -.-|"802.15.4"| BR1
+    B -.-|"802.15.4"| BR2
+    BR1 <-->|"TREL: UDP/IPv6 üzerinden Wi-Fi/Ethernet"| BR2
+```
+
+| Özellik | Açıklama |
+|---|---|
+| Keşif | Altyapı ağında DNS-SD **`_trel._udp`** servisi; TXT kaydında Extended Address (`xa`) ve Extended PAN ID (`xp`) |
+| Taşıma | Tekil UDP/IPv6 (çoklu yayın gerektiğinde altyapı çoklu yayını) |
+| Güvenlik | Thread güvenliği korunur; TREL için Network Key'den ayrı bir anahtar türetilir |
+| Çoklu radyo | Bir router'ın aynı komşuya hem 802.15.4 hem TREL ile bağlantısı olabilir; yönlendirme her bağlantının kalitesine göre en iyisini seçer |
+| Fayda | Farklı odalardaki/katlardaki BR'leri tek mesh'te birleştirir; çok atlamalı radyo yollarını kısaltır; Ethernet/Wi-Fi'ın yüksek bant genişliğini kullanır |
+
+TREL ile birleşen BR'ler, aralarında radyo bağlantısı olmasa bile **tek partition** oluşturur; böylece "aynı evde iki ayrı Thread adası" sorunu azalır.
+
+### 20.4 Thread 1.4
+
+Thread 1.4 (Eylül 2024'te duyuruldu), Thread'in tüketici ekosistemlerinde yaşanan pratik sorunlara odaklanır:
+
+| Alan | İçerik |
+|---|---|
+| **Border Router birlikte çalışabilirliği** | Daha önce isteğe bağlı olan birçok BR davranışı zorunlu hâle getirildi ve sertifikasyonla doğrulanıyor; farklı üreticilerin BR'leri aynı ağda daha öngörülebilir davranır |
+| **Kimlik bilgisi paylaşımı** | **ePSKc**: Border Agent'ın ürettiği kısa ömürlü kodla başka ekosistemlerin mevcut ağa güvenle katılması; ekosistemlerin tek ağ kullanması teşvik edilir |
+| **Gelişmiş internet bağlantısı** | **DHCPv6-PD** ile ISS'den alınan global öneklerin OMR olarak kullanılması → Thread cihazlarına global IPv6; NAT64 ve DNS iyileştirmeleri |
+| **Gelişmiş ağ teşhisi** | Çocuk tabloları, router komşuları, MLE sayaçları gibi yeni teşhis TLV'leri; sorgu kimlikli (Query ID) çoklu cevap mekanizması; ağ topolojisinin uzaktan çıkarılması |
+| **TCAT** | TLS ve sertifikalarla, BLE gibi bir taşıyıcı üzerinden Thread devreye alma (Bölüm 16.9) |
+
+### 20.5 Sürüm Uyumluluğu Nasıl Yönetilir?
+
+- **Version TLV** (MLE): Her cihaz kendi Thread sürümünü bildirir (1.1 = 2, 1.2 = 3, 1.3 = 4, 1.4 = 5). Özellikler yalnızca destekleyen eşler arasında kullanılır.
+- **Security Policy VR (Version Threshold for Routing)**: Ağ yöneticisi, router olabilecek cihazlar için asgari sürüm belirleyebilir.
+- **Çerçeve sürümü**: 2015 çerçeveleri yalnızca 1.2+ eşlere gönderilir.
+- **Network Data**: Yeni bayraklar/servisler eski cihazlar tarafından yok sayılır.
+
+### 20.6 Gelecek Yönelimleri
+
+Thread Group'un yol haritası kamuya tam açık olmamakla birlikte; daha düşük güçlü yeni bağlantı modları (ör. uyandırma çerçeveleri ve eşler arası doğrudan bağlantılar), daha büyük ve ticari dağıtımlar, Border Router ve teşhis özelliklerinin olgunlaşması gibi başlıklar topluluk ve OpenThread geliştirmelerinde öne çıkmaktadır. Bu alanlardaki özellikler resmî sürümlere girene kadar deneysel kabul edilmelidir.
+
+### 20.7 Bölüm Özeti
+
+- 1.2: 802.15.4-2015, CSL/SSED, Link Metrics, Thread Domain + BBR + DUA + MLR, CCM.
+- 1.3: Border Router şartnamesi (OMR, RIO, SRP, proxy'ler, NAT64), TREL, cihaz tarafı SRP/DNS, TCP.
+- 1.4: Zorunlu BR yetenekleri, ePSKc ile kimlik paylaşımı, DHCPv6-PD, gelişmiş teşhis, TCAT.
+- Sürümler Version TLV ve geriye uyumlu kodlamalarla bir arada çalışır.
+
+## 21. Ağ Teşhisi, İzleme ve Paket Analizi
+
+### 21.1 Network Diagnostics (Ağ Teşhis) Protokolü
+
+Thread, bir cihazın başka bir cihazın iç durumunu uzaktan sorgulayabilmesi için TMF tabanlı bir teşhis mekanizması tanımlar:
+
+| URI | Kullanım |
+|---|---|
+| `d/dg` | **Diagnostic Get**: Belirli bir cihazdan (RLOC/ML-EID) istenen TLV'leri ister; cevap aynı CoAP alışverişinde döner |
+| `d/dq` + `d/da` | **Diagnostic Get Query / Answer**: Çoklu yayın (ör. `ff03::1`) ile birçok cihaza sorgu; her cihaz ayrı bir Answer mesajıyla cevap verir |
+| `d/dr` | **Diagnostic Reset**: Belirli sayaçları sıfırlar |
+
+#### Teşhis TLV'leri
+
+| Tür | TLV | İçerik |
+|---|---|---|
+| 0 | Extended MAC Address | Cihazın Extended Address'i |
+| 1 | Address16 | RLOC16 |
+| 2 | Mode | R/D/N bitleri |
+| 3 | Timeout | Child timeout (çocuklar için) |
+| 4 | Connectivity | Connectivity TLV (Bölüm 9.6) |
+| 5 | Route64 | Yönlendirme bilgisi |
+| 6 | Leader Data | Partition, Leader, sürümler |
+| 7 | Network Data | Cihazın gördüğü Network Data |
+| 8 | IPv6 Address List | Cihazın IPv6 adresleri |
+| 9 | MAC Counters | MAC katmanı sayaçları |
+| 14 | Battery Level | Pil seviyesi (%) |
+| 15 | Supply Voltage | Besleme gerilimi (mV) |
+| 16 | Child Table | Çocuk tablosu (router'lar için) |
+| 17 | Channel Pages | Desteklenen kanal sayfaları |
+| 18 | Type List | (İstekte) istenen TLV türlerinin listesi |
+| 19 | Max Child Timeout | Çocuklardan en büyük timeout |
+| 23 | EUI-64 | Fabrika EUI-64'ü |
+| 24 | Version | Thread sürümü |
+| 25 / 26 / 27 | Vendor Name / Model / SW Version | Üretici bilgileri |
+| 28 | Thread Stack Version | Yığın sürüm dizesi |
+| 29 | Child | (1.4) Ayrıntılı çocuk bilgisi |
+| 30 | Child IPv6 Address List | (1.4) Çocuğun adresleri |
+| 31 | Router Neighbor | (1.4) Router komşu bilgisi |
+| 32 / 33 | Answer / Query ID | (1.4) Çok parçalı cevap yönetimi |
+| 34 | MLE Counters | (1.4) MLE rol/attach sayaçları |
+| 35 | Vendor App URL | Üretici uygulama adresi |
+
+#### Örnek
+
+```text
+> networkdiagnostic get fdde:ad00:beef:0:0:ff:fe00:9400 0 1 5 6 9 16
+DIAG_GET.rsp/ans from fdde:ad00:beef:0:0:ff:fe00:9400:
+Ext Address: 8e1f00ab23cd45ef
+Rloc16: 0x9400
+Route: …
+Leader Data: PartitionId:0x3f8a12c4 Weighting:64 DataVersion:118 StableDataVersion:74 LeaderRouterId:23
+MAC Counters: …
+Child Table: …
+```
+
+OpenThread'in `meshdiag topology` gibi komutları, bu mekanizmayı kullanarak tüm ağın router/çocuk topolojisini tek komutla çıkarabilir.
+
+### 21.2 Teşhis İçin OpenThread CLI Komutları
+
+| Komut | Ne gösterir? | Neye bakılır? |
+|---|---|---|
+| `state` | Rol (disabled/detached/child/router/leader) | Cihaz beklenen rolde mi? |
+| `rloc16`, `extaddr` | Adresler | Kimlik |
+| `leaderdata` | Partition ID, weighting, sürümler, Leader Router ID | Ağda birden çok partition var mı? (farklı cihazlarda farklı Partition ID) |
+| `router table` | Router'lar, LQ In/Out, yol maliyeti, sonraki atlama | Zayıf (LQ 1) bağlantılar, uzak router'lar |
+| `child table` | Çocuklar, timeout, yaş, mod, sürüm, CSL | Çocuk sayısı, kopan çocuklar |
+| `neighbor table` | Tüm komşular (router + çocuk) ve RSSI | Sinyal seviyeleri |
+| `parent` | Ebeveyn ve link kalitesi (çocuklar için) | Ebeveyn bağlantısı iyi mi? |
+| `counters mac` / `counters mle` | MAC ve MLE sayaçları | Yeniden iletim, CCA hatası, attach/rol değişim sayıları |
+| `netdata show` | Network Data | Önekler, rotalar, SRP/BBR servisleri |
+| `ipaddr`, `ipmaddr` | Adresler ve abonelikler | OMR adresi var mı? |
+| `channel`, `panid`, `extpanid`, `networkname` | Ağ parametreleri | Doğru ağda mı? |
+| `dataset active` | Active Dataset | Zaman damgası, kanal |
+| `ping <adres>` | Erişilebilirlik ve gecikme | Uçtan uca bağlantı |
+| `scan`, `discover`, `scan energy` | Çevredeki ağlar ve kanal gürültüsü | Kanal seçimi, yabancı ağlar |
+| `channel monitor` | Kanal doluluk örneklemesi | Wi-Fi girişimi |
+| `pollperiod`, `childtimeout`, `csl` | Uyuyan cihaz ayarları | Enerji/gecikme dengesi |
+| `br state`, `br omrprefix`, `br nat64prefix` | Border Router durumu | BR çalışıyor mu, önek ne? |
+| `srp server host`, `srp server service` | SRP kayıtları | Cihazlar servis kaydı yapmış mı? |
+| `linkmetrics …` | Link Metrics sorguları | 1.2+ bağlantı ölçümleri |
+
+#### Örnek çıktılar
+
+```text
+> router table
+| ID | RLOC16 | Next Hop | Path Cost | LQ In | LQ Out | Age | Extended MAC     | Link |
++----+--------+----------+-----------+-------+--------+-----+------------------+------+
+|  5 | 0x1400 |       12 |         4 |     0 |      0 |   0 | 1e2c7a0f5a3f2a11 |    0 |
+| 12 | 0x3000 |       63 |         0 |     3 |      3 |   4 | 6a77d1c2b0e94f20 |    1 |
+| 23 | 0x5c00 |       63 |         0 |     0 |      0 |   0 | 1a2b3c4d5e6f7081 |    0 |
+| 37 | 0x9400 |       12 |         3 |     0 |      0 |   0 | 8e1f00ab23cd45ef |    0 |
+```
+
+- `Link = 1`: Doğrudan komşu (LQ In/Out değerleri anlamlı). Burada Router 12 ile LQ 3/3 mükemmel bağlantı var.
+- `Next Hop`: Komşu olmayan router'lara giden yolun ilk atlaması (63 = doğrudan/yok).
+- `Path Cost`: Hedef router'a toplam maliyet.
+- `Age`: Komşudan son duyulan mesajdan beri geçen süre (s).
+
+```text
+> child table
+| ID  | RLOC16 | Timeout    | Age        | LQ In | C_VN |R|D|N|Ver|CSL|QMsgCnt| Extended MAC     |
++-----+--------+------------+------------+-------+------+-+-+-+---+---+-------+------------------+
+|   1 | 0x5c01 |        240 |         17 |     3 |  118 |0|0|0|  4| 0 |     0 | 4ecede68435358ac |
+|   2 | 0x5c02 |        240 |          3 |     2 |  118 |1|0|1|  4| 0 |     0 | b2f0c1d2e3a4b5c6 |
+```
+
+- Çocuk 1: SED (R=0, D=0, N=0), 17 s önce duyuldu, kuyrukta mesajı yok.
+- Çocuk 2: MED (R=1, N=1), LQ 2.
+
+```text
+> counters mac
+TxTotal: 10560
+    TxAckRequested: 6380
+    TxAcked: 6201
+    TxNoAckRequested: 4180
+    TxDataPoll: 0
+    TxRetry: 912
+    TxErrCca: 37
+    TxErrAbort: 0
+RxTotal: 24311
+    RxDuplicated: 214
+    RxErrNoFrame: 0
+    RxErrSec: 3
+    RxErrFcs: 418
+```
+
+Yorum: ACK başarı oranı 6201 / 6380 ≈ %97.2; yeniden iletim oranı 912 / 6380 ≈ %14 (biraz yüksek — bazı bağlantılar zayıf olabilir); CCA hatası düşük (kanal çok meşgul değil); FCS hataları ortamdaki girişimin veya zayıf sinyallerin göstergesi olabilir.
+
+### 21.3 İzlenmesi Gereken Göstergeler
+
+| Gösterge | Sağlıklı | Dikkat | Olası anlam |
+|---|---|---|---|
+| Partition sayısı | 1 | > 1 | Ağ bölünmüş; bölgeler arası bağlantı zayıf |
+| Router sayısı | 16–32 arasında, cihaz sayısına uygun | Çok az router ve çok sayıda çocuk | Kapsama zayıf, tek hata noktaları oluşabilir |
+| Router komşu LQ'ları | Çoğunlukla 3 | Çok sayıda LQ 1 | Zayıf bağlantılar, yüksek yeniden iletim |
+| MAC yeniden iletim oranı | < %5–10 | > %20 | Girişim, zayıf link, gizli düğüm |
+| CCA hata oranı | Çok düşük | Yükselen | Kanal meşgul (Wi-Fi), kanal değiştirmeyi düşünün |
+| Attach / parent change sayaçları | Nadiren artar | Sürekli artar | Kararsız ebeveyn bağlantıları, ebeveyn kopmaları |
+| Leader / router rol değişimleri | Nadiren | Sık | Ağ kararsızlığı, partition birleşmeleri |
+| SED poll başarısı | Yüksek | Poll'lara cevap gelmiyor | Ebeveyn kaybı, aşırı yüklü ebeveyn |
+| Address Query başarısızlıkları | Nadir | Sık | Cihazlar ağdan düşüyor veya önbellek sorunları |
+
+### 21.4 Paket Yakalama (Sniffing)
+
+Radyo trafiğini görmek, Thread sorunlarını çözmenin en güçlü yoludur.
+
+**Donanım seçenekleri:**
+
+- **nRF52840 Dongle** + Nordic'in 802.15.4 sniffer yazılımı (Wireshark eklentisi ile canlı yakalama),
+- **Silicon Labs** geliştirme kitleri + Network Analyzer (Simplicity Studio),
+- **TI** CC26xx/CC13xx LaunchPad + paket sniffer yazılımı,
+- **Espressif** ESP32-H2/C6 tabanlı sniffer uygulamaları,
+- OpenThread RCP + **pyspinel** sniffer aracı (`sniffer.py`) ile Wireshark'a akış.
+
+Sniffer, ağın **kanalına** ayarlanmalıdır (yakalama tek kanalda yapılır).
+
+**Wireshark yapılandırması:**
+
+1. **IEEE 802.15.4 → Decryption Keys**: Anahtar olarak **Network Key**'i girin, anahtar indeksini (Key Sequence 0 için 1) belirtin ve **Key Hash** olarak **"Thread hash"** seçin. Wireshark MAC ve MLE anahtarlarını Network Key'den kendisi türetir.
+2. **IEEE 802.15.4 FCS formatı**: Sniffer'ın çıktı biçimine göre (TI meta verili veya ITU-T CRC-16) ayarlayın; yanlışsa tüm çerçeveler "bad FCS" görünür.
+3. **6LoWPAN → Context 0**: Mesh-local öneki girin (`fdde:ad00:beef:0::/64`); adreslerin doğru açılması için gereklidir. Diğer bağlamlar için OMR önekini de ekleyebilirsiniz.
+4. **CoAP**: UDP 61631'in CoAP olarak çözümlendiğinden emin olun (TMF mesajları için).
+5. Key Sequence ilerlediyse (anahtar rotasyonu) Thread protokol ayarlarındaki sıra numarasını güncelleyin veya ilgili indeksleri ekleyin.
+
+**Kullanışlı Wireshark filtreleri:**
+
+| Filtre | Gösterir |
+|---|---|
+| `wpan` | Tüm 802.15.4 çerçeveleri |
+| `wpan.frame_type == 0x3` | MAC komutları (ör. Data Request poll'ları) |
+| `mle` | MLE mesajları |
+| `mle.cmd == 9` | Parent Request |
+| `coap` | TMF ve uygulama CoAP mesajları |
+| `udp.port == 61631` | TMF |
+| `udp.port == 5540` | Matter |
+| `thread_address` | Thread adres TLV'li TMF mesajları (Address Query/Notification/Solicit) |
+| `thread_nwd` | Network Data içeren mesajlar |
+| `thread_meshcop` | Devreye alma (MeshCoP) mesajları |
+| `wpan.src64 == 1a:2b:3c:4d:5e:6f:70:81` | Belirli bir cihazın çerçeveleri |
+
+### 21.5 Matter Üzerinden Thread Teşhisi
+
+Matter, Thread cihazlarının ağ durumunu **Thread Network Diagnostics** kümesi (cluster ID `0x0035`) ile sunar. Önemli öznitelikler:
+
+| Grup | Öznitelikler |
+|---|---|
+| Ağ | Channel, RoutingRole, NetworkName, PanId, ExtendedPanId, MeshLocalPrefix |
+| Partition | PartitionId, Weighting, DataVersion, StableDataVersion, LeaderRouterId |
+| Tablolar | NeighborTable (RSSI, LQI, yaş, frame error rate…), RouteTable |
+| Rol sayaçları | DetachedRoleCount, ChildRoleCount, RouterRoleCount, LeaderRoleCount, AttachAttemptCount, PartitionIdChangeCount, ParentChangeCount |
+| Trafik sayaçları | TxTotalCount, TxRetryCount, TxErrCcaCount, RxTotalCount, RxErrFcsCount … |
+| Dataset | ActiveTimestamp, PendingTimestamp, Delay, SecurityPolicy, ChannelPage0Mask |
+| Hatalar | ActiveNetworkFaults (ör. bağlantı kaybı) |
+
+Ekosistem uygulamaları ve Home Assistant gibi platformlar bu verileri kullanarak ağ topolojisini ve cihaz bağlantı kalitesini görselleştirir.
+
+### 21.6 Diğer Araçlar
+
+| Araç | Amaç |
+|---|---|
+| **OTNS** (OpenThread Network Simulator) | Sanal Thread ağlarını görsel olarak simüle etme, senaryo testi |
+| **OpenThread POSIX simülasyonu** | Bilgisayarda çok sayıda sanal düğüm (`ot-cli-ftd` simülasyon) |
+| **Thread Topology Monitor** (Nordic) | Ağ topolojisinin canlı görselleştirilmesi |
+| **Network Analyzer** (Silicon Labs) | Çok kanallı yakalama, enerji profili ile birlikte analiz |
+| **OTBR Web arayüzü / REST API** | BR üzerinden ağ durumu, topoloji, dataset |
+| **Ekosistem uygulamaları** | Bazı üçüncü taraf uygulamalar Thread topolojisini ve rolleri gösterebilir |
+
+### 21.7 Bölüm Özeti
+
+- Thread'in TMF tabanlı teşhis protokolü (`d/dg`, `d/dq`) ile cihazların iç durumu uzaktan okunabilir; 1.4 ile kapsam genişledi.
+- `router table`, `child table`, `leaderdata`, `counters mac` gibi komutlar ağ sağlığının temel göstergeleridir.
+- Yeniden iletim oranı, CCA hataları, partition ve parent değişim sayaçları en kritik metriklerdir.
+- Wireshark'ta Network Key + "Thread hash", 6LoWPAN bağlam 0 ve doğru FCS formatı ile tüm trafik çözülebilir.
+- Matter'ın Thread Network Diagnostics kümesi bu bilgileri uygulama seviyesine taşır.
