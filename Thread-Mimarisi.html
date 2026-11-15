@@ -1,0 +1,2139 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thread Ağ Mimarisi</title>
+<meta name="description" content="Thread (IEEE 802.15.4 / 6LoWPAN / IPv6) ağ mimarisi ve haberleşme yapısı üzerine kapsamlı Türkçe teknik rehber.">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("thread-doc-theme");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f6f2; --surface: #ffffff; --surface-2: #f0eee8; --text: #1c1d1f; --muted: #5d6166;
+  --border: #e2dfd6; --accent: #0d7a5f; --accent-strong: #0a5e49; --accent-soft: #e2f1ec;
+  --link: #0b5fae; --code-bg: #f3f1eb; --code-text: #24292f;
+  --note: #0b5fae; --tip: #1a7f37; --important: #8250df; --warning: #9a6700; --caution: #cf222e;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 6px 20px rgba(0,0,0,.05);
+  --sidebar-w: 320px; --topbar-h: 56px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1214; --surface: #161a1d; --surface-2: #1d2226; --text: #e6e4df; --muted: #9ea4aa;
+    --border: #2a3035; --accent: #3cc59a; --accent-strong: #5ad6ad; --accent-soft: #12302a;
+    --link: #79b8ff; --code-bg: #1a1f23; --code-text: #e1e4e8;
+    --note: #58a6ff; --tip: #3fb950; --important: #a371f7; --warning: #d29922; --caution: #f85149;
+    --shadow: 0 1px 2px rgba(0,0,0,.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1214; --surface: #161a1d; --surface-2: #1d2226; --text: #e6e4df; --muted: #9ea4aa;
+  --border: #2a3035; --accent: #3cc59a; --accent-strong: #5ad6ad; --accent-soft: #12302a;
+  --link: #79b8ff; --code-bg: #1a1f23; --code-text: #e1e4e8;
+  --note: #58a6ff; --tip: #3fb950; --important: #a371f7; --warning: #d29922; --caution: #f85149;
+  --shadow: 0 1px 2px rgba(0,0,0,.3);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: calc(var(--topbar-h) + 16px); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16.5px/1.72 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Üst çubuk */
+.topbar {
+  position: fixed; inset: 0 0 auto 0; height: var(--topbar-h); z-index: 30;
+  display: flex; align-items: center; gap: 12px; padding: 0 16px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 8px; flex: none;
+  background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 15px;
+}
+.brand-text { min-width: 0; }
+.brand-title { font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-sub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spacer { flex: 1; }
+.meta-pill { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+  height: 34px; min-width: 34px; padding: 0 10px; border-radius: 8px; cursor: pointer; font: inherit; font-size: 14px;
+}
+.icon-btn:hover { border-color: var(--accent); }
+#menuBtn { display: none; }
+
+/* Kenar menü */
+.sidebar {
+  position: fixed; top: var(--topbar-h); bottom: 0; left: 0; width: var(--sidebar-w); z-index: 20;
+  background: var(--surface); border-right: 1px solid var(--border);
+  overflow-y: auto; padding: 0 10px 40px; overscroll-behavior: contain;
+}
+.search-wrap { position: sticky; top: 0; background: var(--surface); padding: 14px 4px 10px; z-index: 1; }
+.search-wrap input {
+  width: 100%; height: 36px; border-radius: 9px; border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text); padding: 0 12px; font: inherit; font-size: 14px;
+}
+.search-wrap input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+.toc, .toc ul { list-style: none; margin: 0; padding: 0; }
+.toc a {
+  display: block; padding: 5px 10px; border-radius: 7px; color: var(--muted);
+  font-size: 13.5px; line-height: 1.4; text-decoration: none;
+}
+.toc a:hover { background: var(--surface-2); color: var(--text); }
+.toc-ch > a { font-weight: 600; color: var(--text); margin-top: 2px; }
+.toc-sub { display: none; margin: 2px 0 6px 10px !important; border-left: 1px solid var(--border); padding-left: 6px !important; }
+.toc-ch.open > .toc-sub { display: block; }
+.toc a.active { background: var(--accent-soft); color: var(--accent-strong); }
+.toc li.hidden { display: none; }
+
+/* İçerik */
+main { margin-left: var(--sidebar-w); padding: calc(var(--topbar-h) + 28px) 40px 80px; }
+.content { max-width: 940px; margin: 0 auto; }
+.content h1 { font-size: 2.35rem; line-height: 1.2; letter-spacing: -0.02em; margin: .4em 0 .5em; }
+.content h2 {
+  font-size: 1.8rem; line-height: 1.25; letter-spacing: -0.01em;
+  margin: 3.6rem 0 1rem; padding-top: 1.6rem; border-top: 2px solid var(--border);
+}
+.content h3 { font-size: 1.32rem; line-height: 1.3; margin: 2.4rem 0 .7rem; }
+.content h4 { font-size: 1.08rem; margin: 1.8rem 0 .5rem; }
+.content h2, .content h3, .content h4 { position: relative; }
+.anchor { margin-left: .4em; color: var(--muted); opacity: 0; font-weight: 400; text-decoration: none !important; }
+h2:hover .anchor, h3:hover .anchor, h4:hover .anchor { opacity: .7; }
+.content p, .content li { overflow-wrap: anywhere; }
+.content ul, .content ol { padding-left: 1.4em; }
+.content li + li { margin-top: .2em; }
+.content hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+.content img { max-width: 100%; }
+.content strong { font-weight: 650; }
+
+code, pre { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace; }
+:not(pre) > code {
+  background: var(--code-bg); color: var(--code-text); padding: .1em .38em; border-radius: 5px;
+  font-size: .86em; border: 1px solid var(--border); overflow-wrap: anywhere;
+}
+pre {
+  position: relative; background: var(--code-bg); color: var(--code-text);
+  border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+  overflow-x: auto; font-size: 13.2px; line-height: 1.55; tab-size: 4;
+}
+pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+.copy-btn {
+  position: absolute; top: 8px; right: 8px; font: 12px Inter, sans-serif; padding: 3px 8px;
+  border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+  cursor: pointer; opacity: 0; transition: opacity .15s;
+}
+pre:hover .copy-btn, .copy-btn:focus { opacity: 1; }
+
+.table-wrap { overflow-x: auto; margin: 1.2rem 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; line-height: 1.5; }
+th, td { padding: 8px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+th { background: var(--surface-2); font-weight: 650; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--surface-2); }
+
+blockquote { margin: 1.2rem 0; padding: .6rem 1rem; border-left: 4px solid var(--border); color: var(--muted); background: var(--surface); border-radius: 0 10px 10px 0; }
+blockquote p { margin: .4em 0; }
+.callout { color: var(--text); --c: var(--note); border-left-color: var(--c); background: color-mix(in srgb, var(--c) 7%, var(--surface)); }
+.callout-title { font-weight: 700; color: var(--c); margin-bottom: .2em !important; font-size: .92rem; letter-spacing: .02em; text-transform: uppercase; }
+.callout-tip { --c: var(--tip); } .callout-important { --c: var(--important); }
+.callout-warning { --c: var(--warning); } .callout-caution { --c: var(--caution); }
+
+.diagram {
+  margin: 1.4rem 0; padding: 16px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow-x: auto; text-align: center; box-shadow: var(--shadow);
+}
+.diagram pre.mermaid { background: transparent; border: 0; padding: 0; margin: 0; text-align: left; white-space: pre; }
+.diagram pre.mermaid[data-processed="true"] { text-align: center; white-space: normal; }
+.diagram svg { max-width: 100%; height: auto; }
+
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin: 1.2rem 0 2rem; }
+.card {
+  display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 11px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text); text-decoration: none !important;
+  transition: border-color .15s, transform .15s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.card-num { font-size: 12px; font-weight: 700; color: var(--accent); }
+.card-title { font-weight: 600; font-size: 14.5px; line-height: 1.35; }
+.card-meta { font-size: 12px; color: var(--muted); }
+
+.page-footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+
+#progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 40; }
+#toTop {
+  position: fixed; right: 18px; bottom: 18px; z-index: 25; width: 42px; height: 42px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); box-shadow: var(--shadow);
+  cursor: pointer; font-size: 18px; opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+#toTop.show { opacity: 1; pointer-events: auto; }
+.overlay { display: none; }
+
+@media (max-width: 1050px) {
+  #menuBtn { display: inline-block; }
+  .meta-pill { display: none; }
+  .sidebar { transform: translateX(-100%); transition: transform .2s ease; width: min(86vw, 340px); box-shadow: var(--shadow); }
+  body.nav-open .sidebar { transform: none; }
+  body.nav-open .overlay { display: block; position: fixed; inset: var(--topbar-h) 0 0 0; background: rgba(0,0,0,.35); z-index: 15; }
+  main { margin-left: 0; padding: calc(var(--topbar-h) + 18px) 16px 64px; }
+  .content h1 { font-size: 1.8rem; }
+  .content h2 { font-size: 1.45rem; }
+  .content h3 { font-size: 1.18rem; }
+  body { font-size: 15.5px; }
+}
+@media print {
+  .topbar, .sidebar, #progress, #toTop, .copy-btn, .anchor, .overlay { display: none !important; }
+  main { margin: 0; padding: 0; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .content { max-width: none; }
+  .content h2 { break-before: page; border-top: none; }
+  pre, .table-wrap, .diagram, blockquote { break-inside: avoid; }
+  a { color: inherit; }
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<header class="topbar">
+  <button class="icon-btn" id="menuBtn" aria-label="İçindekiler menüsünü aç/kapat">☰</button>
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">T</div>
+    <div class="brand-text">
+      <div class="brand-title">Thread Ağ Mimarisi ve Haberleşme Yapısı</div>
+      <div class="brand-sub">IEEE 802.15.4 · 6LoWPAN · IPv6 · MLE · Matter</div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <span class="meta-pill">5 bölüm · 6.888 kelime · ≈38 dk okuma</span>
+  <button class="icon-btn" id="themeBtn" aria-label="Açık/koyu tema">◐</button>
+</header>
+<div class="overlay" id="overlay"></div>
+<nav class="sidebar" id="sidebar" aria-label="İçindekiler">
+  <div class="search-wrap"><input id="tocSearch" type="search" placeholder="Başlıklarda ara…" autocomplete="off"></div>
+  <ul class="toc" id="toc">
+<li class="toc-ch"><a href="#0-bu-doküman-hakkında">0. Bu Doküman Hakkında</a>
+<ul class="toc-sub">
+<li><a href="#01-kimler-i̇çin">0.1 Kimler İçin?</a></li>
+<li><a href="#02-nasıl-okunmalı">0.2 Nasıl Okunmalı?</a></li>
+<li><a href="#03-gösterim-kuralları">0.3 Gösterim Kuralları</a></li>
+</ul>
+</li>
+<li class="toc-ch"><a href="#1-threade-giriş">1. Thread'e Giriş</a>
+<ul class="toc-sub">
+<li><a href="#11-thread-nedir">1.1 Thread Nedir?</a></li>
+<li><a href="#12-neden-thread-çözdüğü-problemler">1.2 Neden Thread? Çözdüğü Problemler</a></li>
+<li><a href="#13-tarihçe">1.3 Tarihçe</a></li>
+<li><a href="#14-sürümlerin-özeti">1.4 Sürümlerin Özeti</a></li>
+<li><a href="#15-thread-group-ve-sertifikasyon">1.5 Thread Group ve Sertifikasyon</a></li>
+<li><a href="#16-openthread">1.6 OpenThread</a></li>
+<li><a href="#17-thread-ve-matter-i̇lişkisi">1.7 Thread ve Matter İlişkisi</a></li>
+<li><a href="#18-büyük-resim">1.8 Büyük Resim</a></li>
+<li><a href="#19-threadin-tanımlamadıkları">1.9 Thread'in Tanımlamadıkları</a></li>
+<li><a href="#110-bölüm-özeti">1.10 Bölüm Özeti</a></li>
+</ul>
+</li>
+<li class="toc-ch"><a href="#2-protokol-yığını-ve-genel-mimari">2. Protokol Yığını ve Genel Mimari</a>
+<ul class="toc-sub">
+<li><a href="#21-katmanlar">2.1 Katmanlar</a></li>
+<li><a href="#22-osi-modeliyle-eşleme">2.2 OSI Modeliyle Eşleme</a></li>
+<li><a href="#23-threadin-kullandığı-ve-tanımladığı-bileşenler">2.3 Thread'in Kullandığı ve Tanımladığı Bileşenler</a></li>
+<li><a href="#24-kontrol-düzlemi-ve-veri-düzlemi">2.4 Kontrol Düzlemi ve Veri Düzlemi</a></li>
+<li><a href="#25-bir-paketin-yolculuğu-genel-bakış">2.5 Bir Paketin Yolculuğu (Genel Bakış)</a></li>
+<li><a href="#26-önemli-udp-portları">2.6 Önemli UDP Portları</a></li>
+<li><a href="#27-bölüm-özeti">2.7 Bölüm Özeti</a></li>
+</ul>
+</li>
+<li class="toc-ch"><a href="#3-fiziksel-katman-ieee-802154-phy">3. Fiziksel Katman (IEEE 802.15.4 PHY)</a>
+<ul class="toc-sub">
+<li><a href="#31-genel-bakış">3.1 Genel Bakış</a></li>
+<li><a href="#32-kanallar-ve-frekanslar">3.2 Kanallar ve Frekanslar</a></li>
+<li><a href="#33-modülasyon-ve-yayılma-spektrumu">3.3 Modülasyon ve Yayılma Spektrumu</a></li>
+<li><a href="#34-ppdu-fiziksel-paket-yapısı">3.4 PPDU (Fiziksel Paket) Yapısı</a></li>
+<li><a href="#35-önemli-phymac-zaman-sabitleri">3.5 Önemli PHY/MAC Zaman Sabitleri</a></li>
+<li><a href="#36-alıcı-ölçümleri-rssi-lqi-ed-ve-gürültü-tabanı">3.6 Alıcı Ölçümleri: RSSI, LQI, ED ve Gürültü Tabanı</a></li>
+<li><a href="#37-cca-clear-channel-assessment">3.7 CCA (Clear Channel Assessment)</a></li>
+<li><a href="#38-wi-fi-ve-bluetooth-ile-bir-arada-yaşama">3.8 Wi-Fi ve Bluetooth ile Bir Arada Yaşama</a></li>
+<li><a href="#39-bağlantı-bütçesi-ve-menzil">3.9 Bağlantı Bütçesi ve Menzil</a></li>
+<li><a href="#310-etkin-veri-hızı-throughput">3.10 Etkin Veri Hızı (Throughput)</a></li>
+<li><a href="#311-bölüm-özeti">3.11 Bölüm Özeti</a></li>
+</ul>
+</li>
+<li class="toc-ch"><a href="#4-mac-katmanı-ieee-802154-mac">4. MAC Katmanı (IEEE 802.15.4 MAC)</a>
+<ul class="toc-sub">
+<li><a href="#41-görevler">4.1 Görevler</a></li>
+<li><a href="#42-threadin-802154-maci-kullanma-biçimi">4.2 Thread'in 802.15.4 MAC'i Kullanma Biçimi</a></li>
+<li><a href="#43-mac-çerçeve-formatı">4.3 MAC Çerçeve Formatı</a></li>
+<li><a href="#44-adresler">4.4 Adresler</a></li>
+<li><a href="#45-csma-ca-slotsuz">4.5 CSMA-CA (Slotsuz)</a></li>
+<li><a href="#46-onay-ack-ve-yeniden-i̇letim">4.6 Onay (ACK) ve Yeniden İletim</a></li>
+<li><a href="#47-dolaylı-i̇letim-indirect-transmission-ve-veri-sorgulama-data-poll">4.7 Dolaylı İletim (Indirect Transmission) ve Veri Sorgulama (Data Poll)</a></li>
+<li><a href="#48-mac-komutları">4.8 MAC Komutları</a></li>
+<li><a href="#49-mac-güvenliği">4.9 MAC Güvenliği</a></li>
+<li><a href="#410-bilgi-elemanları-information-elements--ie">4.10 Bilgi Elemanları (Information Elements — IE)</a></li>
+<li><a href="#411-taramalar">4.11 Taramalar</a></li>
+<li><a href="#412-mac-seviyesinde-alım-filtreleri">4.12 MAC Seviyesinde Alım Filtreleri</a></li>
+<li><a href="#413-bölüm-özeti">4.13 Bölüm Özeti</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+<main>
+  <article class="content" id="content">
+<h1 id="thread-ağ-mimarisi-ve-haberleşme-yapısı--kapsamlı-teknik-rehber">Thread Ağ Mimarisi ve Haberleşme Yapısı — Kapsamlı Teknik Rehber</h1>
+<blockquote>
+<p>IEEE 802.15.4 radyosu üzerinde IPv6 konuşan, düşük güçlü, kendi kendini onaran mesh ağ protokolü <strong>Thread</strong>'in fiziksel katmandan uygulama katmanına (Matter) kadar tüm mimarisi, mesaj akışları, adresleme ve yönlendirme mantığı, güvenlik modeli, Border Router işlevleri ve pratik kullanımı.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Kapsam</strong></td>
+<td>Thread 1.1 → 1.4, OpenThread, Thread Border Router, Matter over Thread</td>
+</tr>
+<tr>
+<td><strong>Dil</strong></td>
+<td>Türkçe (teknik terimler orijinal İngilizce adlarıyla birlikte verilmiştir)</td>
+</tr>
+<tr>
+<td><strong>Seviye</strong></td>
+<td>Temelden uzmanlığa: her bölüm önce kavramı, sonra bit/bayt seviyesindeki ayrıntıyı anlatır</td>
+</tr>
+<tr>
+<td><strong>Biçim</strong></td>
+<td>Tek parça Markdown + aynı içeriğin kenar menülü HTML sürümü</td>
+</tr>
+<tr>
+<td><strong>Doküman sürümü</strong></td>
+<td>1.0 — Kasım 2026</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="0-bu-doküman-hakkında">0. Bu Doküman Hakkında<a class="anchor" href="#0-bu-doküman-hakkında" aria-label="Bu başlığa bağlantı">#</a></h2>
+<h3 id="01-kimler-i̇çin">0.1 Kimler İçin?<a class="anchor" href="#01-kimler-i̇çin" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Bu rehber şu okuyucular düşünülerek hazırlanmıştır:</p>
+<ul>
+<li><strong>Gömülü yazılım geliştiricileri</strong> — OpenThread veya üretici SDK'ları (Nordic, Silicon Labs, TI, NXP, Espressif) ile Thread cihazı geliştirenler.</li>
+<li><strong>IoT / akıllı ev mimarları</strong> — Matter tabanlı ürün ve ağ tasarlayanlar, Border Router seçimi ve ağ planlaması yapanlar.</li>
+<li><strong>Ağ mühendisleri</strong> — IPv6, 6LoWPAN, mesh yönlendirme ve güvenlik konularını Thread özelinde derinlemesine öğrenmek isteyenler.</li>
+<li><strong>Test / saha ekipleri</strong> — Sniffer ile paket analizi yapan, kopma, gecikme, pil tüketimi gibi sorunları teşhis edenler.</li>
+<li><strong>Meraklı öğrenciler</strong> — "Akıllı ampulüm telefonumla nasıl konuşuyor?" sorusunun her katmandaki cevabını bilmek isteyenler.</li>
+</ul>
+<h3 id="02-nasıl-okunmalı">0.2 Nasıl Okunmalı?<a class="anchor" href="#02-nasıl-okunmalı" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Doküman katmanlı bir sırayla ilerler: önce büyük resim (Bölüm 1–2), sonra radyodan yukarıya doğru katmanlar (Bölüm 3–6), ardından Thread'in kendine özgü kontrol düzlemi (Bölüm 7–14), güvenlik ve devreye alma (Bölüm 15–17), enerji ve Border Router (Bölüm 18–19), sürüm özellikleri ve teşhis (Bölüm 20–21), uçtan uca senaryolar ve Matter (Bölüm 22–23), yazılım/donanım/tasarım (Bölüm 24–27), karşılaştırma ve ekler (Bölüm 28–29).</p>
+<ul>
+<li>Hızlı bir genel bakış için: <strong>Bölüm 1, 2, 7, 8, 22</strong>.</li>
+<li>Paket seviyesinde derinlik için: <strong>Bölüm 4, 5, 9, 10, 13</strong>.</li>
+<li>Güvenlik odaklı okuma için: <strong>Bölüm 15, 16, 17</strong>.</li>
+<li>Ürün geliştirme için: <strong>Bölüm 18, 19, 23, 24, 26, 27</strong>.</li>
+</ul>
+<h3 id="03-gösterim-kuralları">0.3 Gösterim Kuralları<a class="anchor" href="#03-gösterim-kuralları" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Gösterim</th>
+<th>Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x1A</code></td>
+<td>Onaltılık (hex) değer</td>
+</tr>
+<tr>
+<td><code>0b0110</code></td>
+<td>İkili (binary) değer</td>
+</tr>
+<tr>
+<td><code>fd00::/8</code></td>
+<td>IPv6 öneki (prefix) ve uzunluğu</td>
+</tr>
+<tr>
+<td><strong>RLOC16</strong></td>
+<td>İlk geçtiği yerde kalın yazılan teknik terim; sözlükte (Ek E) açıklaması vardır</td>
+</tr>
+<tr>
+<td><code>a/aq</code></td>
+<td>Thread yönetim mesajı (CoAP URI yolu)</td>
+</tr>
+<tr>
+<td>bit 7 … bit 0</td>
+<td>Bayt içindeki bitler en anlamlıdan (MSB) en anlamsıza (LSB) doğru numaralanır</td>
+</tr>
+<tr>
+<td>LE / BE</td>
+<td>Little-endian / Big-endian bayt sırası</td>
+</tr>
+<tr>
+<td>≈</td>
+<td>Yaklaşık değer; donanıma, yapılandırmaya veya yazılım sürümüne göre değişir</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout callout-note"><p class="callout-title">Not</p><p>Thread şartnamesi (Thread Specification) Thread Group tarafından yayımlanır. Bu dokümandaki sabitler ve varsayılan değerler şartname ile yaygın açık kaynak uygulama OpenThread'deki karşılıkları esas alınarak verilmiştir. "OpenThread varsayılanı" ifadesi geçen değerler derleme zamanında veya çalışma anında değiştirilebilir; kesin ürün davranışı için kullandığınız SDK sürümünün belgelerine bakın.</p>
+</blockquote>
+<h2 id="i̇çindekiler">İçindekiler<a class="anchor" href="#i̇çindekiler" aria-label="Bu başlığa bağlantı">#</a></h2>
+<nav class="chapter-grid" aria-label="Bölümler"><a class="card" href="#0-bu-doküman-hakkında"><span class="card-num">0</span><span class="card-title">Bu Doküman Hakkında</span><span class="card-meta">3 alt başlık</span></a><a class="card" href="#1-threade-giriş"><span class="card-num">1</span><span class="card-title">Thread&#x27;e Giriş</span><span class="card-meta">10 alt başlık</span></a><a class="card" href="#2-protokol-yığını-ve-genel-mimari"><span class="card-num">2</span><span class="card-title">Protokol Yığını ve Genel Mimari</span><span class="card-meta">7 alt başlık</span></a><a class="card" href="#3-fiziksel-katman-ieee-802154-phy"><span class="card-num">3</span><span class="card-title">Fiziksel Katman (IEEE 802.15.4 PHY)</span><span class="card-meta">11 alt başlık</span></a><a class="card" href="#4-mac-katmanı-ieee-802154-mac"><span class="card-num">4</span><span class="card-title">MAC Katmanı (IEEE 802.15.4 MAC)</span><span class="card-meta">13 alt başlık</span></a></nav>
+<h2 id="1-threade-giriş">1. Thread'e Giriş<a class="anchor" href="#1-threade-giriş" aria-label="Bu başlığa bağlantı">#</a></h2>
+<h3 id="11-thread-nedir">1.1 Thread Nedir?<a class="anchor" href="#11-thread-nedir" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Thread</strong>, nesnelerin interneti (IoT) için tasarlanmış; <strong>IPv6 tabanlı</strong>, <strong>düşük güçlü</strong>, <strong>kablosuz mesh (ağ örgüsü)</strong> ağ protokolüdür. Özellikle akıllı ev ve bina otomasyonu cihazlarının (lambalar, prizler, sensörler, kilitler, termostatlar, perdeler vb.) birbirleriyle ve internetle güvenli, güvenilir ve pil dostu şekilde haberleşmesi için geliştirilmiştir.</p>
+<p>Tek cümleyle: <strong>Thread = IEEE 802.15.4 radyosu + 6LoWPAN + IPv6 + Thread'e özgü ağ yönetimi (MLE, yönlendirme, güvenlik, devreye alma).</strong></p>
+<p>Thread'in temel karakteristikleri:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IP tabanlı</strong></td>
+<td>Ağdaki her cihazın kendi IPv6 adresi vardır. Cihaza ulaşmak için protokol çeviren bir "gateway" gerekmez; sadece bir yönlendirici (<strong>Border Router</strong>) yeterlidir.</td>
+</tr>
+<tr>
+<td><strong>Mesh topoloji</strong></td>
+<td>Cihazlar birbirlerinin mesajlarını taşır. Kapsama alanı cihaz eklendikçe büyür.</td>
+</tr>
+<tr>
+<td><strong>Kendi kendini onarma</strong></td>
+<td>Bir yönlendirici bozulursa trafik otomatik olarak başka yollardan akar; yeni bir <strong>Leader</strong> seçilir.</td>
+</tr>
+<tr>
+<td><strong>Tek hata noktası yok</strong></td>
+<td>Zigbee'deki "coordinator" gibi vazgeçilmez merkezi bir düğüm yoktur. Leader rolünü herhangi bir router devralabilir; birden fazla Border Router bulunabilir.</td>
+</tr>
+<tr>
+<td><strong>Düşük güç</strong></td>
+<td>Pille çalışan "uyuyan" cihazlar (Sleepy End Device) radyolarını çoğu zaman kapalı tutarak yıllarca çalışabilir.</td>
+</tr>
+<tr>
+<td><strong>Güvenlik</strong></td>
+<td>Tüm bağlantı katmanı trafiği AES-128-CCM ile şifrelenir ve doğrulanır. Ağa katılım, parola doğrulamalı anahtar değişimi (EC-JPAKE) veya bant dışı (Matter) devreye alma ile yapılır.</td>
+</tr>
+<tr>
+<td><strong>Ölçeklenebilirlik</strong></td>
+<td>Tek ağda 32 aktif router ve her router'a bağlı çok sayıda çocuk cihaz: pratikte 250+ cihaz.</td>
+</tr>
+<tr>
+<td><strong>Açık standartlar</strong></td>
+<td>IEEE 802.15.4, IETF RFC'leri (6LoWPAN, IPv6, CoAP, DTLS, MPL, Trickle) üzerine kuruludur.</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout callout-important"><p class="callout-title">Önemli</p><p>Thread bir <strong>ağ katmanı</strong> protokolüdür; <strong>uygulama katmanını tanımlamaz</strong>. Bir lambanın "aç/kapat" komutunun nasıl kodlanacağı Thread'in değil, üzerinde çalışan uygulama protokolünün (bugün çoğunlukla <strong>Matter</strong>) işidir. Thread'i "Wi-Fi'ın düşük güçlü, mesh'li kuzeni", Matter'ı ise "bu ağların üzerinde konuşulan ortak dil" olarak düşünebilirsiniz.</p>
+</blockquote>
+<h3 id="12-neden-thread-çözdüğü-problemler">1.2 Neden Thread? Çözdüğü Problemler<a class="anchor" href="#12-neden-thread-çözdüğü-problemler" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread öncesinde akıllı ev dünyası birkaç temel sorunla boğuşuyordu:</p>
+<ol>
+<li><strong>Dikey, kapalı yığınlar.</strong> Zigbee ve Z-Wave gibi teknolojiler radyodan uygulamaya kadar kendi protokol yığınlarını tanımlıyordu. İnternete veya telefona bağlanmak için mesajları IP dünyasına <strong>çeviren</strong> üreticiye özel hub/gateway'ler gerekiyordu.</li>
+<li><strong>Wi-Fi'ın güç tüketimi.</strong> Wi-Fi yüksek veri hızı sunar ama sürekli dinleme ve ilişkilendirme (association) maliyeti, düğme pilli bir kapı sensörü için uygun değildir. Ayrıca Wi-Fi erişim noktalarının bağlı istemci sayısı sınırlıdır.</li>
+<li><strong>Bluetooth'un menzil ve topoloji kısıtları.</strong> Klasik BLE noktadan noktaya çalışır; BLE Mesh ise IP tabanlı değildir ve "managed flooding" yaklaşımı büyük ağlarda verimsizleşebilir.</li>
+<li><strong>Tek hata noktası.</strong> Coordinator/hub'a bağımlı ağlarda o cihaz bozulduğunda bütün ağ etkilenir.</li>
+</ol>
+<p>Thread bu sorunlara şu yaklaşımla cevap verir:</p>
+<ul>
+<li>Radyo olarak düşük güçlü ve olgun <strong>IEEE 802.15.4</strong>'ü kullanır (Zigbee ile aynı radyo).</li>
+<li>Üzerine <strong>IPv6</strong>'yı taşır (6LoWPAN ile sıkıştırarak). Böylece "çeviri" değil, sadece "yönlendirme" gerekir.</li>
+<li>Uygulama katmanını serbest bırakır; bugün bu boşluğu <strong>Matter</strong> doldurur.</li>
+<li>Yönetimi dağıtık yapar: Leader, router'lar ve Border Router'lar yedeklidir.</li>
+</ul>
+<h3 id="13-tarihçe">1.3 Tarihçe<a class="anchor" href="#13-tarihçe" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Yıl</th>
+<th>Olay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2014 (Temmuz)</strong></td>
+<td><strong>Thread Group</strong> kuruldu. Kurucular arasında Nest Labs (Google), Samsung, ARM, Freescale (bugün NXP), Silicon Labs, Big Ass Fans ve Yale Security vardı.</td>
+</tr>
+<tr>
+<td><strong>2015</strong></td>
+<td>Thread 1.0 şartnamesi yayımlandı; ilk sertifikalı ürünler (Nest ürünleri) pazara çıktı.</td>
+</tr>
+<tr>
+<td><strong>2016 (Mayıs)</strong></td>
+<td>Google/Nest, Thread'in açık kaynak uygulaması <strong>OpenThread</strong>'i BSD-3 lisansıyla yayımladı.</td>
+</tr>
+<tr>
+<td><strong>2017</strong></td>
+<td><strong>Thread 1.1</strong>: devreye alma (commissioning) ve ağ yönetimi iyileştirmeleri, MLE tabanlı keşif, anahtar yönetimi düzenlemeleri.</td>
+</tr>
+<tr>
+<td><strong>2019</strong></td>
+<td><strong>Thread 1.2</strong>: büyük/kurumsal ağlar için <strong>Thread Domain</strong>, <strong>Backbone Router</strong>, <strong>DUA</strong>, çoklu yayın kaydı (MLR), <strong>CSL</strong> (senkronize uyuyan cihazlar), <strong>Link Metrics</strong>, Enhanced ACK, ticari devreye alma (CCM).</td>
+</tr>
+<tr>
+<td><strong>2019 (Aralık)</strong></td>
+<td>Apple, Google, Amazon ve Zigbee Alliance <strong>Project CHIP</strong>'i duyurdu; Thread düşük güçlü taşıma katmanı olarak seçildi.</td>
+</tr>
+<tr>
+<td><strong>2020</strong></td>
+<td>Apple HomePod mini gibi tüketici ürünleriyle Thread Border Router'lar evlere yayılmaya başladı.</td>
+</tr>
+<tr>
+<td><strong>2021</strong></td>
+<td>Zigbee Alliance adını <strong>Connectivity Standards Alliance (CSA)</strong> olarak değiştirdi; Project CHIP'in adı <strong>Matter</strong> oldu.</td>
+</tr>
+<tr>
+<td><strong>2022–2023</strong></td>
+<td><strong>Matter 1.0</strong> (Ekim 2022) yayımlandı. <strong>Thread 1.3</strong> ile Border Router işlevleri (SRP, DNS-SD proxy, NAT64, OMR yönlendirme) ve TREL standartlaştırıldı.</td>
+</tr>
+<tr>
+<td><strong>2024 (Eylül)</strong></td>
+<td><strong>Thread 1.4</strong> duyuruldu: zorunlu ve birlikte çalışabilir Border Router özellikleri, ekosistemler arası kimlik bilgisi paylaşımı (ePSKc), gelişmiş internet bağlantısı (DHCPv6-PD), gelişmiş ağ teşhisi, TCAT.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="14-sürümlerin-özeti">1.4 Sürümlerin Özeti<a class="anchor" href="#14-sürümlerin-özeti" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Sürüm</th>
+<th>Öne çıkan özellikler</th>
+<th>Uyumluluk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1.0</strong></td>
+<td>Temel mesh, MLE, 6LoWPAN, güvenlik, MAC beacon tabanlı keşif</td>
+<td>Tarihsel</td>
+</tr>
+<tr>
+<td><strong>1.1</strong></td>
+<td>MLE Discovery, iyileştirilmiş MeshCoP, harici commissioner, network key rotasyonu</td>
+<td>1.2+ ile birlikte çalışır</td>
+</tr>
+<tr>
+<td><strong>1.2</strong></td>
+<td>CSL / SSED, Enhanced Frame Pending, Enhanced Keep-Alive, Link Metrics, 802.15.4-2015 çerçeveleri, Thread Domain, Backbone Router, DUA, MLR, CCM</td>
+<td>1.1 ile geriye uyumlu</td>
+</tr>
+<tr>
+<td><strong>1.3</strong></td>
+<td>Thread Border Router (TBR) şartnamesi: OMR prefix, RA/RIO, SRP sunucusu, Advertising/Discovery Proxy, NAT64; TREL (Thread over Wi-Fi/Ethernet)</td>
+<td>Matter için temel gereksinim</td>
+</tr>
+<tr>
+<td><strong>1.4</strong></td>
+<td>Zorunlu BR yetenekleri, ePSKc ile kimlik paylaşımı, DHCPv6-PD ile global IPv6, gelişmiş teşhis TLV'leri, TCAT (TLS tabanlı devreye alma)</td>
+<td>1.3 ile geriye uyumlu</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout callout-tip"><p class="callout-title">İpucu</p><p>Bir Thread ağında farklı sürümlerden cihazlar bir arada çalışabilir. Yeni özellikler (ör. CSL) yalnızca bu özelliği destekleyen eşler arasında kullanılır; eski cihazlar bunları görmezden gelir. Sürüm bilgisi MLE mesajlarındaki <strong>Version TLV</strong> ile taşınır (1.1 = 2, 1.2 = 3, 1.3 = 4, 1.4 = 5).</p>
+</blockquote>
+<h3 id="15-thread-group-ve-sertifikasyon">1.5 Thread Group ve Sertifikasyon<a class="anchor" href="#15-thread-group-ve-sertifikasyon" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Thread Group</strong>, şartnameyi geliştiren, sertifikasyon programını yürüten ve birlikte çalışabilirlik etkinlikleri düzenleyen kar amacı gütmeyen endüstri birliğidir.</p>
+<ul>
+<li><strong>Şartname</strong>: Thread Specification (çekirdek ağ katmanı), Thread Border Router özellikleri, test şartnameleri.</li>
+<li><strong>Sertifikasyon</strong>: Ürünler yetkili test laboratuvarlarında sertifika test senaryolarından geçer. Sertifikalı yığınlar ("Thread Certified Component") üzerine ürün geliştiren üreticiler süreci kısaltabilir.</li>
+<li><strong>Logo</strong>: "Built on Thread" logosu sertifikalı ürünlerde kullanılır.</li>
+<li><strong>Test araçları</strong>: Thread Test Harness ve referans cihaz setleri ile otomatik birlikte çalışabilirlik testleri yapılır.</li>
+</ul>
+<h3 id="16-openthread">1.6 OpenThread<a class="anchor" href="#16-openthread" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>OpenThread</strong>, Google tarafından başlatılan, Thread şartnamesini uygulayan açık kaynak (BSD-3-Clause) bir yığındır.</p>
+<ul>
+<li>C++ ile yazılmıştır, C API sunar; mikrodenetleyiciden Linux'a kadar taşınabilir.</li>
+<li><strong>Platform soyutlama katmanı</strong> (radyo, zamanlayıcı, kalıcı bellek, rastgele sayı, kripto) sayesinde birçok çip üreticisi tarafından desteklenir: Nordic, Silicon Labs, NXP, Texas Instruments, Espressif, Qorvo, Telink ve diğerleri.</li>
+<li><strong>OpenThread Border Router (OTBR)</strong> projesi Linux tabanlı Border Router'lar için referans uygulamadır (Home Assistant OTBR eklentisi de buna dayanır).</li>
+<li>Thread sürümleriyle paralel güncellenir; Thread sertifikası almış sürümleri vardır.</li>
+</ul>
+<p>Ayrıntılar için Bölüm 24'e bakın.</p>
+<h3 id="17-thread-ve-matter-i̇lişkisi">1.7 Thread ve Matter İlişkisi<a class="anchor" href="#17-thread-ve-matter-i̇lişkisi" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Konu</th>
+<th>Thread</th>
+<th>Matter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Katman</strong></td>
+<td>Ağ (bağlantı + IPv6 ağ yönetimi)</td>
+<td>Uygulama (veri modeli, etkileşim modeli, güvenlik oturumları)</td>
+</tr>
+<tr>
+<td><strong>Sorumlu kuruluş</strong></td>
+<td>Thread Group</td>
+<td>Connectivity Standards Alliance (CSA)</td>
+</tr>
+<tr>
+<td><strong>Neyi tanımlar?</strong></td>
+<td>Paketlerin cihazdan cihaza nasıl taşınacağını</td>
+<td>"Lambayı aç" komutunun anlamını ve formatını</td>
+</tr>
+<tr>
+<td><strong>Taşıma</strong></td>
+<td>IEEE 802.15.4</td>
+<td>Thread, Wi-Fi, Ethernet (IPv6 üzerinden)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Matter cihazı, Thread ağında sıradan bir IPv6/UDP uygulaması gibi çalışır (UDP port 5540). Matter, Thread ağının kimlik bilgilerini (Operational Dataset) cihaza devreye alma sırasında BLE üzerinden aktarır. Ayrıntılar Bölüm 23'te.</p>
+<h3 id="18-büyük-resim">1.8 Büyük Resim<a class="anchor" href="#18-büyük-resim" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Tipik bir akıllı evde Thread ağı şöyle görünür:</p>
+<figure class="diagram"><pre class="mermaid">flowchart LR
+    INET((&quot;İnternet&quot;))
+    subgraph EV[&quot;Ev Ağı (Wi-Fi / Ethernet, IPv6)&quot;]
+        RTR[&quot;Wi-Fi Router&quot;]
+        PHONE[&quot;Telefon / Tablet&lt;br/&gt;(Matter Controller)&quot;]
+        BR1[&quot;Border Router 1&lt;br/&gt;(ör. akıllı hoparlör)&quot;]
+        BR2[&quot;Border Router 2&lt;br/&gt;(ör. TV kutusu)&quot;]
+    end
+    subgraph THREAD[&quot;Thread Mesh Ağı (IEEE 802.15.4, 2.4 GHz)&quot;]
+        L[&quot;Leader&lt;br/&gt;(Router)&quot;]
+        R1[&quot;Router&lt;br/&gt;(akıllı priz)&quot;]
+        R2[&quot;Router&lt;br/&gt;(ampul)&quot;]
+        REED[&quot;REED&lt;br/&gt;(ampul)&quot;]
+        SED1[&quot;SED&lt;br/&gt;(kapı sensörü)&quot;]
+        SED2[&quot;SED&lt;br/&gt;(sıcaklık sensörü)&quot;]
+        MED[&quot;MED&lt;br/&gt;(perde motoru)&quot;]
+    end
+    INET --- RTR
+    RTR --- PHONE
+    RTR --- BR1
+    RTR --- BR2
+    BR1 -.-|&quot;802.15.4&quot;| L
+    BR2 -.-|&quot;802.15.4&quot;| R1
+    L --- R1
+    L --- R2
+    R1 --- R2
+    R2 --- REED
+    R1 --- SED1
+    R2 --- SED2
+    L --- MED
+</pre></figure>
+<ul>
+<li><strong>Border Router</strong>'lar Thread mesh'i ile Wi-Fi/Ethernet ev ağını IP seviyesinde birbirine bağlar.</li>
+<li><strong>Router</strong>'lar (genelde şebekeden beslenen cihazlar) mesh omurgasını oluşturur ve paketleri yönlendirir.</li>
+<li><strong>Leader</strong>, router'lardan biridir; router kimliklerini dağıtır ve ağ verisini yönetir.</li>
+<li><strong>REED</strong> (Router Eligible End Device), gerektiğinde router'a terfi edebilen cihazdır.</li>
+<li><strong>SED/MED</strong> gibi uç cihazlar yalnızca <strong>ebeveyn (parent)</strong> router'larıyla konuşur.</li>
+</ul>
+<h3 id="19-threadin-tanımlamadıkları">1.9 Thread'in Tanımlamadıkları<a class="anchor" href="#19-threadin-tanımlamadıkları" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread'in kapsamını doğru anlamak için neleri <strong>tanımlamadığını</strong> bilmek önemlidir:</p>
+<ul>
+<li><strong>Uygulama protokolü / veri modeli</strong> → Matter, LwM2M, özel CoAP uygulamaları vb.</li>
+<li><strong>Bulut bağlantısı ve uzaktan erişim</strong> → Ekosistem hub'ları/bulut servisleri.</li>
+<li><strong>Kullanıcı arayüzü ve cihaz eşleştirme deneyimi</strong> → Ekosistem uygulamaları (Apple Home, Google Home, Home Assistant vb.).</li>
+<li><strong>Uçtan uca (end-to-end) uygulama güvenliği</strong> → Thread bağlantı katmanında hop-by-hop güvenlik sağlar; uçtan uca güvenlik Matter (CASE/PASE oturumları) veya DTLS gibi üst katmanların işidir.</li>
+<li><strong>Wi-Fi ağının yapılandırılması</strong> → Border Router'ın altyapı ağıyla etkileşimi Thread BR şartnamesinde tanımlanır ama ev ağı Thread'in kontrolünde değildir.</li>
+</ul>
+<h3 id="110-bölüm-özeti">1.10 Bölüm Özeti<a class="anchor" href="#110-bölüm-özeti" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>Thread, 802.15.4 radyo üzerinde IPv6 taşıyan, düşük güçlü ve kendi kendini onaran bir mesh ağıdır.</li>
+<li>Uygulama katmanından bağımsızdır; bugün en yaygın üst katman Matter'dır.</li>
+<li>Merkezi tek hata noktası yoktur: Leader ve Border Router işlevleri yedeklidir.</li>
+<li>Sürümler geriye uyumludur; 1.2 enerji ve ölçek, 1.3 Border Router, 1.4 birlikte çalışabilirlik ve kimlik paylaşımı odaklıdır.</li>
+</ul>
+<h2 id="2-protokol-yığını-ve-genel-mimari">2. Protokol Yığını ve Genel Mimari<a class="anchor" href="#2-protokol-yığını-ve-genel-mimari" aria-label="Bu başlığa bağlantı">#</a></h2>
+<h3 id="21-katmanlar">2.1 Katmanlar<a class="anchor" href="#21-katmanlar" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread, mevcut standartları bir araya getirip eksik parçaları kendisi tanımlayan bir "sistem şartnamesi"dir. Yığın aşağıdan yukarıya şöyledir:</p>
+<pre><code class="language-text">+-----------------------------------------------------------------------+
+|  UYGULAMA        Matter  |  CoAP uygulamaları  |  LwM2M  |  özel UDP  |
++-----------------------------------------------------------------------+
+|  OTURUM/GÜVENLİK         (Matter CASE/PASE, DTLS — uygulamaya bağlı)  |
++-----------------------------------------------------------------------+
+|  TAŞIMA          UDP   (TCP isteğe bağlı; Thread 1.3+ TCP desteği)    |
++--------------------------+--------------------------------------------+
+|                          |  Thread Kontrol Düzlemi:                   |
+|  AĞ  IPv6 + ICMPv6       |   MLE   (UDP 19788)  komşuluk / bağlanma   |
+|      Thread yönlendirme  |   TMF   (CoAP, UDP 61631) ağ yönetimi      |
+|                          |   MeshCoP (DTLS)  devreye alma             |
++--------------------------+--------------------------------------------+
+|  UYARLAMA        6LoWPAN: başlık sıkıştırma, parçalama, mesh başlığı  |
++-----------------------------------------------------------------------+
+|  BAĞLANTI (MAC)  IEEE 802.15.4-2006 (+2015 özellikleri): CSMA-CA,     |
+|                  ACK, AES-CCM* güvenlik, dolaylı iletim, IE'ler       |
++-----------------------------------------------------------------------+
+|  FİZİKSEL (PHY)  IEEE 802.15.4  2.4 GHz  O-QPSK  250 kbit/s  k11-26   |
++-----------------------------------------------------------------------+
+</code></pre>
+<figure class="diagram"><pre class="mermaid">flowchart TB
+    APP[&quot;Uygulama&lt;br/&gt;Matter / CoAP / LwM2M&quot;]
+    UDP[&quot;UDP (+ DTLS / Matter güvenliği)&quot;]
+    IP[&quot;IPv6 + ICMPv6&quot;]
+    MLE[&quot;MLE&lt;br/&gt;UDP 19788&quot;]
+    TMF[&quot;TMF (CoAP)&lt;br/&gt;UDP 61631&quot;]
+    MESHCOP[&quot;MeshCoP&lt;br/&gt;DTLS / EC-JPAKE&quot;]
+    LOWPAN[&quot;6LoWPAN&lt;br/&gt;IPHC · Fragment · Mesh Header&quot;]
+    MAC[&quot;IEEE 802.15.4 MAC&lt;br/&gt;CSMA-CA · ACK · AES-CCM*&quot;]
+    PHY[&quot;IEEE 802.15.4 PHY&lt;br/&gt;2.4 GHz O-QPSK 250 kbit/s&quot;]
+    APP --&gt; UDP --&gt; IP
+    MLE --&gt; UDP
+    TMF --&gt; UDP
+    MESHCOP --&gt; UDP
+    IP --&gt; LOWPAN --&gt; MAC --&gt; PHY
+</pre></figure>
+<h3 id="22-osi-modeliyle-eşleme">2.2 OSI Modeliyle Eşleme<a class="anchor" href="#22-osi-modeliyle-eşleme" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>OSI katmanı</th>
+<th>Thread'deki karşılığı</th>
+<th>Standart / kaynak</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7 Uygulama</td>
+<td>Matter, CoAP uygulamaları</td>
+<td>CSA Matter, RFC 7252</td>
+</tr>
+<tr>
+<td>6 Sunum</td>
+<td>(Uygulamaya ait — TLV, CBOR vb.)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5 Oturum</td>
+<td>Matter CASE/PASE, DTLS 1.2</td>
+<td>RFC 6347</td>
+</tr>
+<tr>
+<td>4 Taşıma</td>
+<td>UDP (ağırlıklı), TCP</td>
+<td>RFC 768, RFC 9293</td>
+</tr>
+<tr>
+<td>3 Ağ</td>
+<td>IPv6, ICMPv6, Thread yönlendirme, MLE, TMF, MPL</td>
+<td>RFC 8200, RFC 4443, RFC 7731, Thread Spec</td>
+</tr>
+<tr>
+<td>2.5 Uyarlama</td>
+<td>6LoWPAN</td>
+<td>RFC 4944, RFC 6282</td>
+</tr>
+<tr>
+<td>2 Veri bağlantısı</td>
+<td>IEEE 802.15.4 MAC</td>
+<td>IEEE 802.15.4-2006 / -2015</td>
+</tr>
+<tr>
+<td>1 Fiziksel</td>
+<td>IEEE 802.15.4 O-QPSK PHY (2.4 GHz)</td>
+<td>IEEE 802.15.4</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="23-threadin-kullandığı-ve-tanımladığı-bileşenler">2.3 Thread'in Kullandığı ve Tanımladığı Bileşenler<a class="anchor" href="#23-threadin-kullandığı-ve-tanımladığı-bileşenler" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Kullandığı (başkalarının tanımladığı) standartlar:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bileşen</th>
+<th>Kaynak</th>
+<th>Thread'deki rolü</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IEEE 802.15.4 PHY/MAC</td>
+<td>IEEE</td>
+<td>Radyo ve çerçeve erişimi</td>
+</tr>
+<tr>
+<td>6LoWPAN çerçeveleme ve parçalama</td>
+<td>RFC 4944</td>
+<td>IPv6'yı 127 baytlık çerçevelere sığdırma</td>
+</tr>
+<tr>
+<td>IPHC / NHC sıkıştırma</td>
+<td>RFC 6282</td>
+<td>IPv6/UDP başlıklarını sıkıştırma</td>
+</tr>
+<tr>
+<td>IPv6 adresleme</td>
+<td>RFC 4291, RFC 4193 (ULA), RFC 4862 (SLAAC)</td>
+<td>Adres yapısı</td>
+</tr>
+<tr>
+<td>ICMPv6</td>
+<td>RFC 4443</td>
+<td>Ping, hata mesajları</td>
+</tr>
+<tr>
+<td>CoAP</td>
+<td>RFC 7252</td>
+<td>TMF yönetim mesajları</td>
+</tr>
+<tr>
+<td>DTLS 1.2</td>
+<td>RFC 6347</td>
+<td>Devreye alma oturumları</td>
+</tr>
+<tr>
+<td>EC-JPAKE</td>
+<td>RFC 8236 (J-PAKE) temelli TLS uzantısı</td>
+<td>Parola doğrulamalı anahtar değişimi</td>
+</tr>
+<tr>
+<td>Trickle</td>
+<td>RFC 6206</td>
+<td>Advertisement zamanlaması</td>
+</tr>
+<tr>
+<td>MPL</td>
+<td>RFC 7731</td>
+<td>Mesh içi çoklu yayın (multicast) iletimi</td>
+</tr>
+<tr>
+<td>mDNS / DNS-SD / SRP</td>
+<td>RFC 6762, RFC 6763, RFC 9665</td>
+<td>Servis keşfi (Border Router)</td>
+</tr>
+<tr>
+<td>NAT64 / DNS64</td>
+<td>RFC 6146, RFC 6147, RFC 6052</td>
+<td>IPv4 erişimi (Border Router)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Thread'in kendi tanımladıkları:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bileşen</th>
+<th>Görevi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MLE</strong> (Mesh Link Establishment)</td>
+<td>Komşu keşfi, bağlanma (attach), ebeveyn seçimi, bağlantı kalitesi ölçümü, yönlendirme bilgisinin yayılması, ağ parametrelerinin dağıtımı</td>
+</tr>
+<tr>
+<td><strong>Thread yönlendirme protokolü</strong></td>
+<td>Router'lar arası mesafe-vektör (distance-vector) yönlendirme (Route64 TLV)</td>
+</tr>
+<tr>
+<td><strong>TMF</strong> (Thread Management Framework)</td>
+<td>CoAP tabanlı yönetim: adres sorgulama, router ID atama, ağ verisi kaydı, teşhis</td>
+</tr>
+<tr>
+<td><strong>Network Data</strong></td>
+<td>Ağ genelinde önekler, rotalar, servisler, sıkıştırma bağlamları</td>
+</tr>
+<tr>
+<td><strong>MeshCoP</strong> (Mesh Commissioning Protocol)</td>
+<td>Commissioner, Border Agent, Joiner süreçleri; Operational Dataset yönetimi</td>
+</tr>
+<tr>
+<td><strong>Adres mimarisi</strong></td>
+<td>RLOC, ALOC, ML-EID, RLOC16 yapısı, adres sorgulama</td>
+</tr>
+<tr>
+<td><strong>Güvenlik mimarisi</strong></td>
+<td>Network Key'den MAC/MLE anahtarı türetme, anahtar rotasyonu, PSKc/PSKd</td>
+</tr>
+<tr>
+<td><strong>Border Router davranışları</strong></td>
+<td>OMR prefix, RA/RIO, SRP, NAT64, TREL (1.3+)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="24-kontrol-düzlemi-ve-veri-düzlemi">2.4 Kontrol Düzlemi ve Veri Düzlemi<a class="anchor" href="#24-kontrol-düzlemi-ve-veri-düzlemi" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread'deki trafiği iki gruba ayırmak mimariyi anlamayı kolaylaştırır:</p>
+<p><strong>Veri düzlemi (data plane)</strong> — Uygulamanın asıl yükü: Matter komutları, sensör verileri, CoAP istekleri. IPv6/UDP paketleri olarak taşınır, 6LoWPAN ile sıkıştırılır, MAC katmanında şifrelenir.</p>
+<p><strong>Kontrol düzlemi (control plane)</strong> — Ağın kendisini ayakta tutan trafik:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Protokol</th>
+<th>Kapsam</th>
+<th>Örnek işler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MLE</strong></td>
+<td>Tek atlama (link-local)</td>
+<td>Parent Request/Response, Child ID Request/Response, Link Request/Accept, Advertisement, Data Response</td>
+</tr>
+<tr>
+<td><strong>TMF</strong></td>
+<td>Mesh geneli (RLOC/ALOC adresleri)</td>
+<td>Address Query/Notification, Address Solicit/Release, Server Data, Diagnostic Get</td>
+</tr>
+<tr>
+<td><strong>MeshCoP</strong></td>
+<td>Mesh + Border Agent + harici commissioner</td>
+<td>Commissioner Petition, Joiner DTLS, Joiner Entrust, Active/Pending Set</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="diagram"><pre class="mermaid">flowchart LR
+    subgraph KONTROL[&quot;Kontrol düzlemi&quot;]
+        MLE2[&quot;MLE&lt;br/&gt;komşuluk, attach, rota ilanı&quot;]
+        TMF2[&quot;TMF / CoAP&lt;br/&gt;adres, router ID, ağ verisi&quot;]
+        MC[&quot;MeshCoP&lt;br/&gt;devreye alma, dataset&quot;]
+    end
+    subgraph VERI[&quot;Veri düzlemi&quot;]
+        APPD[&quot;Uygulama trafiği&lt;br/&gt;(Matter, CoAP, UDP)&quot;]
+    end
+    KONTROL --&gt; FWD[&quot;Yönlendirme tabloları&lt;br/&gt;EID→RLOC önbelleği&lt;br/&gt;Network Data&quot;]
+    FWD --&gt; VERI
+</pre></figure>
+<h3 id="25-bir-paketin-yolculuğu-genel-bakış">2.5 Bir Paketin Yolculuğu (Genel Bakış)<a class="anchor" href="#25-bir-paketin-yolculuğu-genel-bakış" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Bir uygulamanın Thread ağındaki başka bir cihaza UDP mesajı gönderdiğini düşünelim. Ayrıntılar ilgili bölümlerde verilecek; burada akışı kuşbakışı görüyoruz:</p>
+<ol>
+<li><strong>Uygulama</strong> veriyi UDP soketine yazar (ör. hedef: <code>fd4f:…:1234</code> port 5540).</li>
+<li><strong>IPv6 katmanı</strong> kaynak adresini seçer ve hedefin mesh içinde mi (on-mesh) yoksa dışarıda mı olduğuna bakar.</li>
+<li><strong>Thread yönlendirme</strong>: Hedef bir EID ise (ML-EID veya OMR adresi) <strong>EID→RLOC</strong> önbelleğine bakılır. Kayıt yoksa ağa <strong>Address Query</strong> gönderilir ve paket bekletilir. Hedef ağ dışındaysa Network Data'dan uygun <strong>Border Router</strong>'ın RLOC16'sı seçilir.</li>
+<li><strong>Sonraki atlama (next hop)</strong> yönlendirme tablosundan bulunur.</li>
+<li><strong>6LoWPAN</strong>: IPv6 ve UDP başlıkları sıkıştırılır; paket birden fazla atlama gidecekse <strong>Mesh Header</strong> (kaynak ve nihai hedef RLOC16) eklenir; paket 127 bayta sığmıyorsa <strong>parçalanır</strong> (FRAG1/FRAGN).</li>
+<li><strong>MAC</strong>: Her parça, hedef MAC adresi = sonraki atlama olacak şekilde çerçevelenir, <strong>AES-CCM</strong>* ile şifrelenip doğrulanır, <strong>CSMA-CA</strong> ile kanala erişilip gönderilir, <strong>ACK</strong> beklenir; gelmezse yeniden denenir.</li>
+<li><strong>Ara router'lar</strong> her çerçeveyi alır, MAC güvenliğini doğrular, Mesh Header'daki nihai hedefe bakar, <em>Hops Left</em> değerini azaltır ve sonraki atlamaya — paketi IPv6 seviyesinde birleştirmeden — iletir.</li>
+<li><strong>Hedef router</strong> paketi doğrudan veya (uyuyan çocuk cihaz ise) <strong>dolaylı iletim</strong> ile teslim eder.</li>
+<li><strong>Hedef cihaz</strong> parçaları birleştirir, başlıkları açar ve UDP yükünü uygulamaya verir.</li>
+</ol>
+<figure class="diagram"><pre class="mermaid">sequenceDiagram
+    participant A as Kaynak (SED)
+    participant P as Ebeveyn Router
+    participant R as Ara Router
+    participant H as Hedef Router
+    participant B as Hedef (Çocuk)
+    A-&gt;&gt;P: MAC unicast (şifreli) — tüm trafik ebeveyne
+    Note over P: EID→RLOC çöz, next hop bul,&lt;br/&gt;Mesh Header ekle
+    P-&gt;&gt;R: 802.15.4 çerçeve + Mesh Header
+    Note over R: Hops Left bir azaltılır, sonraki atlamaya iletilir&lt;br/&gt;(IPv6 birleştirme yok)
+    R-&gt;&gt;H: 802.15.4 çerçeve + Mesh Header
+    Note over H: Hedef benim çocuğum
+    H-&gt;&gt;B: Doğrudan (rx-on) veya dolaylı (poll sonrası) teslim
+</pre></figure>
+<h3 id="26-önemli-udp-portları">2.6 Önemli UDP Portları<a class="anchor" href="#26-önemli-udp-portları" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Protokol</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>19788</strong></td>
+<td>MLE</td>
+<td>Mesh Link Establishment (link-local)</td>
+</tr>
+<tr>
+<td><strong>61631</strong></td>
+<td>TMF (CoAP)</td>
+<td>Thread yönetim mesajları (<code>0xF0BF</code>; 6LoWPAN ile 4 bite sıkıştırılabilir)</td>
+</tr>
+<tr>
+<td><strong>1000</strong></td>
+<td>MeshCoP Joiner</td>
+<td>Joiner UDP portu (varsayılan; Discovery Response içinde ilan edilir)</td>
+</tr>
+<tr>
+<td><strong>49191</strong></td>
+<td>MeshCoP Border Agent</td>
+<td>OTBR varsayılanı; gerçek port mDNS <code>_meshcop._udp</code> SRV kaydıyla ilan edilir</td>
+</tr>
+<tr>
+<td><strong>5540</strong></td>
+<td>Matter</td>
+<td>Matter operasyonel mesajları (UDP/TCP)</td>
+</tr>
+<tr>
+<td><strong>5353</strong></td>
+<td>mDNS</td>
+<td>Altyapı ağında (Wi-Fi/Ethernet) servis keşfi</td>
+</tr>
+<tr>
+<td><strong>53</strong></td>
+<td>DNS</td>
+<td>Discovery Proxy / DNS sorguları (Border Router)</td>
+</tr>
+<tr>
+<td><strong>53535–53554</strong></td>
+<td>SRP</td>
+<td>OpenThread SRP sunucusunun kullandığı aralık (Network Data'da ilan edilir)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="27-bölüm-özeti">2.7 Bölüm Özeti<a class="anchor" href="#27-bölüm-özeti" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>Thread yığını: 802.15.4 PHY/MAC → 6LoWPAN → IPv6 → UDP → uygulama.</li>
+<li>Thread'e özgü kontrol protokolleri: MLE (link yönetimi), TMF (CoAP tabanlı ağ yönetimi), MeshCoP (devreye alma).</li>
+<li>Mesh içinde paketler IPv6 seviyesinde değil, 6LoWPAN <strong>Mesh Header</strong> ile RLOC16'lara göre iletilir; ara düğümler parçaları birleştirmez.</li>
+<li>Her atlamada MAC katmanı şifreleme/doğrulama yapar (hop-by-hop güvenlik).</li>
+</ul>
+<h2 id="3-fiziksel-katman-ieee-802154-phy">3. Fiziksel Katman (IEEE 802.15.4 PHY)<a class="anchor" href="#3-fiziksel-katman-ieee-802154-phy" aria-label="Bu başlığa bağlantı">#</a></h2>
+<h3 id="31-genel-bakış">3.1 Genel Bakış<a class="anchor" href="#31-genel-bakış" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread, IEEE 802.15.4 standardının <strong>2.4 GHz O-QPSK</strong> fiziksel katmanını kullanır. Bu bant dünya genelinde lisanssız (ISM) olduğu için aynı ürün her ülkede satılabilir. 802.15.4'ün sub-GHz (868/915 MHz) PHY'leri Thread şartnamesinde yer almaz.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Parametre</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frekans bandı</td>
+<td>2400–2483.5 MHz (ISM)</td>
+</tr>
+<tr>
+<td>Kanal sayfası (channel page)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Kanallar</td>
+<td>11–26 (16 kanal)</td>
+</tr>
+<tr>
+<td>Kanal aralığı</td>
+<td>5 MHz</td>
+</tr>
+<tr>
+<td>Kapladığı bant genişliği</td>
+<td>≈ 2 MHz</td>
+</tr>
+<tr>
+<td>Modülasyon</td>
+<td>O-QPSK, yarım-sinüs darbe şekillendirme</td>
+</tr>
+<tr>
+<td>Yayılma (spreading)</td>
+<td>DSSS: 4 bit → 32 chip</td>
+</tr>
+<tr>
+<td>Chip hızı</td>
+<td>2 Mchip/s</td>
+</tr>
+<tr>
+<td>Sembol hızı</td>
+<td>62.5 ksembol/s (1 sembol = 16 µs)</td>
+</tr>
+<tr>
+<td>Bit hızı</td>
+<td><strong>250 kbit/s</strong> (1 bayt = 32 µs)</td>
+</tr>
+<tr>
+<td>Maksimum PSDU (MAC çerçevesi)</td>
+<td><strong>127 bayt</strong> (<code>aMaxPHYPacketSize</code>)</td>
+</tr>
+<tr>
+<td>Asgari alıcı hassasiyeti (standart)</td>
+<td>−85 dBm (%1 PER, 20 baytlık PSDU)</td>
+</tr>
+<tr>
+<td>Tipik çip hassasiyeti</td>
+<td>−98 … −106 dBm</td>
+</tr>
+<tr>
+<td>Tipik çıkış gücü</td>
+<td>0 … +10 dBm (FEM ile +20 dBm'e kadar)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="32-kanallar-ve-frekanslar">3.2 Kanallar ve Frekanslar<a class="anchor" href="#32-kanallar-ve-frekanslar" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Kanal merkez frekansı şu formülle bulunur:</p>
+<pre><code class="language-text">Fc(k) = 2405 + 5 × (k − 11)  MHz      k = 11, 12, …, 26
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kanal</th>
+<th>Merkez (MHz)</th>
+<th>Kanal</th>
+<th>Merkez (MHz)</th>
+<th>Kanal</th>
+<th>Merkez (MHz)</th>
+<th>Kanal</th>
+<th>Merkez (MHz)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>11</td>
+<td>2405</td>
+<td>15</td>
+<td>2425</td>
+<td>19</td>
+<td>2445</td>
+<td>23</td>
+<td>2465</td>
+</tr>
+<tr>
+<td>12</td>
+<td>2410</td>
+<td>16</td>
+<td>2430</td>
+<td>20</td>
+<td>2450</td>
+<td>24</td>
+<td>2470</td>
+</tr>
+<tr>
+<td>13</td>
+<td>2415</td>
+<td>17</td>
+<td>2435</td>
+<td>21</td>
+<td>2455</td>
+<td>25</td>
+<td>2475</td>
+</tr>
+<tr>
+<td>14</td>
+<td>2420</td>
+<td>18</td>
+<td>2440</td>
+<td>22</td>
+<td>2460</td>
+<td>26</td>
+<td>2480</td>
+</tr>
+</tbody>
+</table></div>
+<p>Bir Thread ağı <strong>tek bir kanalda</strong> çalışır. Kanal, Operational Dataset'in parçasıdır (Bölüm 17) ve ağın tüm cihazları aynı kanalı kullanır. Kanal değişikliği, "Pending Dataset" mekanizmasıyla tüm ağda eşzamanlı yapılır.</p>
+<blockquote class="callout callout-note"><p class="callout-title">Not</p><p>Thread <strong>frekans atlamalı (frequency hopping)</strong> değildir. Bu, tasarımı basitleştirir ve uyuyan cihazların ağı bulmasını kolaylaştırır; karşılığında girişime karşı direnç, iyi kanal seçimi ve gerektiğinde ağ genelinde kanal değiştirme ile sağlanır.</p>
+</blockquote>
+<h3 id="33-modülasyon-ve-yayılma-spektrumu">3.3 Modülasyon ve Yayılma Spektrumu<a class="anchor" href="#33-modülasyon-ve-yayılma-spektrumu" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>802.15.4 2.4 GHz PHY'sinde veri şu adımlarla radyo sinyaline dönüşür:</p>
+<ol>
+<li><strong>Bit → Sembol</strong>: Her bayt iki adet 4 bitlik sembole bölünür (önce düşük dörtlü / LSB nibble).</li>
+<li><strong>Sembol → Chip (DSSS)</strong>: Her 4 bitlik sembol, 16 adet yarı-ortogonal 32 chip'lik PN dizisinden birine eşlenir. Böylece 4 bit, 32 chip ile temsil edilir (yayılma oranı 8).</li>
+<li><strong>Chip → O-QPSK</strong>: Çift numaralı chip'ler I (in-phase) koluna, tek numaralı chip'ler Q (quadrature) koluna yerleştirilir. Q kolu yarım chip süresi (0.5 µs) geciktirilir (Offset-QPSK).</li>
+<li><strong>Yarım-sinüs darbe şekillendirme</strong>: Her chip yarım sinüs darbesiyle şekillendirilir. Sonuç, MSK'ye benzeyen <strong>sabit zarflı</strong> bir sinyaldir; bu da verimli (doğrusal olmayan) güç yükselteçleri kullanılmasına izin verir — pil ömrü için önemlidir.</li>
+</ol>
+<pre><code class="language-text"> Bayt 0xA7  →  sembol 0x7, sembol 0xA  (önce düşük nibble)
+ sembol 0x7 →  32 chip'lik PN dizisi #7
+ 32 chip    →  16 chip I kolunda + 16 chip Q kolunda (Q, Tc/2 kaydırılmış)
+ 1 sembol   =  32 chip / 2 Mchip/s = 16 µs
+ 250 kbit/s =  4 bit / 16 µs
+</code></pre>
+<p><strong>İşlem kazancı (processing gain)</strong>: 32 chip / 4 bit → 10·log10(8) ≈ <strong>9 dB</strong>. Alıcı korelasyon yaparak gürültü ve dar bantlı girişime karşı bu kadar ek dayanıklılık kazanır. Bu nedenle 802.15.4 sinyalleri gürültü tabanına yakın seviyelerde bile çözülebilir.</p>
+<h3 id="34-ppdu-fiziksel-paket-yapısı">3.4 PPDU (Fiziksel Paket) Yapısı<a class="anchor" href="#34-ppdu-fiziksel-paket-yapısı" aria-label="Bu başlığa bağlantı">#</a></h3>
+<pre><code class="language-text">+------------------+---------+-----------------+-----------------------------+
+| Preamble         |   SFD   |      PHR        |           PSDU              |
+| 4 bayt (0x00×4)  | 1 bayt  | 1 bayt          |   0–127 bayt                |
+| 8 sembol         | 0xA7    | bit0-6: uzunluk |   (MAC çerçevesi = MPDU)    |
+|                  |         | bit7: ayrılmış  |                             |
++------------------+---------+-----------------+-----------------------------+
+|&lt;------- SHR (5 bayt, 160 µs) ------&gt;|&lt;- 32 µs -&gt;|&lt;---- uzunluk × 32 µs ----&gt;|
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Alan</th>
+<th>Boyut</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Preamble</strong></td>
+<td>4 bayt</td>
+<td>Tümü sıfır; alıcının bit/chip senkronizasyonu için</td>
+</tr>
+<tr>
+<td><strong>SFD</strong> (Start of Frame Delimiter)</td>
+<td>1 bayt</td>
+<td><code>0xA7</code>; çerçevenin başladığını işaretler</td>
+</tr>
+<tr>
+<td><strong>PHR</strong> (PHY Header)</td>
+<td>1 bayt</td>
+<td>7 bit çerçeve uzunluğu (0–127), 1 bit ayrılmış</td>
+</tr>
+<tr>
+<td><strong>PSDU</strong></td>
+<td>≤127 bayt</td>
+<td>MAC çerçevesi (MHR + yük + 2 bayt FCS)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Yayın süresi (airtime) hesabı:</strong></p>
+<pre><code class="language-text">Airtime = (5 + 1 + PSDU_uzunluğu) × 32 µs
+
+127 baytlık en büyük çerçeve : (6 + 127) × 32 µs = 4256 µs ≈ 4.26 ms
+5 baytlık Imm-ACK çerçevesi   : (6 + 5)   × 32 µs =  352 µs
+</code></pre>
+<h3 id="35-önemli-phymac-zaman-sabitleri">3.5 Önemli PHY/MAC Zaman Sabitleri<a class="anchor" href="#35-önemli-phymac-zaman-sabitleri" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Sabit</th>
+<th>Değer</th>
+<th>Süre</th>
+<th>Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sembol süresi</td>
+<td>1 sembol</td>
+<td>16 µs</td>
+<td>Temel zaman birimi</td>
+</tr>
+<tr>
+<td><code>aTurnaroundTime</code></td>
+<td>12 sembol</td>
+<td>192 µs</td>
+<td>RX↔TX geçiş süresi; ACK bu süre sonra gönderilir</td>
+</tr>
+<tr>
+<td><code>aUnitBackoffPeriod</code></td>
+<td>20 sembol</td>
+<td>320 µs</td>
+<td>CSMA-CA geri çekilme birimi</td>
+</tr>
+<tr>
+<td><code>aCCATime</code></td>
+<td>8 sembol</td>
+<td>128 µs</td>
+<td>Kanal boşluk değerlendirme (CCA) süresi</td>
+</tr>
+<tr>
+<td><code>macAckWaitDuration</code></td>
+<td>54 sembol</td>
+<td>864 µs</td>
+<td>ACK bekleme süresi</td>
+</tr>
+<tr>
+<td><code>aMaxSIFSFrameSize</code></td>
+<td>18 bayt</td>
+<td>—</td>
+<td>Bu boyuta kadar çerçevelerden sonra kısa aralık</td>
+</tr>
+<tr>
+<td><code>macSIFSPeriod</code></td>
+<td>12 sembol</td>
+<td>192 µs</td>
+<td>Kısa çerçeveler arası boşluk (SIFS)</td>
+</tr>
+<tr>
+<td><code>macLIFSPeriod</code></td>
+<td>40 sembol</td>
+<td>640 µs</td>
+<td>Uzun çerçeveler arası boşluk (LIFS)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="36-alıcı-ölçümleri-rssi-lqi-ed-ve-gürültü-tabanı">3.6 Alıcı Ölçümleri: RSSI, LQI, ED ve Gürültü Tabanı<a class="anchor" href="#36-alıcı-ölçümleri-rssi-lqi-ed-ve-gürültü-tabanı" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Terim</th>
+<th>Açıklama</th>
+<th>Thread'de kullanımı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RSSI</strong> (Received Signal Strength Indicator)</td>
+<td>Alınan çerçevenin sinyal gücü (dBm)</td>
+<td>Link margin hesabı</td>
+</tr>
+<tr>
+<td><strong>Gürültü tabanı (noise floor)</strong></td>
+<td>Kanal boşken ölçülen arka plan gücü (tipik −95…−100 dBm)</td>
+<td>Link margin hesabı</td>
+</tr>
+<tr>
+<td><strong>Link Margin</strong></td>
+<td>RSSI − gürültü tabanı (dB)</td>
+<td>Link Quality (0–3) seviyesine dönüştürülür</td>
+</tr>
+<tr>
+<td><strong>LQI</strong> (Link Quality Indicator)</td>
+<td>Alınan sinyalin kalitesi, 0–255; üreticiye özgü hesaplanır</td>
+<td>Teşhis, Link Metrics</td>
+</tr>
+<tr>
+<td><strong>ED</strong> (Energy Detection)</td>
+<td>Kanaldaki toplam enerji ölçümü</td>
+<td>Energy Scan, CCA, kanal seçimi</td>
+</tr>
+</tbody>
+</table></div>
+<p>Thread, <strong>Link Margin</strong>'i şöyle bir <strong>Link Quality (LQ)</strong> seviyesine çevirir (ayrıntılar Bölüm 10):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Link Margin</th>
+<th>Link Quality</th>
+<th>Bağlantı maliyeti (link cost)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt; 20 dB</td>
+<td>3 (çok iyi)</td>
+<td>1</td>
+</tr>
+<tr>
+<td>&gt; 10 dB</td>
+<td>2 (iyi)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>&gt; 2 dB</td>
+<td>1 (zayıf)</td>
+<td>4</td>
+</tr>
+<tr>
+<td>≤ 2 dB</td>
+<td>0 (kullanılamaz)</td>
+<td>∞ (16)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Eşikler arasında yaklaşık 2 dB'lik <strong>histerezis</strong> uygulanır; böylece sınırdaki bağlantılar seviyeler arasında sürekli zıplamaz.</p>
+<h3 id="37-cca-clear-channel-assessment">3.7 CCA (Clear Channel Assessment)<a class="anchor" href="#37-cca-clear-channel-assessment" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Göndermeden önce kanalın boş olup olmadığına bakılır. 802.15.4 üç mod tanımlar:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mod</th>
+<th>Ölçüt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mod 1</strong></td>
+<td>Enerji eşiğin (ED threshold) üzerindeyse meşgul</td>
+</tr>
+<tr>
+<td><strong>Mod 2</strong></td>
+<td>802.15.4 uyumlu bir sinyal (carrier) algılanırsa meşgul</td>
+</tr>
+<tr>
+<td><strong>Mod 3</strong></td>
+<td>Mod 1 ve/veya Mod 2 birlikte (AND / OR)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Tipik CCA enerji eşiği yaklaşık <strong>−75 dBm</strong> civarındadır (platforma göre değişir). Eşik çok düşük seçilirse Wi-Fi gürültüsü yüzünden sürekli "kanal meşgul" hatası (CCA failure) alınır; çok yüksek seçilirse çakışmalar artar.</p>
+<h3 id="38-wi-fi-ve-bluetooth-ile-bir-arada-yaşama">3.8 Wi-Fi ve Bluetooth ile Bir Arada Yaşama<a class="anchor" href="#38-wi-fi-ve-bluetooth-ile-bir-arada-yaşama" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread, Wi-Fi ve Bluetooth ile aynı 2.4 GHz bandını paylaşır. 20 MHz genişliğindeki Wi-Fi kanalları birçok Thread kanalını örter:</p>
+<pre><code class="language-text">MHz:   2400   2410   2420   2430   2440   2450   2460   2470   2480
+        |------|------|------|------|------|------|------|------|
+Wi-Fi1  [==== 2402–2422 ====]
+Wi-Fi6                   [==== 2427–2447 ====]
+Wi-Fi11                                   [==== 2452–2472 ====]
+Wi-Fi13 (AB)                                        [==== 2462–2482 ====]
+Thread   11  12  13  14 [15] 16  17  18  19 [20] 21  22  23  24 [25] 26
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thread kanalı</th>
+<th>Merkez</th>
+<th>Wi-Fi 1/6/11 ile örtüşme</th>
+<th>Not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>15</strong></td>
+<td>2425 MHz</td>
+<td>Wi-Fi 1 ile 6 arasındaki boşlukta</td>
+<td>Wi-Fi 1/6/11 planında iyi seçenek; BLE reklam kanalı 38'e (2426 MHz) yakın</td>
+</tr>
+<tr>
+<td><strong>20</strong></td>
+<td>2450 MHz</td>
+<td>Wi-Fi 6 ile 11 arasındaki boşlukta</td>
+<td>İyi seçenek</td>
+</tr>
+<tr>
+<td><strong>25</strong></td>
+<td>2475 MHz</td>
+<td>Wi-Fi 11'in üstünde</td>
+<td>Avrupa'da Wi-Fi 12/13 kullanılıyorsa örtüşür</td>
+</tr>
+<tr>
+<td><strong>26</strong></td>
+<td>2480 MHz</td>
+<td>Wi-Fi 11'in üstünde</td>
+<td>ABD'de bant kenarı (2483.5 MHz) nedeniyle bazı ürünlerde düşük güç; BLE reklam kanalı 39 ile aynı frekans</td>
+</tr>
+<tr>
+<td>11–14, 16–19, 21–24</td>
+<td>—</td>
+<td>Bir Wi-Fi kanalının içinde</td>
+<td>Wi-Fi yoğunsa CCA hataları ve kayıplar artar</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Bir arada yaşama (coexistence) yöntemleri:</strong></p>
+<ul>
+<li><strong>Kanal planlama</strong>: Ortamın Wi-Fi kanallarını ölçüp (Energy Scan) en az örtüşen Thread kanalını seçmek.</li>
+<li><strong>PTA (Packet Traffic Arbitration)</strong>: Aynı cihazda Wi-Fi ve 802.15.4 radyosu varsa (ör. Border Router, ESP32-C6, tri-radio çipler) radyolar 2/3 telli bir hakemlik arayüzüyle hangisinin göndereceğini koordine eder.</li>
+<li><strong>Anten izolasyonu</strong>: Aynı kutudaki Wi-Fi ve Thread antenleri arasında fiziksel mesafe ve polarizasyon farkı.</li>
+<li><strong>Dinamik kanal yönetimi</strong>: OpenThread'in <em>Channel Monitor</em> ve <em>Channel Manager</em> özellikleri kanalları periyodik örnekleyip gerekirse ağın kanalını değiştirebilir.</li>
+</ul>
+<h3 id="39-bağlantı-bütçesi-ve-menzil">3.9 Bağlantı Bütçesi ve Menzil<a class="anchor" href="#39-bağlantı-bütçesi-ve-menzil" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p><strong>Bağlantı bütçesi (link budget)</strong> = verici gücü + anten kazançları − alıcı hassasiyeti.</p>
+<pre><code class="language-text">Örnek: TX = +8 dBm, hassasiyet = −100 dBm, anten kazançları ≈ 0 dBi
+Bütçe = 8 − (−100) = 108 dB
+</code></pre>
+<p>2.44 GHz'te serbest uzay yol kaybı (FSPL):</p>
+<pre><code class="language-text">FSPL(dB) ≈ 40.2 + 20·log10(d / 1 m)
+
+d =  1 m  →  40 dB          d = 10 m  →  60 dB
+d = 30 m  →  70 dB          d = 100 m →  80 dB
+</code></pre>
+<p>İç mekânda her duvar/kat için ek kayıplar eklenir (alçıpan ≈ 3–5 dB, tuğla ≈ 6–12 dB, betonarme ≈ 10–20 dB, metal yüzeyler çok daha fazla). Ayrıca çok yollu sönümlenme (multipath fading) için 10–20 dB pay bırakmak gerekir.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ortam</th>
+<th>Tipik tek atlama menzili</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>İç mekân, birkaç duvar</td>
+<td>10–30 m</td>
+</tr>
+<tr>
+<td>Açık alan, görüş hattı</td>
+<td>50–100+ m (FEM ile daha fazla)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Mesh yapısı sayesinde tek atlama menzili sınırlı olsa da ağ, router ekledikçe kapsama alanını genişletir.</p>
+<h3 id="310-etkin-veri-hızı-throughput">3.10 Etkin Veri Hızı (Throughput)<a class="anchor" href="#310-etkin-veri-hızı-throughput" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>250 kbit/s ham hızdır; gerçek uygulama verimi çok daha düşüktür. Tek atlamada en büyük çerçeve için kaba bir hesap:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bileşen</th>
+<th>Süre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ortalama CSMA geri çekilme (BE = 3 → ortalama 3.5 × 320 µs)</td>
+<td>≈ 1120 µs</td>
+</tr>
+<tr>
+<td>CCA + RX→TX geçişi</td>
+<td>128 + 192 = 320 µs</td>
+</tr>
+<tr>
+<td>127 baytlık çerçeve</td>
+<td>4256 µs</td>
+</tr>
+<tr>
+<td>ACK öncesi geçiş + ACK çerçevesi</td>
+<td>192 + 352 = 544 µs</td>
+</tr>
+<tr>
+<td><strong>Toplam</strong></td>
+<td><strong>≈ 6.24 ms / çerçeve</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>127 baytlık çerçevenin içinde MAC başlığı, güvenlik başlığı, MIC, FCS, 6LoWPAN parçalama/sıkıştırma ve UDP başlıkları çıktıktan sonra yaklaşık <strong>80–90 bayt</strong> uygulama verisi kalır:</p>
+<pre><code class="language-text">Tek atlama, en iyi durum : 85 bayt × 8 / 6.24 ms ≈ 109 kbit/s
+Çok atlama (aynı kanal)  : her atlama aynı kanalı paylaştığı için verim
+                           kabaca atlama sayısıyla bölünür
+3 atlama                 : ≈ 30–40 kbit/s
+</code></pre>
+<p>Gerçek ağlarda yeniden iletimler, Wi-Fi girişimi ve kontrol trafiği nedeniyle tipik uygulama verimi <strong>onlarca kbit/s</strong> düzeyindedir. Bu, sensör/aktüatör trafiği için fazlasıyla yeterlidir; ancak OTA yazılım güncellemeleri gibi büyük aktarımlar dakikalar sürebilir (Bölüm 26).</p>
+<h3 id="311-bölüm-özeti">3.11 Bölüm Özeti<a class="anchor" href="#311-bölüm-özeti" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>Thread yalnızca 2.4 GHz, 16 kanallı, 250 kbit/s O-QPSK PHY kullanır; ağ tek kanalda çalışır.</li>
+<li>DSSS ≈ 9 dB işlem kazancı ve sabit zarflı modülasyon, düşük güç ve gürültüye dayanıklılık sağlar.</li>
+<li>En büyük çerçeve 127 bayttır ve ≈ 4.26 ms sürer; bu sınır üst katmanlarda sıkıştırma ve parçalamayı zorunlu kılar.</li>
+<li>Link margin → Link Quality (0–3) → link cost dönüşümü, yönlendirmenin temelidir.</li>
+<li>Wi-Fi ile çakışmayı azaltmak için 15, 20, 25 (ve bölgeye göre 26) numaralı kanallar genelde daha temizdir.</li>
+</ul>
+<h2 id="4-mac-katmanı-ieee-802154-mac">4. MAC Katmanı (IEEE 802.15.4 MAC)<a class="anchor" href="#4-mac-katmanı-ieee-802154-mac" aria-label="Bu başlığa bağlantı">#</a></h2>
+<h3 id="41-görevler">4.1 Görevler<a class="anchor" href="#41-görevler" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>802.15.4 MAC katmanının Thread'deki sorumlulukları:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Görev</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Kanal erişimi</strong></td>
+<td>Slotsuz (unslotted) CSMA-CA ile çakışmaları azaltmak</td>
+</tr>
+<tr>
+<td><strong>Çerçeveleme</strong></td>
+<td>Başlık (MHR), yük ve FCS (CRC-16) oluşturmak</td>
+</tr>
+<tr>
+<td><strong>Adresleme</strong></td>
+<td>PAN ID, 16 bit kısa adres, 64 bit genişletilmiş adres</td>
+</tr>
+<tr>
+<td><strong>Güvenilirlik</strong></td>
+<td>Onay (ACK) ve yeniden iletim (retry)</td>
+</tr>
+<tr>
+<td><strong>Güvenlik</strong></td>
+<td>AES-128-CCM* ile şifreleme + bütünlük (MIC), tekrar (replay) koruması</td>
+</tr>
+<tr>
+<td><strong>Dolaylı iletim</strong></td>
+<td>Uyuyan cihazlar için ebeveynde kuyruklama ve "poll" ile teslim</td>
+</tr>
+<tr>
+<td><strong>Tarama</strong></td>
+<td>Active scan, energy scan</td>
+</tr>
+<tr>
+<td><strong>Bilgi elemanları (IE)</strong></td>
+<td>Thread 1.2+: CSL, Link Metrics gibi bilgilerin başlıkta taşınması</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="42-threadin-802154-maci-kullanma-biçimi">4.2 Thread'in 802.15.4 MAC'i Kullanma Biçimi<a class="anchor" href="#42-threadin-802154-maci-kullanma-biçimi" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>802.15.4 çok geniş bir standarttır; Thread bunun yalnızca belirli bir alt kümesini kullanır:</p>
+<ul>
+<li><strong>Beacon'sız (non-beacon) mod</strong>: Süper çerçeve (superframe), GTS (garantili zaman dilimi) yoktur. Kanal erişimi tamamen <strong>slotsuz CSMA-CA</strong> ile yapılır.</li>
+<li><strong>802.15.4 "association" kullanılmaz</strong>: Bir cihazın ağa bağlanması MAC Association komutlarıyla değil, <strong>MLE</strong> (Bölüm 9) ile yapılır. Bu sayede bağlanma süreci güvenli ve IP tabanlıdır.</li>
+<li><strong>PAN Coordinator kavramı yoktur</strong>: Thread'de "coordinator" rolü bulunmaz; Leader bir MAC kavramı değil, Thread ağ katmanı rolüdür.</li>
+<li><strong>Çerçeve sürümleri</strong>: Thread 1.1 güvenli çerçeveler için 802.15.4-<strong>2006</strong> sürümünü kullanır. Thread 1.2 ve sonrası, IE (Information Element) ve Enhanced ACK gerektiren durumlarda 802.15.4-<strong>2015</strong> çerçeve sürümünü kullanır (ör. CSL, Link Metrics).</li>
+<li><strong>Genişletilmiş adres rastgeledir</strong>: Thread cihazları ağda fabrika EUI-64'ünü değil, rastgele üretilmiş bir 64 bit <strong>Extended Address</strong> kullanır (gizlilik). Fabrika EUI-64'ü yalnızca devreye almada Joiner ID türetmek için kullanılır.</li>
+</ul>
+<h3 id="43-mac-çerçeve-formatı">4.3 MAC Çerçeve Formatı<a class="anchor" href="#43-mac-çerçeve-formatı" aria-label="Bu başlığa bağlantı">#</a></h3>
+<pre><code class="language-text">           MHR (MAC Header)                                          MAC Payload      MFR
++-------+-----+-------+-------+-------+-------+-----------+-------+--------------+--------+
+| Frame | Seq | Dest  | Dest  |  Src  |  Src  | Auxiliary | Header|   Payload    |  FCS   |
+|Control| Num | PAN ID| Addr  | PAN ID| Addr  | Security  |  IEs  | (+Payload IE)| CRC-16 |
+|   2   | 0/1 | 0/2   |0/2/8  | 0/2   | 0/2/8 | 0/5/6/10/14| değ. |   değişken   |   2    |
++-------+-----+-------+-------+-------+-------+-----------+-------+--------------+--------+
+</code></pre>
+<p>Tüm çok baytlı alanlar havada <strong>little-endian</strong> sırayla gönderilir.</p>
+<h4 id="frame-control-2-bayt">Frame Control (2 bayt)<a class="anchor" href="#frame-control-2-bayt" aria-label="Bu başlığa bağlantı">#</a></h4>
+<pre><code class="language-text"> bit: 15 14 | 13 12 | 11 10 |  9  |  8  |  7  |  6  |  5  |  4  |  3  | 2 1 0
+      SrcAM | Sürüm | DstAM | IEP | SNS | ayr.| PIC | AR  | FP  | Sec | Tür
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bit(ler)</th>
+<th>Alan</th>
+<th>Değerler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–2</td>
+<td><strong>Frame Type</strong></td>
+<td><code>000</code> Beacon, <code>001</code> Data, <code>010</code> Ack, <code>011</code> MAC Command (diğerleri Thread'de kullanılmaz)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Security Enabled</strong></td>
+<td>1 = Aux Security Header var, yük şifreli/doğrulanmış</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Frame Pending</strong></td>
+<td>1 = gönderende bu alıcı için bekleyen veri var (uyuyan cihazlar için kritik)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>AR</strong> (Ack Request)</td>
+<td>1 = alıcı ACK göndermeli (unicast çerçeveler); yayın (broadcast) çerçevelerde 0</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>PAN ID Compression</strong></td>
+<td>1 = kaynak PAN ID atlanır (hedef PAN ID ile aynı kabul edilir)</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Sequence Number Suppression</strong></td>
+<td>(2015) 1 = sıra numarası alanı yok</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>IE Present</strong></td>
+<td>(2015) 1 = başlıkta Information Element var</td>
+</tr>
+<tr>
+<td>10–11</td>
+<td><strong>Dest Addr Mode</strong></td>
+<td><code>00</code> yok, <code>10</code> kısa (16 bit), <code>11</code> genişletilmiş (64 bit)</td>
+</tr>
+<tr>
+<td>12–13</td>
+<td><strong>Frame Version</strong></td>
+<td><code>00</code> 2003, <code>01</code> 2006, <code>10</code> 2015</td>
+</tr>
+<tr>
+<td>14–15</td>
+<td><strong>Src Addr Mode</strong></td>
+<td><code>00</code> yok, <code>10</code> kısa, <code>11</code> genişletilmiş</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="çözümlenmiş-örnekler">Çözümlenmiş örnekler<a class="anchor" href="#çözümlenmiş-örnekler" aria-label="Bu başlığa bağlantı">#</a></h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Havadaki baytlar</th>
+<th>FCF değeri</th>
+<th>Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>41 D8</code></td>
+<td><code>0xD841</code></td>
+<td>Data, güvenliksiz, ACK yok, PAN sıkıştırma; hedef kısa (yayın <code>0xFFFF</code>), kaynak genişletilmiş, sürüm 2006 → tipik <strong>MLE yayın</strong> çerçevesi (ör. Parent Request)</td>
+</tr>
+<tr>
+<td><code>61 DC</code></td>
+<td><code>0xDC61</code></td>
+<td>Data, güvenliksiz, ACK istekli, PAN sıkıştırma; hedef ve kaynak genişletilmiş, sürüm 2006 → tipik <strong>MLE unicast</strong> çerçevesi</td>
+</tr>
+<tr>
+<td><code>69 98</code></td>
+<td><code>0x9869</code></td>
+<td>Data, <strong>güvenli</strong>, ACK istekli, PAN sıkıştırma; hedef ve kaynak kısa, sürüm 2006 → tipik <strong>komşular arası veri</strong> çerçevesi</td>
+</tr>
+<tr>
+<td><code>69 D8</code></td>
+<td><code>0xD869</code></td>
+<td>Aynısı, kaynak genişletilmiş</td>
+</tr>
+<tr>
+<td><code>02 00</code></td>
+<td><code>0x0002</code></td>
+<td>Imm-Ack (Frame Pending = 0)</td>
+</tr>
+<tr>
+<td><code>12 00</code></td>
+<td><code>0x0012</code></td>
+<td>Imm-Ack (Frame Pending = 1) — "sende bekleyen veri var"</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="tam-bir-veri-çerçevesi-örneği">Tam bir veri çerçevesi örneği<a class="anchor" href="#tam-bir-veri-çerçevesi-örneği" aria-label="Bu başlığa bağlantı">#</a></h4>
+<pre><code class="language-text">69 98                 Frame Control: Data, Sec=1, AR=1, PIC=1, kısa→kısa, 2006
+5A                    Sıra numarası = 90
+34 12                 Hedef PAN ID = 0x1234
+00 5C                 Hedef kısa adres = 0x5C00  (Router ID 23)
+01 5C                 Kaynak kısa adres = 0x5C01 (Router 23'ün 1 numaralı çocuğu)
+0D                    Security Control: seviye 5 (ENC-MIC-32), Key ID Mode 1
+3A 00 00 00           Frame Counter = 58
+01                    Key Index = 1  (Key Sequence 0)
+.. .. .. ..           Şifreli yük (6LoWPAN: Mesh/Frag/IPHC + UDP + uygulama)
+xx xx xx xx           MIC (32 bit)
+yy yy                 FCS (CRC-16/ITU-T)
+</code></pre>
+<p>MAC ek yükü: başlık 9 bayt + güvenlik başlığı 6 bayt + MIC 4 bayt + FCS 2 bayt = <strong>21 bayt</strong>. Yani kısa adreslerle MAC yükü için en fazla <strong>106 bayt</strong> kalır (kaynak genişletilmiş adres ise ≈ 100 bayt).</p>
+<h3 id="44-adresler">4.4 Adresler<a class="anchor" href="#44-adresler" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Adres</th>
+<th>Boyut</th>
+<th>Thread'deki anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PAN ID</strong></td>
+<td>16 bit</td>
+<td>Ağın MAC seviyesindeki kimliği; Operational Dataset'te bulunur. <code>0xFFFF</code> yayın PAN ID'sidir.</td>
+</tr>
+<tr>
+<td><strong>Kısa adres (Short Address)</strong></td>
+<td>16 bit</td>
+<td>Thread'de doğrudan <strong>RLOC16</strong> değeridir (Router ID + Child ID). <code>0xFFFF</code> yayın, <code>0xFFFE</code> "kısa adres yok" anlamına gelir.</td>
+</tr>
+<tr>
+<td><strong>Genişletilmiş adres (Extended Address)</strong></td>
+<td>64 bit</td>
+<td>Cihazın ağdaki rastgele 64 bitlik kimliği. Link-local IPv6 adresinin arayüz kimliği (IID) bundan türetilir. Ayrıca MAC güvenlik <strong>nonce</strong>'unda kullanılır.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Hangi adres ne zaman kullanılır?</strong></p>
+<ul>
+<li>Cihaz henüz RLOC16 almamışken (bağlanma sırasında) <strong>genişletilmiş</strong> adres kullanılır.</li>
+<li>MLE mesajları link-local IPv6 adresleriyle gönderildiği için MAC kaynağı genellikle <strong>genişletilmiş</strong> adrestir.</li>
+<li>Bağlanmış komşular arasındaki veri trafiğinde çerçeveyi küçültmek için <strong>kısa</strong> adresler tercih edilir.</li>
+<li>IPv6 çoklu yayın (multicast) paketleri MAC seviyesinde <strong><code>0xFFFF</code></strong> yayın adresine gönderilir ve ACK istenmez.</li>
+</ul>
+<h3 id="45-csma-ca-slotsuz">4.5 CSMA-CA (Slotsuz)<a class="anchor" href="#45-csma-ca-slotsuz" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread cihazları göndermeden önce rastgele süre bekleyip kanalı dinler:</p>
+<figure class="diagram"><pre class="mermaid">flowchart TD
+    S([&quot;Gönderim isteği&quot;]) --&gt; I[&quot;NB = 0&lt;br/&gt;BE = macMinBE (3)&quot;]
+    I --&gt; D[&quot;Rastgele bekle:&lt;br/&gt;0 … 2^BE − 1 birim × 320 µs&quot;]
+    D --&gt; C{&quot;CCA: kanal boş mu?&quot;}
+    C -- Evet --&gt; T[&quot;Çerçeveyi gönder&quot;]
+    C -- Hayır --&gt; U[&quot;NB = NB + 1&lt;br/&gt;BE = min(BE + 1, macMaxBE = 5)&quot;]
+    U --&gt; Q{&quot;NB &gt; macMaxCSMABackoffs (4)?&quot;}
+    Q -- Hayır --&gt; D
+    Q -- Evet --&gt; F([&quot;Kanal erişim hatası&lt;br/&gt;(CCA failure)&quot;])
+    T --&gt; A{&quot;ACK istendi mi?&quot;}
+    A -- Hayır --&gt; OK([&quot;Tamam&quot;])
+    A -- Evet --&gt; W{&quot;864 µs içinde ACK geldi mi?&quot;}
+    W -- Evet --&gt; OK
+    W -- Hayır --&gt; R{&quot;Yeniden deneme hakkı var mı?&quot;}
+    R -- Evet --&gt; I
+    R -- Hayır --&gt; NA([&quot;Hata: No ACK&quot;])
+</pre></figure>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Parametre</th>
+<th>Varsayılan</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>macMinBE</code></td>
+<td>3</td>
+<td>İlk geri çekilme üssü (0–7 birim)</td>
+</tr>
+<tr>
+<td><code>macMaxBE</code></td>
+<td>5</td>
+<td>En büyük geri çekilme üssü (0–31 birim)</td>
+</tr>
+<tr>
+<td><code>macMaxCSMABackoffs</code></td>
+<td>4</td>
+<td>Vazgeçmeden önce en fazla CCA denemesi (toplam 5 CCA)</td>
+</tr>
+<tr>
+<td><code>macMaxFrameRetries</code></td>
+<td>3</td>
+<td>ACK gelmezse yeniden iletim sayısı (OpenThread doğrudan iletim varsayılanı 3)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout callout-tip"><p class="callout-title">İpucu</p><p>MAC sayaçlarında <strong>TxErrCca</strong> (kanal erişim hatası) oranı yüksekse kanal çok meşguldür (genellikle Wi-Fi); <strong>TxRetry</strong> oranı yüksekse bağlantı kalitesi zayıftır veya gizli düğüm (hidden node) problemi vardır. Bkz. Bölüm 21.</p>
+</blockquote>
+<h3 id="46-onay-ack-ve-yeniden-i̇letim">4.6 Onay (ACK) ve Yeniden İletim<a class="anchor" href="#46-onay-ack-ve-yeniden-i̇letim" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>Unicast çerçevelerde AR = 1 olur. Alıcı çerçeveyi doğru aldıysa (FCS geçerli ve adres kendisine) <strong><code>aTurnaroundTime</code> = 192 µs</strong> sonra ACK gönderir; CSMA uygulanmaz.</li>
+<li><strong>Imm-Ack</strong> (2006): 5 baytlık MPDU (FCF 2 + Seq 1 + FCS 2). Güvenlik içermez; yalnızca sıra numarası eşleşmesi kontrol edilir.</li>
+<li><strong>Enhanced ACK</strong> (2015, Thread 1.2+): IE taşıyabilen, güvenli olabilen ACK. CSL bilgisi (CSL IE) veya Link Metrics verisi taşımak için kullanılır.</li>
+<li>Yayın (broadcast) çerçeveler ACK'lenmez. Bu yüzden MLE/MPL gibi üst katmanlar kendi tekrar mekanizmalarını kullanır.</li>
+<li>Gönderen ACK gelmezse çerçeveyi <strong>aynı sıra numarasıyla</strong> yeniden gönderir; alıcı, yinelenen çerçeveleri sıra numarası + kaynak adres ile ayıklar (RxDuplicated sayacı).</li>
+</ul>
+<h3 id="47-dolaylı-i̇letim-indirect-transmission-ve-veri-sorgulama-data-poll">4.7 Dolaylı İletim (Indirect Transmission) ve Veri Sorgulama (Data Poll)<a class="anchor" href="#47-dolaylı-i̇letim-indirect-transmission-ve-veri-sorgulama-data-poll" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Uyuyan cihazlar (SED) radyolarını çoğu zaman kapalı tutar; ebeveyn onlara istediği an veri gönderemez. Çözüm <strong>dolaylı iletim</strong>dir:</p>
+<ol>
+<li>Ebeveyn, SED'e giden paketi <strong>kuyrukta</strong> tutar.</li>
+<li>SED periyodik olarak uyanıp ebeveynine <strong>MAC Data Request</strong> komutu (komut kimliği <code>0x04</code>) gönderir — buna <strong>poll</strong> (sorgulama) denir.</li>
+<li>Ebeveyn ACK'deki <strong>Frame Pending</strong> bitini 1 yaparak "senin için veri var" der.</li>
+<li>SED alıcısını açık tutar; ebeveyn veriyi gönderir.</li>
+<li>Kuyrukta başka çerçeve varsa veri çerçevesindeki Frame Pending biti 1 olur; SED dinlemeye devam eder veya tekrar poll eder.</li>
+</ol>
+<figure class="diagram"><pre class="mermaid">sequenceDiagram
+    participant SED as SED (çocuk)
+    participant P as Ebeveyn Router
+    Note over P: SED için paket geldi, kuyruğa alındı
+    Note over SED: Radyo kapalı (uyku)
+    SED-&gt;&gt;P: MAC Data Request (poll)
+    P--&gt;&gt;SED: ACK (Frame Pending = 1)
+    Note over SED: Alıcı açık kalır
+    P-&gt;&gt;SED: Data çerçevesi (Frame Pending = 0)
+    SED--&gt;&gt;P: ACK
+    Note over SED: Radyo kapanır, uykuya döner
+</pre></figure>
+<p><strong>Ebeveynin tampon yükümlülüğü:</strong> Thread, ebeveynin her uyuyan çocuğu için en az bir tam IPv6 datagramını (1280 bayt) tutabilmesini ister. Thread 1.2+ ebeveynler bu kapasiteyi <strong>Connectivity TLV</strong> içindeki <em>SED Buffer Size</em> ve <em>SED Datagram Count</em> alanlarıyla ilan eder.</p>
+<p><strong>Poll yanıtı gecikmesi:</strong> Data Request ile veri çerçevesi arasındaki süre kısa olmalıdır; SED bu süre boyunca alıcısını açık tutar. Bu yüzden ebeveyn yazılımları poll'a hızlı cevap verecek şekilde optimize edilir.</p>
+<h3 id="48-mac-komutları">4.8 MAC Komutları<a class="anchor" href="#48-mac-komutları" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread yalnızca birkaç MAC komutu kullanır:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kimlik</th>
+<th>Komut</th>
+<th>Thread'de kullanımı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x04</code></td>
+<td><strong>Data Request</strong></td>
+<td>SED'in ebeveynini sorgulaması (poll)</td>
+</tr>
+<tr>
+<td><code>0x07</code></td>
+<td><strong>Beacon Request</strong></td>
+<td>Active scan (çevredeki 802.15.4 ağlarını bulma)</td>
+</tr>
+<tr>
+<td><code>0x01</code>–<code>0x03</code>, <code>0x05</code>, <code>0x06</code>, <code>0x08</code>, <code>0x09</code></td>
+<td>Association, Disassociation, Orphan, Coordinator Realignment, GTS vb.</td>
+<td><strong>Kullanılmaz</strong> (MLE ile değiştirilmiştir)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Thread Beacon (tarihsel):</strong> Thread 1.0'da ağlar, Beacon Request'e MAC beacon ile cevap verip beacon yükünde <em>Protocol ID (3)</em>, sürüm, "Joining Permitted" ve "Native Commissioning" bayrakları, <em>Network Name</em>, <em>Extended PAN ID</em> ve <em>Steering Data</em> taşırdı. Thread 1.1 ve sonrası ağ keşfi için <strong>MLE Discovery Request/Response</strong> kullanır (Bölüm 9.13); beacon yükü geriye uyumluluk için isteğe bağlıdır.</p>
+<h3 id="49-mac-güvenliği">4.9 MAC Güvenliği<a class="anchor" href="#49-mac-güvenliği" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Thread'de ağ trafiği <strong>her atlamada</strong> MAC katmanında şifrelenir ve doğrulanır.</p>
+<h4 id="güvenlik-seviyeleri">Güvenlik seviyeleri<a class="anchor" href="#güvenlik-seviyeleri" aria-label="Bu başlığa bağlantı">#</a></h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Seviye</th>
+<th>Ad</th>
+<th>Şifreleme</th>
+<th>MIC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>None</td>
+<td>Hayır</td>
+<td>—</td>
+</tr>
+<tr>
+<td>1 / 2 / 3</td>
+<td>MIC-32 / 64 / 128</td>
+<td>Hayır</td>
+<td>4 / 8 / 16 bayt</td>
+</tr>
+<tr>
+<td>4</td>
+<td>ENC</td>
+<td>Evet</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td><strong>ENC-MIC-32</strong></td>
+<td><strong>Evet</strong></td>
+<td><strong>4 bayt</strong> ← Thread bunu kullanır</td>
+</tr>
+<tr>
+<td>6 / 7</td>
+<td>ENC-MIC-64 / 128</td>
+<td>Evet</td>
+<td>8 / 16 bayt</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="auxiliary-security-header">Auxiliary Security Header<a class="anchor" href="#auxiliary-security-header" aria-label="Bu başlığa bağlantı">#</a></h4>
+<pre><code class="language-text">+------------------+----------------+--------------------------------------+
+| Security Control | Frame Counter  | Key Identifier                       |
+|     1 bayt       |  4 bayt (LE)   | Mode 0: yok                          |
+|                  |                | Mode 1: Key Index (1)                |
+|                  |                | Mode 2: Key Source (4) + Index (1)   |
+|                  |                | Mode 3: Key Source (8) + Index (1)   |
++------------------+----------------+--------------------------------------+
+
+Security Control:
+ bit:   7      6           5              4  3          2 1 0
+      ayr.  ASN-in-Nonce  FC Suppression  Key ID Mode   Security Level
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kullanım</th>
+<th>Key ID Mode</th>
+<th>Anahtar</th>
+<th>Security Control</th>
+<th>Başlık boyutu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal veri çerçeveleri</td>
+<td><strong>1</strong></td>
+<td>MAC Key (Network Key'den türetilmiş)</td>
+<td><code>0x0D</code></td>
+<td>6 bayt</td>
+</tr>
+<tr>
+<td>Joiner Entrust (devreye almada)</td>
+<td><strong>0</strong></td>
+<td><strong>KEK</strong> (DTLS oturumundan türetilmiş)</td>
+<td><code>0x05</code></td>
+<td>5 bayt</td>
+</tr>
+<tr>
+<td>MLE mesajları</td>
+<td>MAC'te güvenliksiz; güvenlik <strong>MLE katmanında</strong> (Bölüm 9.4)</td>
+<td>MLE Key</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Key Index</strong> değeri, mevcut <strong>Key Sequence</strong>'ten türetilir:</p>
+<pre><code class="language-text">Key Index = (Key Sequence mod 128) + 1        → 1 … 128
+</code></pre>
+<p>Alıcı, Key Index'e bakarak çerçevenin mevcut, önceki veya sonraki anahtar dizisiyle şifrelendiğini anlar ve ilgili anahtarı kullanır (anahtar rotasyonu, Bölüm 15).</p>
+<h4 id="aes-ccm-nonceu-13-bayt">AES-CCM* nonce'u (13 bayt)<a class="anchor" href="#aes-ccm-nonceu-13-bayt" aria-label="Bu başlığa bağlantı">#</a></h4>
+<pre><code class="language-text">+-----------------------------------+--------------------+----------------+
+| Kaynak Extended Address (8 bayt)  | Frame Counter (4)  | Sec. Level (1) |
++-----------------------------------+--------------------+----------------+
+</code></pre>
+<blockquote class="callout callout-important"><p class="callout-title">Önemli</p><p>Nonce her zaman gönderenin <strong>64 bitlik Extended Address</strong>'ini içerir — çerçeve kısa adresle gönderilse bile. Bu yüzden bir cihaz, bir komşudan gelen kısa adresli güvenli çerçeveyi çözebilmek için o komşunun Extended Address'ini önceden (MLE ile) öğrenmiş olmalıdır. Bu, MLE bağlantı kurulumunun neden zorunlu olduğunun bir sebebidir.</p>
+</blockquote>
+<p><strong>Şifrelenen ve doğrulanan kısımlar:</strong></p>
+<ul>
+<li><strong>Doğrulanır (AAD)</strong>: MHR (Frame Control, adresler, Aux Security Header, IE'ler).</li>
+<li><strong>Şifrelenir + doğrulanır</strong>: MAC yükü (6LoWPAN ile sıkıştırılmış IPv6 paketi).</li>
+<li><strong>MIC</strong> (4 bayt) yükün sonuna, FCS'den önce eklenir.</li>
+</ul>
+<h4 id="frame-counter-ve-tekrar-replay-koruması">Frame Counter ve tekrar (replay) koruması<a class="anchor" href="#frame-counter-ve-tekrar-replay-koruması" aria-label="Bu başlığa bağlantı">#</a></h4>
+<ul>
+<li>Her cihaz, gönderdiği her güvenli çerçeve için 32 bitlik <strong>Frame Counter</strong>'ı bir artırır.</li>
+<li>Alıcı, her komşu için en son kabul ettiği frame counter'ı saklar ve <strong>daha küçük veya eşit</strong> değerli çerçeveleri reddeder.</li>
+<li>Komşuların başlangıç sayaçları MLE ile değiş tokuş edilir (<em>Link-layer Frame Counter TLV</em>).</li>
+<li>Key Sequence değiştiğinde (yeni anahtar) sayaçlar sıfırlanır; çünkü (anahtar, nonce) çifti benzersiz kalmaya devam eder.</li>
+<li>Cihazlar yeniden başlatmada sayacın geri gitmemesi için değeri kalıcı belleğe <strong>ileriye dönük bir payla</strong> yazar (OpenThread birkaç yüz/bin değer ileriyi saklar); aksi hâlde yeniden başlatma sonrası gönderilen çerçeveler komşular tarafından reddedilirdi.</li>
+</ul>
+<h3 id="410-bilgi-elemanları-information-elements--ie">4.10 Bilgi Elemanları (Information Elements — IE)<a class="anchor" href="#410-bilgi-elemanları-information-elements--ie" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>802.15.4-2015 çerçevelerinde, başlığa esnek alanlar eklemek için IE'ler kullanılır. Thread 1.2+ bunları şu amaçlarla kullanır:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>IE</th>
+<th>Element ID</th>
+<th>İçerik</th>
+<th>Kullanım</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CSL IE</strong></td>
+<td><code>0x1A</code></td>
+<td>CSL Phase (2 bayt), CSL Period (2 bayt) — 10 sembol (160 µs) biriminde</td>
+<td>SSED'in örnekleme zamanlamasını ebeveynine bildirmesi (Bölüm 18)</td>
+</tr>
+<tr>
+<td><strong>Vendor Specific Header IE</strong></td>
+<td><code>0x00</code></td>
+<td>Thread Group OUI'si + içerik</td>
+<td>Enhanced-ACK tabanlı Link Metrics raporları</td>
+</tr>
+<tr>
+<td><strong>Header Termination 1</strong></td>
+<td><code>0x7E</code></td>
+<td>—</td>
+<td>Header IE'lerin bittiğini ve Payload IE'lerin başladığını gösterir</td>
+</tr>
+<tr>
+<td><strong>Header Termination 2</strong></td>
+<td><code>0x7F</code></td>
+<td>—</td>
+<td>Header IE'lerin bittiğini ve doğrudan yükün başladığını gösterir</td>
+</tr>
+</tbody>
+</table></div>
+<p>Header IE tanımlayıcısı 2 bayttır: 7 bit uzunluk, 8 bit Element ID, 1 bit tür (0 = header IE).</p>
+<h3 id="411-taramalar">4.11 Taramalar<a class="anchor" href="#411-taramalar" aria-label="Bu başlığa bağlantı">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tarama</th>
+<th>Nasıl?</th>
+<th>Thread'de amacı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Energy Scan</strong></td>
+<td>Her kanalda belirli süre ED ölçümü</td>
+<td>En sessiz kanalı seçmek; commissioner'ın uzaktan Energy Scan istemesi (<code>c/es</code>)</td>
+</tr>
+<tr>
+<td><strong>Active Scan</strong></td>
+<td>Her kanalda Beacon Request yayını, beacon dinleme</td>
+<td>Çevredeki 802.15.4 ağlarını listelemek (<code>scan</code> komutu)</td>
+</tr>
+<tr>
+<td><strong>MLE Discovery Scan</strong></td>
+<td>Her kanalda MLE Discovery Request yayını</td>
+<td>Thread ağlarını ve devreye almaya açık ağları bulmak (<code>discover</code> komutu, Joiner)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="412-mac-seviyesinde-alım-filtreleri">4.12 MAC Seviyesinde Alım Filtreleri<a class="anchor" href="#412-mac-seviyesinde-alım-filtreleri" aria-label="Bu başlığa bağlantı">#</a></h3>
+<p>Bir çerçeve kabul edilmeden önce sırasıyla şu kontrollerden geçer:</p>
+<ol>
+<li><strong>FCS</strong> doğru mu? (Değilse: RxErrFcs)</li>
+<li><strong>Hedef PAN ID</strong> kendi PAN ID'm veya <code>0xFFFF</code> mi?</li>
+<li><strong>Hedef adres</strong> kendi kısa/genişletilmiş adresim veya <code>0xFFFF</code> mi? (Değilse: RxDestAddrFiltered)</li>
+<li><strong>Kaynak adres</strong> geçerli mi, (filtre etkinse) izin listesinde mi?</li>
+<li>Güvenli çerçeveyse: <strong>anahtar</strong> bulunuyor mu, <strong>frame counter</strong> yeni mi, <strong>MIC</strong> doğru mu? (Değilse: RxErrSec)</li>
+<li><strong>Yinelenen çerçeve</strong> mi? (sıra numarası + kaynak; RxDuplicated)</li>
+<li>Gönderen bilinen bir <strong>komşu</strong> mu? Değilse ve çerçeve güvenliyse genellikle reddedilir (RxErrUnknownNeighbor) — istisna: MLE ve devreye alma mesajları.</li>
+</ol>
+<h3 id="413-bölüm-özeti">4.13 Bölüm Özeti<a class="anchor" href="#413-bölüm-özeti" aria-label="Bu başlığa bağlantı">#</a></h3>
+<ul>
+<li>Thread, 802.15.4 MAC'in beacon'sız, slotsuz CSMA-CA modunu kullanır; association yerine MLE vardır.</li>
+<li>Kısa MAC adresi = RLOC16; genişletilmiş adres rastgeledir ve güvenlik nonce'unun parçasıdır.</li>
+<li>Veri çerçeveleri seviye 5 (AES-CCM*, 4 baytlık MIC), Key ID Mode 1 ile korunur; MAC ek yükü ≈ 21 bayttır.</li>
+<li>Uyuyan cihazlara veri dolaylı iletimle (poll + Frame Pending) ulaştırılır.</li>
+<li>Thread 1.2+ Enhanced ACK ve Header IE'leri ile CSL ve Link Metrics gibi gelişmiş özellikleri taşır.</li>
+</ul>
+    <footer class="page-footer">
+      Bu sayfa <code>tools/build.py</code> ile <code>bolumler/</code> klasöründeki Markdown kaynaklarından üretilmiştir · Derleme tarihi: 15.11.2026
+    </footer>
+  </article>
+</main>
+<button id="toTop" aria-label="Başa dön">↑</button>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function isDark() {
+    var t = root.getAttribute("data-theme");
+    if (t) return t === "dark";
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  /* Tema */
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var next = isDark() ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    store("thread-doc-theme", next);
+    renderMermaid();
+  });
+
+  /* Mobil menü */
+  function closeNav() { document.body.classList.remove("nav-open"); }
+  document.getElementById("menuBtn").addEventListener("click", function () { document.body.classList.toggle("nav-open"); });
+  document.getElementById("overlay").addEventListener("click", closeNav);
+
+  /* İçindekiler: aktif bölüm takibi */
+  var links = Array.prototype.slice.call(document.querySelectorAll("#toc a"));
+  var byId = {};
+  links.forEach(function (a) {
+    byId[decodeURIComponent(a.getAttribute("href").slice(1))] = a;
+    a.addEventListener("click", function () { if (window.innerWidth <= 1050) closeNav(); });
+  });
+  var heads = Array.prototype.slice.call(document.querySelectorAll(".content h2[id], .content h3[id]"))
+    .filter(function (h) { return byId[h.id]; });
+  var current = null;
+  function setActive(id) {
+    if (id === current) return;
+    current = id;
+    links.forEach(function (a) { a.classList.remove("active"); });
+    document.querySelectorAll(".toc-ch.open").forEach(function (li) { if (!searchActive) li.classList.remove("open"); });
+    var a = byId[id];
+    if (!a) return;
+    a.classList.add("active");
+    var ch = a.closest(".toc-ch");
+    if (ch) {
+      ch.classList.add("open");
+      ch.querySelector("a").classList.add("active");
+    }
+    var sb = document.getElementById("sidebar");
+    var r = a.getBoundingClientRect(), sr = sb.getBoundingClientRect();
+    if (r.top < sr.top + 60 || r.bottom > sr.bottom - 20) sb.scrollTop += r.top - sr.top - sr.height / 3;
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      ticking = false;
+      var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+      document.getElementById("progress").style.width = (h > 0 ? (y / h) * 100 : 0) + "%";
+      document.getElementById("toTop").classList.toggle("show", y > 700);
+      var id = null;
+      for (var i = 0; i < heads.length; i++) {
+        if (heads[i].getBoundingClientRect().top < 110) id = heads[i].id; else break;
+      }
+      if (id) setActive(id);
+    });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+  document.getElementById("toTop").addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
+
+  /* İçindekiler araması */
+  var searchActive = false;
+  var input = document.getElementById("tocSearch");
+  input.addEventListener("input", function () {
+    var q = input.value.trim().toLocaleLowerCase("tr");
+    searchActive = q.length > 0;
+    document.querySelectorAll("#toc > li").forEach(function (ch) {
+      var chText = ch.querySelector("a").textContent.toLocaleLowerCase("tr");
+      var subs = ch.querySelectorAll(".toc-sub li"), anySub = false;
+      subs.forEach(function (li) {
+        var hit = !q || li.textContent.toLocaleLowerCase("tr").indexOf(q) !== -1 || chText.indexOf(q) !== -1;
+        li.classList.toggle("hidden", !hit);
+        if (hit && q) anySub = true;
+      });
+      var show = !q || chText.indexOf(q) !== -1 || anySub;
+      ch.classList.toggle("hidden", !show);
+      ch.classList.toggle("open", !!q && show);
+    });
+    if (!q) { var c = current; current = null; if (c) setActive(c); }
+  });
+
+  /* Kod kopyalama */
+  document.querySelectorAll(".content pre:not(.mermaid)").forEach(function (pre) {
+    var btn = document.createElement("button");
+    btn.className = "copy-btn"; btn.type = "button"; btn.textContent = "Kopyala";
+    btn.addEventListener("click", function () {
+      var code = pre.querySelector("code");
+      var text = (code || pre).innerText;
+      var done = function () { btn.textContent = "Kopyalandı"; setTimeout(function () { btn.textContent = "Kopyala"; }, 1400); };
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function () {});
+    });
+    pre.appendChild(btn);
+  });
+
+  /* Mermaid diyagramları */
+  var blocks = Array.prototype.slice.call(document.querySelectorAll("pre.mermaid"));
+  blocks.forEach(function (b) { b.setAttribute("data-src", b.textContent); });
+  window.renderMermaid = renderMermaid;
+  function renderMermaid() {
+    if (!window.mermaid || !blocks.length) return;
+    blocks.forEach(function (b) { b.removeAttribute("data-processed"); b.textContent = b.getAttribute("data-src"); });
+    window.mermaid.initialize({
+      startOnLoad: false, securityLevel: "strict", theme: isDark() ? "dark" : "default",
+      fontFamily: "Inter, system-ui, sans-serif",
+      flowchart: { htmlLabels: true, curve: "basis" },
+      sequence: { mirrorActors: false, useMaxWidth: true, wrap: true }
+    });
+    window.mermaid.run({ nodes: blocks }).catch(function (e) { console.error(e); });
+  }
+  window.addEventListener("load", renderMermaid);
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js" defer></script>
+</body>
+</html>
