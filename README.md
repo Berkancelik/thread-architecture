@@ -41,6 +41,17 @@ Dokümanda 34 Mermaid diyagramı, 170'ten fazla tablo ve bayt seviyesinde çöz�
 
 **Yerel:** Depoyu indirip `Thread-Mimarisi.html` dosyasını tarayıcıda açmanız yeterlidir. Diyagramlar (Mermaid) ve yazı tipleri CDN'den yüklendiği için ilk açılışta internet bağlantısı gerekir; bağlantı yoksa diyagramların kaynak metni gösterilir.
 
+### Okuma takibi ve notlar
+
+HTML sürümünde her bölüm ve alt başlığın altında iki düğme vardır:
+
+- **Okundu işaretle:** Başlığı okundu olarak işaretler. Bölüm başlığındaki düğme o bölümün tüm alt başlıklarını birlikte işaretler. Kenar menüde okunan başlıkların yanında ✓, bölümlerde `3/7` gibi ilerleme görünür.
+- **✎ Not ekle:** Başlığın altına not düşmeni sağlar; yazdıkça otomatik kaydedilir. Notlu başlıklar kenar menüde ✎ ile işaretlenir.
+
+Üst çubuktaki **İlerleme ve notlar** düğmesi (veya kenar menüdeki ilerleme çubuğu) genel ilerlemeyi, bölüm bölüm durumu, tüm notları ve sıradaki okunmamış başlığı gösterir. Sayfayı yeniden açtığında **kaldığın yerden devam et** önerisi çıkar.
+
+İşaretler ve notlar yalnızca o tarayıcının yerel depolamasında (localStorage) tutulur, hiçbir sunucuya gönderilmez. Çevrimiçi sürüm ile yerel dosya ayrı depolama kullanır. Başka bir tarayıcıya veya cihaza taşımak ya da yedeklemek için paneldeki **Dışa aktar / İçe aktar** düğmelerini kullanın; tarayıcı verileri temizlenirse işaretler de silinir.
+
 ## Yeniden derleme
 
 ```bash
