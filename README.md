@@ -37,9 +37,9 @@ Dokümanda 34 Mermaid diyagramı, 170'ten fazla tablo ve bayt seviyesinde çöz�
 
 ## HTML sürümünü görüntüleme
 
-Depoyu indirip `Thread-Mimarisi.html` dosyasını tarayıcıda açmanız yeterlidir. Diyagramlar (Mermaid) ve yazı tipleri CDN'den yüklendiği için ilk açılışta internet bağlantısı gerekir; bağlantı yoksa diyagramların kaynak metni gösterilir.
+**Çevrimiçi:** https://berkancelik.github.io/thread-architecture/ (GitHub Pages, `main` dalından yayınlanır; her push sonrası birkaç dakika içinde güncellenir).
 
-Depo GitHub Pages için hazırdır (`index.html` kök adresi dokümana yönlendirir, `.nojekyll` dosyaları olduğu gibi yayınlatır). Pages, depo herkese açık yapıldığında ya da ücretli bir GitHub planında Settings → Pages → Branch: `main` ile açılabilir.
+**Yerel:** Depoyu indirip `Thread-Mimarisi.html` dosyasını tarayıcıda açmanız yeterlidir. Diyagramlar (Mermaid) ve yazı tipleri CDN'den yüklendiği için ilk açılışta internet bağlantısı gerekir; bağlantı yoksa diyagramların kaynak metni gösterilir.
 
 ## Yeniden derleme
 
