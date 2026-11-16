@@ -4,7 +4,7 @@
 
 1. **Envanter**: Kaç cihaz var? Hangileri şebekeden beslenecek (router adayı), hangileri pilli (SED/SSED)?
 2. **Kapsama haritası**: Ev/bina planı üzerinde Border Router ve router adaylarının yerleri; duvar/kat malzemeleri.
-3. **Router yoğunluğu**: Her pilli cihazın çevresinde en az **iki** iyi (LQ 3) ebeveyn adayı olmasını hedefleyin.
+3. **Router yoğunluğu**: Her pilli cihazın çevresinde en az **iki** iyi (LQ 3) parent adayı olmasını hedefleyin.
 4. **Border Router sayısı ve konumu**: En az **iki** BR, merkezi ve farklı bölgelerde; aynı Thread ağında.
 5. **Kanal seçimi**: Wi-Fi kanallarını ölçün; Thread'i en az örtüşen kanala koyun.
 6. **IPv6 ve mDNS altyapısı**: Ev ağının IPv6 RA/RIO ve mDNS'i düzgün taşıdığından emin olun.
@@ -42,7 +42,7 @@
 | RA'lar ve ICMPv6 engellenmemeli | RIO ile Thread rotaları öğrenilir |
 | Denetleyiciler RIO'yu kabul etmeli | Linux'ta `accept_ra_rt_info_max_plen` vb. ayarlar |
 | mDNS (5353) çalışmalı, VLAN'lar arasında gerekiyorsa yansıtılmalı | Matter keşfi ve Border Agent ilanı |
-| Wi-Fi'da çoklu yayın filtreleme/IGMP-MLD snooping doğru yapılandırılmalı | Yanlış snooping mDNS ve RA'ları düşürebilir |
+| Wi-Fi'da multicast filtreleme/IGMP-MLD snooping doğru yapılandırılmalı | Yanlış snooping mDNS ve RA'ları düşürebilir |
 | Denetleyiciler ve BR'ler aynı L2 segmentte olmalı (veya doğru yönlendirme) | RIO yalnızca aynı bağlantıda geçerlidir |
 
 ### 26.6 Cihaz Davranışı Ayarları
@@ -53,7 +53,7 @@
 | Child timeout | Poll period'un birkaç katı; çok kısa olursa gereksiz yeniden bağlanmalar olur |
 | Rapor/abonelik aralıkları | İhtiyaca göre; çok sık rapor enerji ve kanal kapasitesi tüketir |
 | Uygulama yükü | Tek çerçeveye sığacak boyutlar; büyük veriyi parçalamaktan kaçının |
-| Çoklu yayın | Yalnızca gerektiğinde; periyodik yayın yerine abonelik |
+| Multicast | Yalnızca gerektiğinde; periyodik yayın yerine abonelik |
 | TX gücü | Router/BR'de yüksek (yasal sınırda), SED'de ihtiyaca göre |
 
 ### 26.7 Güvenlik Uygulamaları

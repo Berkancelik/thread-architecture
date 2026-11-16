@@ -11,7 +11,7 @@
 | **Adresleme** | PAN ID, 16 bit kısa adres, 64 bit genişletilmiş adres |
 | **Güvenilirlik** | Onay (ACK) ve yeniden iletim (retry) |
 | **Güvenlik** | AES-128-CCM* ile şifreleme + bütünlük (MIC), tekrar (replay) koruması |
-| **Dolaylı iletim** | Uyuyan cihazlar için ebeveynde kuyruklama ve "poll" ile teslim |
+| **Dolaylı iletim** | Uyuyan cihazlar için parent'ta kuyruklama ve "poll" ile teslim |
 | **Tarama** | Active scan, energy scan |
 | **Bilgi elemanları (IE)** | Thread 1.2+: CSL, Link Metrics gibi bilgilerin başlıkta taşınması |
 
@@ -50,7 +50,7 @@ Tüm çok baytlı alanlar havada **little-endian** sırayla gönderilir.
 | 0–2 | **Frame Type** | `000` Beacon, `001` Data, `010` Ack, `011` MAC Command (diğerleri Thread'de kullanılmaz) |
 | 3 | **Security Enabled** | 1 = Aux Security Header var, yük şifreli/doğrulanmış |
 | 4 | **Frame Pending** | 1 = gönderende bu alıcı için bekleyen veri var (uyuyan cihazlar için kritik) |
-| 5 | **AR** (Ack Request) | 1 = alıcı ACK göndermeli (unicast çerçeveler); yayın (broadcast) çerçevelerde 0 |
+| 5 | **AR** (Ack Request) | 1 = alıcı ACK göndermeli (unicast çerçeveler); broadcast çerçevelerde 0 |
 | 6 | **PAN ID Compression** | 1 = kaynak PAN ID atlanır (hedef PAN ID ile aynı kabul edilir) |
 | 8 | **Sequence Number Suppression** | (2015) 1 = sıra numarası alanı yok |
 | 9 | **IE Present** | (2015) 1 = başlıkta Information Element var |
@@ -62,7 +62,7 @@ Tüm çok baytlı alanlar havada **little-endian** sırayla gönderilir.
 
 | Havadaki baytlar | FCF değeri | Anlamı |
 |---|---|---|
-| `41 D8` | `0xD841` | Data, güvenliksiz, ACK yok, PAN sıkıştırma; hedef kısa (yayın `0xFFFF`), kaynak genişletilmiş, sürüm 2006 → tipik **MLE yayın** çerçevesi (ör. Parent Request) |
+| `41 D8` | `0xD841` | Data, güvenliksiz, ACK yok, PAN sıkıştırma; hedef kısa (broadcast `0xFFFF`), kaynak genişletilmiş, sürüm 2006 → tipik **MLE broadcast** çerçevesi (ör. Parent Request) |
 | `61 DC` | `0xDC61` | Data, güvenliksiz, ACK istekli, PAN sıkıştırma; hedef ve kaynak genişletilmiş, sürüm 2006 → tipik **MLE unicast** çerçevesi |
 | `69 98` | `0x9869` | Data, **güvenli**, ACK istekli, PAN sıkıştırma; hedef ve kaynak kısa, sürüm 2006 → tipik **komşular arası veri** çerçevesi |
 | `69 D8` | `0xD869` | Aynısı, kaynak genişletilmiş |
@@ -76,7 +76,7 @@ Tüm çok baytlı alanlar havada **little-endian** sırayla gönderilir.
 5A                    Sıra numarası = 90
 34 12                 Hedef PAN ID = 0x1234
 00 5C                 Hedef kısa adres = 0x5C00  (Router ID 23)
-01 5C                 Kaynak kısa adres = 0x5C01 (Router 23'ün 1 numaralı çocuğu)
+01 5C                 Kaynak kısa adres = 0x5C01 (Router 23'ün 1 numaralı child'ı)
 0D                    Security Control: seviye 5 (ENC-MIC-32), Key ID Mode 1
 3A 00 00 00           Frame Counter = 58
 01                    Key Index = 1  (Key Sequence 0)
@@ -91,8 +91,8 @@ MAC ek yükü: başlık 9 bayt + güvenlik başlığı 6 bayt + MIC 4 bayt + FCS
 
 | Adres | Boyut | Thread'deki anlamı |
 |---|---|---|
-| **PAN ID** | 16 bit | Ağın MAC seviyesindeki kimliği; Operational Dataset'te bulunur. `0xFFFF` yayın PAN ID'sidir. |
-| **Kısa adres (Short Address)** | 16 bit | Thread'de doğrudan **RLOC16** değeridir (Router ID + Child ID). `0xFFFF` yayın, `0xFFFE` "kısa adres yok" anlamına gelir. |
+| **PAN ID** | 16 bit | Ağın MAC seviyesindeki kimliği; Operational Dataset'te bulunur. `0xFFFF` broadcast PAN ID'sidir. |
+| **Kısa adres (Short Address)** | 16 bit | Thread'de doğrudan **RLOC16** değeridir (Router ID + Child ID). `0xFFFF` broadcast, `0xFFFE` "kısa adres yok" anlamına gelir. |
 | **Genişletilmiş adres (Extended Address)** | 64 bit | Cihazın ağdaki rastgele 64 bitlik kimliği. Link-local IPv6 adresinin arayüz kimliği (IID) bundan türetilir. Ayrıca MAC güvenlik **nonce**'unda kullanılır. |
 
 **Hangi adres ne zaman kullanılır?**
@@ -100,7 +100,7 @@ MAC ek yükü: başlık 9 bayt + güvenlik başlığı 6 bayt + MIC 4 bayt + FCS
 - Cihaz henüz RLOC16 almamışken (bağlanma sırasında) **genişletilmiş** adres kullanılır.
 - MLE mesajları link-local IPv6 adresleriyle gönderildiği için MAC kaynağı genellikle **genişletilmiş** adrestir.
 - Bağlanmış komşular arasındaki veri trafiğinde çerçeveyi küçültmek için **kısa** adresler tercih edilir.
-- IPv6 çoklu yayın (multicast) paketleri MAC seviyesinde **`0xFFFF`** yayın adresine gönderilir ve ACK istenmez.
+- IPv6 multicast paketleri MAC seviyesinde **`0xFFFF`** broadcast adresine gönderilir ve ACK istenmez.
 
 ### 4.5 CSMA-CA (Slotsuz)
 
@@ -127,8 +127,8 @@ flowchart TD
 
 | Parametre | Varsayılan | Açıklama |
 |---|---|---|
-| `macMinBE` | 3 | İlk geri çekilme üssü (0–7 birim) |
-| `macMaxBE` | 5 | En büyük geri çekilme üssü (0–31 birim) |
+| `macMinBE` | 3 | İlk backoff üssü (0–7 birim) |
+| `macMaxBE` | 5 | En büyük backoff üssü (0–31 birim) |
 | `macMaxCSMABackoffs` | 4 | Vazgeçmeden önce en fazla CCA denemesi (toplam 5 CCA) |
 | `macMaxFrameRetries` | 3 | ACK gelmezse yeniden iletim sayısı (OpenThread doğrudan iletim varsayılanı 3) |
 
@@ -140,36 +140,36 @@ flowchart TD
 - Unicast çerçevelerde AR = 1 olur. Alıcı çerçeveyi doğru aldıysa (FCS geçerli ve adres kendisine) **`aTurnaroundTime` = 192 µs** sonra ACK gönderir; CSMA uygulanmaz.
 - **Imm-Ack** (2006): 5 baytlık MPDU (FCF 2 + Seq 1 + FCS 2). Güvenlik içermez; yalnızca sıra numarası eşleşmesi kontrol edilir.
 - **Enhanced ACK** (2015, Thread 1.2+): IE taşıyabilen, güvenli olabilen ACK. CSL bilgisi (CSL IE) veya Link Metrics verisi taşımak için kullanılır.
-- Yayın (broadcast) çerçeveler ACK'lenmez. Bu yüzden MLE/MPL gibi üst katmanlar kendi tekrar mekanizmalarını kullanır.
+- Broadcast çerçeveler ACK'lenmez. Bu yüzden MLE/MPL gibi üst katmanlar kendi tekrar mekanizmalarını kullanır.
 - Gönderen ACK gelmezse çerçeveyi **aynı sıra numarasıyla** yeniden gönderir; alıcı, yinelenen çerçeveleri sıra numarası + kaynak adres ile ayıklar (RxDuplicated sayacı).
 
 ### 4.7 Dolaylı İletim (Indirect Transmission) ve Veri Sorgulama (Data Poll)
 
-Uyuyan cihazlar (SED) radyolarını çoğu zaman kapalı tutar; ebeveyn onlara istediği an veri gönderemez. Çözüm **dolaylı iletim**dir:
+Uyuyan cihazlar (SED) alıcılarını çoğu zaman kapalı tutar; parent onlara istediği an veri gönderemez. Çözüm **dolaylı iletim**dir:
 
-1. Ebeveyn, SED'e giden paketi **kuyrukta** tutar.
-2. SED periyodik olarak uyanıp ebeveynine **MAC Data Request** komutu (komut kimliği `0x04`) gönderir — buna **poll** (sorgulama) denir.
-3. Ebeveyn ACK'deki **Frame Pending** bitini 1 yaparak "senin için veri var" der.
-4. SED alıcısını açık tutar; ebeveyn veriyi gönderir.
+1. Parent, SED'e giden paketi **kuyrukta** tutar.
+2. SED periyodik olarak uyanıp parent'ına **MAC Data Request** komutu (komut kimliği `0x04`) gönderir — buna **poll** (sorgulama) denir.
+3. Parent ACK'deki **Frame Pending** bitini 1 yaparak "senin için veri var" der.
+4. SED alıcısını açık tutar; parent veriyi gönderir.
 5. Kuyrukta başka çerçeve varsa veri çerçevesindeki Frame Pending biti 1 olur; SED dinlemeye devam eder veya tekrar poll eder.
 
 ```mermaid
 sequenceDiagram
-    participant SED as SED (çocuk)
-    participant P as Ebeveyn Router
+    participant SED as SED (child)
+    participant P as Parent Router
     Note over P: SED için paket geldi, kuyruğa alındı
-    Note over SED: Radyo kapalı (uyku)
+    Note over SED: Alıcı-verici kapalı (uyku)
     SED->>P: MAC Data Request (poll)
     P-->>SED: ACK (Frame Pending = 1)
     Note over SED: Alıcı açık kalır
     P->>SED: Data çerçevesi (Frame Pending = 0)
     SED-->>P: ACK
-    Note over SED: Radyo kapanır, uykuya döner
+    Note over SED: Alıcı-verici kapanır, uykuya döner
 ```
 
-**Ebeveynin tampon yükümlülüğü:** Thread, ebeveynin her uyuyan çocuğu için en az bir tam IPv6 datagramını (1280 bayt) tutabilmesini ister. Thread 1.2+ ebeveynler bu kapasiteyi **Connectivity TLV** içindeki *SED Buffer Size* ve *SED Datagram Count* alanlarıyla ilan eder.
+**Parent'ın tampon yükümlülüğü:** Thread, parent'ın her uyuyan child'ı için en az bir tam IPv6 datagramını (1280 bayt) tutabilmesini ister. Thread 1.2+ parent'lar bu kapasiteyi **Connectivity TLV** içindeki *SED Buffer Size* ve *SED Datagram Count* alanlarıyla ilan eder.
 
-**Poll yanıtı gecikmesi:** Data Request ile veri çerçevesi arasındaki süre kısa olmalıdır; SED bu süre boyunca alıcısını açık tutar. Bu yüzden ebeveyn yazılımları poll'a hızlı cevap verecek şekilde optimize edilir.
+**Poll yanıtı gecikmesi:** Data Request ile veri çerçevesi arasındaki süre kısa olmalıdır; SED bu süre boyunca alıcısını açık tutar. Bu yüzden parent yazılımları poll'a hızlı cevap verecek şekilde optimize edilir.
 
 ### 4.8 MAC Komutları
 
@@ -177,7 +177,7 @@ Thread yalnızca birkaç MAC komutu kullanır:
 
 | Kimlik | Komut | Thread'de kullanımı |
 |---|---|---|
-| `0x04` | **Data Request** | SED'in ebeveynini sorgulaması (poll) |
+| `0x04` | **Data Request** | SED'in parent'ını sorgulaması (poll) |
 | `0x07` | **Beacon Request** | Active scan (çevredeki 802.15.4 ağlarını bulma) |
 | `0x01`–`0x03`, `0x05`, `0x06`, `0x08`, `0x09` | Association, Disassociation, Orphan, Coordinator Realignment, GTS vb. | **Kullanılmaz** (MLE ile değiştirilmiştir) |
 
@@ -258,7 +258,7 @@ Alıcı, Key Index'e bakarak çerçevenin mevcut, önceki veya sonraki anahtar d
 
 | IE | Element ID | İçerik | Kullanım |
 |---|---|---|---|
-| **CSL IE** | `0x1A` | CSL Phase (2 bayt), CSL Period (2 bayt) — 10 sembol (160 µs) biriminde | SSED'in örnekleme zamanlamasını ebeveynine bildirmesi (Bölüm 18) |
+| **CSL IE** | `0x1A` | CSL Phase (2 bayt), CSL Period (2 bayt) — 10 sembol (160 µs) biriminde | SSED'in örnekleme zamanlamasını parent'ına bildirmesi (Bölüm 18) |
 | **Vendor Specific Header IE** | `0x00` | Thread Group OUI'si + içerik | Enhanced-ACK tabanlı Link Metrics raporları |
 | **Header Termination 1** | `0x7E` | — | Header IE'lerin bittiğini ve Payload IE'lerin başladığını gösterir |
 | **Header Termination 2** | `0x7F` | — | Header IE'lerin bittiğini ve doğrudan yükün başladığını gösterir |
@@ -270,8 +270,8 @@ Header IE tanımlayıcısı 2 bayttır: 7 bit uzunluk, 8 bit Element ID, 1 bit t
 | Tarama | Nasıl? | Thread'de amacı |
 |---|---|---|
 | **Energy Scan** | Her kanalda belirli süre ED ölçümü | En sessiz kanalı seçmek; commissioner'ın uzaktan Energy Scan istemesi (`c/es`) |
-| **Active Scan** | Her kanalda Beacon Request yayını, beacon dinleme | Çevredeki 802.15.4 ağlarını listelemek (`scan` komutu) |
-| **MLE Discovery Scan** | Her kanalda MLE Discovery Request yayını | Thread ağlarını ve devreye almaya açık ağları bulmak (`discover` komutu, Joiner) |
+| **Active Scan** | Her kanalda Beacon Request (broadcast) gönderip beacon dinleme | Çevredeki 802.15.4 ağlarını listelemek (`scan` komutu) |
+| **MLE Discovery Scan** | Her kanalda MLE Discovery Request (broadcast) gönderme | Thread ağlarını ve devreye almaya açık ağları bulmak (`discover` komutu, Joiner) |
 
 ### 4.12 MAC Seviyesinde Alım Filtreleri
 

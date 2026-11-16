@@ -43,7 +43,7 @@ Bir Thread ağı **tek bir kanalda** çalışır. Kanal, Operational Dataset'in 
 
 ### 3.3 Modülasyon ve Yayılma Spektrumu
 
-802.15.4 2.4 GHz PHY'sinde veri şu adımlarla radyo sinyaline dönüşür:
+802.15.4 2.4 GHz PHY'sinde veri şu adımlarla RF sinyaline dönüşür:
 
 1. **Bit → Sembol**: Her bayt iki adet 4 bitlik sembole bölünür (önce düşük dörtlü / LSB nibble).
 2. **Sembol → Chip (DSSS)**: Her 4 bitlik sembol, 16 adet yarı-ortogonal 32 chip'lik PN dizisinden birine eşlenir. Böylece 4 bit, 32 chip ile temsil edilir (yayılma oranı 8).
@@ -94,7 +94,7 @@ Airtime = (5 + 1 + PSDU_uzunluğu) × 32 µs
 |---|---|---|---|
 | Sembol süresi | 1 sembol | 16 µs | Temel zaman birimi |
 | `aTurnaroundTime` | 12 sembol | 192 µs | RX↔TX geçiş süresi; ACK bu süre sonra gönderilir |
-| `aUnitBackoffPeriod` | 20 sembol | 320 µs | CSMA-CA geri çekilme birimi |
+| `aUnitBackoffPeriod` | 20 sembol | 320 µs | CSMA-CA backoff birimi |
 | `aCCATime` | 8 sembol | 128 µs | Kanal boşluk değerlendirme (CCA) süresi |
 | `macAckWaitDuration` | 54 sembol | 864 µs | ACK bekleme süresi |
 | `aMaxSIFSFrameSize` | 18 bayt | — | Bu boyuta kadar çerçevelerden sonra kısa aralık |
@@ -159,7 +159,7 @@ Thread   11  12  13  14 [15] 16  17  18  19 [20] 21  22  23  24 [25] 26
 **Bir arada yaşama (coexistence) yöntemleri:**
 
 - **Kanal planlama**: Ortamın Wi-Fi kanallarını ölçüp (Energy Scan) en az örtüşen Thread kanalını seçmek.
-- **PTA (Packet Traffic Arbitration)**: Aynı cihazda Wi-Fi ve 802.15.4 radyosu varsa (ör. Border Router, ESP32-C6, tri-radio çipler) radyolar 2/3 telli bir hakemlik arayüzüyle hangisinin göndereceğini koordine eder.
+- **PTA (Packet Traffic Arbitration)**: Aynı cihazda hem Wi-Fi hem 802.15.4 alıcı-vericisi varsa (ör. Border Router, ESP32-C6, tri-radio çipler) ikisi 2/3 telli bir hakemlik (arbitration) arayüzüyle hangisinin göndereceğini koordine eder.
 - **Anten izolasyonu**: Aynı kutudaki Wi-Fi ve Thread antenleri arasında fiziksel mesafe ve polarizasyon farkı.
 - **Dinamik kanal yönetimi**: OpenThread'in *Channel Monitor* ve *Channel Manager* özellikleri kanalları periyodik örnekleyip gerekirse ağın kanalını değiştirebilir.
 
@@ -196,7 +196,7 @@ Mesh yapısı sayesinde tek atlama menzili sınırlı olsa da ağ, router ekledi
 
 | Bileşen | Süre |
 |---|---|
-| Ortalama CSMA geri çekilme (BE = 3 → ortalama 3.5 × 320 µs) | ≈ 1120 µs |
+| Ortalama CSMA backoff (BE = 3 → ortalama 3.5 × 320 µs) | ≈ 1120 µs |
 | CCA + RX→TX geçişi | 128 + 192 = 320 µs |
 | 127 baytlık çerçeve | 4256 µs |
 | ACK öncesi geçiş + ACK çerçevesi | 192 + 352 = 544 µs |

@@ -30,7 +30,7 @@ Sıkıştırma olmadan 127 baytın 69'u başlıklara giderdi. **6LoWPAN** (IPv6 
 | `10xxxxxx` | **Mesh Header** | Evet (çok atlamalı iletimde) |
 | `11000xxx` | **FRAG1** — ilk parça | Evet |
 | `11100xxx` | **FRAGN** — sonraki parçalar | Evet |
-| `01010000` | LOWPAN_BC0 (yayın başlığı) | Hayır (Thread MPL kullanır) |
+| `01010000` | LOWPAN_BC0 (broadcast başlığı) | Hayır (Thread MPL kullanır) |
 
 Başlıkların sırası sabittir:
 
@@ -58,11 +58,11 @@ IPHC'nin temel fikri: **alt katmanlardan veya paylaşılan bağlamdan (context) 
 | **CID** | 1 | `1` = ek bağlam kimliği baytı var (kaynak ve hedef için 4'er bit) |
 | **SAC** | 1 | `0` durumsuz (stateless) · `1` bağlam tabanlı (stateful) kaynak |
 | **SAM** | 2 | Kaynak adres modu (aşağıda) |
-| **M** | 1 | `1` hedef çoklu yayın (multicast) |
+| **M** | 1 | `1` hedef multicast |
 | **DAC** | 1 | Hedef için durumsuz/bağlam tabanlı |
 | **DAM** | 2 | Hedef adres modu |
 
-#### Tekil (unicast) adres sıkıştırma modları
+#### Unicast adres sıkıştırma modları
 
 | SAC/DAC | SAM/DAM | Satır içi (inline) | Adres nasıl elde edilir? |
 |---|---|---|---|
@@ -87,7 +87,7 @@ IID                      : 0000:00FF:FE00:5C01
 
 Mesh Header varsa, "MAC adresinden türetme" kuralında MAC çerçevesinin adresleri yerine Mesh Header'daki **asıl kaynak (originator)** ve **nihai hedef (final destination)** adresleri kullanılır. Bu sayede çok atlamalı paketlerde de RLOC adresleri 0 bayta sıkışır.
 
-#### Çoklu yayın (multicast) hedef sıkıştırma (M = 1)
+#### Multicast hedef sıkıştırma (M = 1)
 
 | DAC | DAM | Inline | Biçim |
 |---|---|---|---|
@@ -95,7 +95,7 @@ Mesh Header varsa, "MAC adresinden türetme" kuralında MAC çerçevesinin adres
 | 0 | `01` | 6 bayt | `ffXX::00XX:XXXX:XXXX` |
 | 0 | `10` | 4 bayt | `ffXX::00XX:XXXX` |
 | 0 | `11` | 1 bayt | `ff02::00XX` (ör. `ff02::1`, `ff02::2`) |
-| 1 | `00` | 6 bayt | Önek tabanlı çoklu yayın (RFC 3306): `ffXX:XXLL:<bağlam öneki>:XXXX:XXXX` |
+| 1 | `00` | 6 bayt | Önek tabanlı multicast (RFC 3306): `ffXX:XXLL:<bağlam öneki>:XXXX:XXXX` |
 
 Örnek: Thread'in **Realm-Local All Thread Nodes** adresi `ff33:40:<mesh-local önek>::1`, bağlam 0 kullanılarak 6 bayta sıkıştırılabilir.
 
@@ -158,7 +158,7 @@ Burada kaynak/hedef adresler, bağlam 0'ın (mesh-local önek) ve MAC çerçeves
 
 ### 5.7 Mesh Header
 
-Bir paket kaynaktan hedefe **birden fazla radyo atlaması** ile gidecekse, 6LoWPAN Mesh Header eklenir. MAC başlığı yalnızca *o anki atlamanın* adreslerini (gönderen → sonraki atlama) taşırken, Mesh Header *uçtan uca* adresleri taşır:
+Bir paket kaynaktan hedefe **birden fazla kablosuz atlama (hop)** ile gidecekse, 6LoWPAN Mesh Header eklenir. MAC başlığı yalnızca *o anki atlamanın* adreslerini (gönderen → sonraki atlama) taşırken, Mesh Header *uçtan uca* adresleri taşır:
 
 ```text
   1 0 | V | F | Hops Left (4 bit) | Originator Addr | Final Destination Addr
@@ -171,8 +171,8 @@ Thread'de Mesh Header her zaman **RLOC16** (kısa) adresler kullanır → toplam
 
 ```text
 B? 5C 01 94 02
-│  │     └──── Final Destination = 0x9402  (Router 37'nin 2 numaralı çocuğu)
-│  └────────── Originator        = 0x5C01  (Router 23'ün 1 numaralı çocuğu)
+│  │     └──── Final Destination = 0x9402  (Router 37'nin 2 numaralı child'ı)
+│  └────────── Originator        = 0x5C01  (Router 23'ün 1 numaralı child'ı)
 └───────────── 10 1 1 xxxx → V=1, F=1, Hops Left = xxxx
 ```
 
@@ -232,11 +232,11 @@ OMR adreslerinin IID'leri MAC/Mesh adreslerinden türetilemediği için inline t
 6LoWPAN literatüründe iki yaklaşım vardır:
 
 - **Mesh-under**: Yönlendirme tamamen bağlantı katmanında yapılır; tüm mesh tek bir IP bağlantısı (link) gibi görünür.
-- **Route-over**: Her atlama bir IP yönlendirmesidir; her radyo atlaması ayrı bir IP bağlantısıdır.
+- **Route-over**: Her atlama bir IP yönlendirmesidir; her kablosuz atlama ayrı bir IP bağlantısıdır.
 
 Thread ikisinin karışımıdır:
 
-- IP semantiği açısından **link-local kapsam tek radyo atlamasıdır** (route-over benzeri). Mesh genelini kapsayan ayrı bir kapsam, **realm-local** (scope 3), tanımlanmıştır.
+- IP semantiği açısından **link-local kapsam tek kablosuz atlamadır** (route-over benzeri). Mesh genelini kapsayan ayrı bir kapsam, **realm-local** (scope 3), tanımlanmıştır.
 - Yönlendirme kararı Thread ağ katmanında RLOC16'ya göre verilir; ancak paketin atlamalar boyunca taşınması 6LoWPAN **Mesh Header** ile, IPv6 paketini her atlamada yeniden oluşturmadan yapılır (mesh-under benzeri verimlilik).
 
 ### 5.11 Bölüm Özeti

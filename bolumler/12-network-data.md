@@ -34,7 +34,7 @@ sequenceDiagram
 
 - **Kayıt**: Veri sağlayıcılar (BR'ler, servis sunucuları) yerel Network Data'larını **Server Data Notification** (`a/sd`) ile Leader'a gönderir. Bir şeyi kaldırmak için güncellenmiş (eksiltilmiş) yerel veriyi yeniden gönderirler.
 - **Birleştirme**: Leader tüm parçaları birleştirir, sürüm numaralarını artırır.
-- **Dağıtım**: MLE Data Response çoklu yayınları ve Data Request/Response çiftleriyle (Bölüm 9.11).
+- **Dağıtım**: MLE Data Response multicast mesajları ve Data Request/Response çiftleriyle (Bölüm 9.11).
 - **Temizlik**: Router ID'si geçersiz olan sağlayıcıların girdileri Leader tarafından silinir.
 
 ### 12.3 Stable ve Temporary Veri

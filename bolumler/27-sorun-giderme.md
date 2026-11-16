@@ -7,7 +7,7 @@ flowchart TD
     A(["Matter/Thread cihazı yanıt vermiyor"]) --> B{"Cihaz Thread ağında mı?<br/>(BR'de child/router tablosu,<br/>Thread Network Diagnostics)"}
     B -- Hayır --> C{"Cihaz doğru dataset'e sahip mi?<br/>(aynı Ext PAN ID, kanal)"}
     C -- Hayır --> C1["Cihazı yeniden devreye alın<br/>veya doğru ağı paylaşın"]
-    C -- Evet --> C2["Menzil / ebeveyn sorunu:<br/>yakına router ekleyin,<br/>kanal gürültüsünü ölçün"]
+    C -- Evet --> C2["Menzil / parent sorunu:<br/>yakına router ekleyin,<br/>kanal gürültüsünü ölçün"]
     B -- Evet --> D{"Cihazın OMR adresi var mı<br/>ve SRP kaydı güncel mi?"}
     D -- Hayır --> D1["BR'lerin OMR önekini ve SRP<br/>sunucusunu kontrol edin;<br/>Network Data'yı inceleyin"]
     D -- Evet --> E{"Denetleyici OMR önekine<br/>rota biliyor mu? (RIO)"}
@@ -24,10 +24,10 @@ flowchart TD
 | Belirti | Olası nedenler | Teşhis | Çözüm |
 |---|---|---|---|
 | **Devreye alma "Thread ağına katılamadı" hatası** | BR çevrimdışı; commissioner'ın dataset'i yanlış/eski; cihaz menzil dışında; BLE kopması | BR durumu (`br state`, `state`); cihaz yakınındaki router'lar; commissioner logları | Cihazı BR/router yakınında devreye alın; doğru ağın BR'sini kullanın; BR'yi yeniden başlatın |
-| **Cihaz eklendi ama sonra "yanıt vermiyor"** | Denetleyici RIO'yu kabul etmiyor; mDNS VLAN sorunu; SRP kaydı süresi doldu; ayrı Thread ağları | Denetleyiciden OMR adresine ping; `srp server service`; Ext PAN ID karşılaştırma | Ev ağı IPv6 ayarları; mDNS yansıtıcı; ekosistemleri tek ağda birleştirme |
-| **Sık kopmalar / çevrimdışı-çevrimiçi döngüsü** | Zayıf ebeveyn bağlantısı (LQ 1); Wi-Fi girişimi; ebeveyn router sık yeniden başlıyor; child timeout çok kısa | `parent`, `child table`, MAC retry/CCA sayaçları, ParentChangeCount | Router ekleyin; kanal değiştirin; child timeout/poll ayarlarını uyumlu yapın |
+| **Cihaz eklendi ama sonra "yanıt vermiyor"** | Denetleyici RIO'yu kabul etmiyor; mDNS VLAN sorunu; SRP kaydı süresi doldu; ayrı Thread ağları | Denetleyiciden OMR adresine ping; `srp server service`; Ext PAN ID karşılaştırma | Ev ağı IPv6 ayarları; mDNS reflector; ekosistemleri tek ağda birleştirme |
+| **Sık kopmalar / çevrimdışı-çevrimiçi döngüsü** | Zayıf parent bağlantısı (LQ 1); Wi-Fi girişimi; parent router sık yeniden başlıyor; child timeout çok kısa | `parent`, `child table`, MAC retry/CCA sayaçları, ParentChangeCount | Router ekleyin; kanal değiştirin; child timeout/poll ayarlarını uyumlu yapın |
 | **Ağ ikiye bölündü (iki partition)** | Bölgeler arasında yalnızca tek/zayıf bağlantı | Farklı cihazlarda `leaderdata` Partition ID'leri farklı | Bölgeler arasına router ekleyin; TREL destekli BR'ler kullanın |
-| **SED pili beklenenden hızlı bitiyor** | Kısa poll period; sık rapor/abonelik; zayıf link → yeniden iletim; sürekli ebeveyn değişimi; çoklu yayın; fast poll'da takılı kalma | Cihazın poll period ve ICD ayarları; ebeveyn LQ; sniffer ile uyanma sıklığı | Poll/abonelik aralıklarını uzatın; daha yakın router; çoklu yayını azaltın |
+| **SED pili beklenenden hızlı bitiyor** | Kısa poll period; sık rapor/abonelik; zayıf link → yeniden iletim; sürekli parent değişimi; multicast; fast poll'da takılı kalma | Cihazın poll period ve ICD ayarları; parent LQ; sniffer ile uyanma sıklığı | Poll/abonelik aralıklarını uzatın; daha yakın router; multicast'i azaltın |
 | **Yüksek gecikme** | SED'e giden komutlar poll period kadar bekliyor; çok atlama; Address Query gecikmesi; parçalanmış paketlerin yeniden iletimi | Cihaz türü (SED/SSED/router); `router table` yol maliyeti | Etkileşimli cihazlarda CSL/ICD aktif mod; topolojiyi iyileştirin |
 | **"Thread ağı bulunamadı" (ekosistem uygulaması)** | Border Agent `_meshcop._udp` ilanı görünmüyor; telefon farklı Wi-Fi/VLAN'da | mDNS tarayıcıyla `_meshcop._udp` | Telefonu BR ile aynı ağa alın; mDNS'i düzeltin |
 | **BR yedekten geri yüklendikten sonra cihazlarla haberleşemiyor** | Frame counter geri gitti (replay koruması), Key Sequence uyumsuzluğu | Komşularda RxErrSec artışı; sniffer'da MIC hataları | Frame counter'ı ileri alın/anahtar dizisini artırın; ağı yeniden kurmaktan önce yedekleme aracının belgelerine bakın |
@@ -46,7 +46,7 @@ flowchart TD
 | `RxErrFcs` | Zayıf sinyal, girişim |
 | `RxErrSec` | Anahtar/frame counter uyumsuzluğu, eski dataset'li cihaz |
 | `RxDuplicated` | ACK'ler kayboluyor (karşı taraf yeniden gönderiyor) |
-| MLE `AttachAttempts`, `ParentChanges` | Kararsız ebeveyn ilişkileri |
+| MLE `AttachAttempts`, `ParentChanges` | Kararsız parent ilişkileri |
 | MLE `PartitionIdChanges`, `LeaderRole` | Ağ bölünmeleri, Leader değişimleri |
 | Address Query başarısızlıkları | Hedef cihazlar ağdan düşmüş veya önbellek sorunları |
 

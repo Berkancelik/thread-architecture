@@ -23,7 +23,7 @@ flowchart TB
         MAC["MAC (Mac, SubMac, Link Raw)<br/>güvenlik, dolaylı iletim, CSL"]
     end
     PLAT["Platform Soyutlama Katmanı<br/>otPlatRadio · otPlatAlarm · otPlatSettings ·<br/>otPlatEntropy · otPlatCrypto · otPlatLog"]
-    HW["Donanım: 802.15.4 radyo, zamanlayıcı, flash, TRNG"]
+    HW["Donanım: 802.15.4 alıcı-verici, zamanlayıcı, flash, TRNG"]
     APP --> API --> CORE
     NET --> THR --> LOWP --> MAC
     CORE --> PLAT --> HW
@@ -46,25 +46,25 @@ flowchart TB
 |---|---|---|
 | **FTD** (`libopenthread-ftd`) | Tam yığın, router/leader olabilir | Prizler, ampuller, BR |
 | **MTD** (`libopenthread-mtd`) | Router yetenekleri olmayan küçük yığın | Pilli sensörler (SED/MED) |
-| **RCP** (`libopenthread-radio`) | Yalnızca radyo + alt MAC | BR'lerin radyo eş işlemcisi |
+| **RCP** (`libopenthread-radio`) | Yalnızca 802.15.4 PHY + alt MAC (sub-MAC) | BR'lerin RF yardımcı işlemcisi (Radio Co-Processor) |
 | **CLI** (`ot-cli-ftd/mtd`) | Komut satırı uygulaması | Geliştirme, test |
-| **NCP** (`ot-ncp-ftd/mtd`) | Spinel ile tam yığına erişim sunan eş işlemci | Eski mimari (wpantund) |
+| **NCP** (`ot-ncp-ftd/mtd`) | Spinel ile tam yığına erişim sunan yardımcı işlemci (Network Co-Processor) | Eski mimari (wpantund) |
 
 ### 24.4 Cihaz Mimarileri: SoC, NCP, RCP
 
 ```text
-SoC (tek çip)                NCP (ağ eş işlemcisi)          RCP (radyo eş işlemcisi)
+SoC (tek çip)                NCP (Network Co-Processor)     RCP (Radio Co-Processor)
 +----------------------+     +--------------+              +--------------------------+
 | Uygulama             |     | Host         |              | Host (Linux)             |
 | OpenThread (tam)     |     | Uygulama     |              | Uygulama, otbr-agent     |
-| Radyo sürücüsü       |     | (wpantund)   |              | OpenThread çekirdeği     |
-| 802.15.4 radyo       |     +------+-------+              +------------+-------------+
+| 802.15.4 sürücüsü    |     | (wpantund)   |              | OpenThread çekirdeği     |
+| 802.15.4 RF          |     +------+-------+              +------------+-------------+
 +----------------------+            | Spinel                            | Spinel
                              +------+-------+              +------------+-------------+
                              | NCP çipi     |              | RCP çipi                 |
                              | OpenThread   |              | Sub-MAC: CSMA, ACK,      |
                              | (tam yığın)  |              | zamanlama, şifreleme     |
-                             | Radyo        |              | 802.15.4 radyo           |
+                             | RF           |              | 802.15.4 RF              |
                              +--------------+              +--------------------------+
 ```
 
@@ -74,7 +74,7 @@ SoC (tek çip)                NCP (ağ eş işlemcisi)          RCP (radyo eş i
 | **NCP** | Host yalnızca API çağırır | İki tarafta ayrı güncelleme; esneklik az; artık yaygın değil | Eski gateway'ler |
 | **RCP** | Yığın host'ta: kolay güncelleme, büyük bellek, Linux araçları | Host her zaman açık olmalı; seri bağlantı gecikmesi | **Border Router'lar** (OTBR, Home Assistant) |
 
-**Çoklu protokol (multi-PAN) RCP:** Bazı üreticiler tek radyoyu aynı anda Thread ve Zigbee için paylaştıran RCP firmware'leri sunar. Tek radyonun tek kanalda olması gibi kısıtlar nedeniyle güvenilirlik ve kanal esnekliği açısından genellikle iki ayrı radyo tercih edilir.
+**Çoklu protokol (multi-PAN) RCP:** Bazı üreticiler tek 802.15.4 alıcı-vericisini aynı anda Thread ve Zigbee için paylaştıran RCP firmware'leri sunar. Tek alıcı-vericinin aynı anda yalnızca tek kanalda olabilmesi gibi kısıtlar nedeniyle güvenilirlik ve kanal esnekliği açısından genellikle iki ayrı RCP çipi tercih edilir.
 
 ### 24.5 Spinel Protokolü
 
@@ -151,7 +151,7 @@ router
 | `state`, `state router`, `state child` | Rolü göster / zorla |
 | `mode rdn` / `mode -` | Cihaz modunu ayarla (FTD / SED) |
 | `pollperiod 30000` | SED poll aralığı (ms) |
-| `childtimeout 240` | Çocuk zaman aşımı (s) |
+| `childtimeout 240` | Child zaman aşımı (s) |
 | `routerupgradethreshold`, `routerdowngradethreshold` | Router eşikleri |
 | `routereligible disable` | Cihazın router olmasını engelle (FED) |
 | `leaderweight 72` | Leader ağırlığı |
@@ -248,7 +248,7 @@ void AppInit(otInstance *aInstance)
 | Başlık dosyası | İçerik |
 |---|---|
 | `dataset.h`, `dataset_ftd.h` | Operational Dataset okuma/yazma |
-| `thread.h`, `thread_ftd.h` | Rol, Leader verisi, router/çocuk tabloları, eşikler |
+| `thread.h`, `thread_ftd.h` | Rol, Leader verisi, router/child tabloları, eşikler |
 | `coap.h`, `coap_secure.h` | CoAP istemci/sunucu, DTLS |
 | `srp_client.h`, `srp_server.h` | SRP kaydı ve sunucusu |
 | `dns_client.h` | DNS/DNS-SD sorguları |
@@ -260,7 +260,7 @@ void AppInit(otInstance *aInstance)
 
 ### 24.9 Simülasyon ve Test
 
-- **POSIX simülasyonu**: OpenThread bilgisayarda sanal radyo ile çok sayıda düğüm çalıştırabilir; protokol davranışlarını donanımsız denemek için idealdir.
+- **POSIX simülasyonu**: OpenThread bilgisayarda simüle edilmiş bir 802.15.4 ortamıyla çok sayıda düğüm çalıştırabilir; protokol davranışlarını donanımsız denemek için idealdir.
 - **OTNS (OpenThread Network Simulator)**: Düğümlerin konumunu, bağlantılarını ve rollerini görsel olarak gösteren, senaryo betikleriyle çalışan simülatör.
 - **Docker OTBR imajları**: Border Router'ı konteyner içinde çalıştırma.
 - **Sertifikasyon testleri**: Thread Test Harness ve referans cihazlarla otomatik testler; OpenThread deposunda da şartname senaryolarını izleyen kapsamlı test betikleri bulunur.
@@ -268,7 +268,7 @@ void AppInit(otInstance *aInstance)
 ### 24.10 Bölüm Özeti
 
 - OpenThread; C++ çekirdek, C API ve ince platform katmanı ile birçok çipte çalışan açık kaynak Thread yığınıdır.
-- SoC (sensör/ampul), RCP (Border Router) ve eski NCP mimarileri vardır; host ile eş işlemci Spinel + HDLC-lite ile konuşur.
+- SoC (sensör/ampul), RCP (Border Router) ve eski NCP mimarileri vardır; host ile yardımcı işlemci Spinel + HDLC-lite ile haberleşir.
 - CLI, ağ kurma/katılma, teşhis ve deneme için en hızlı araçtır.
 - C API ile UDP/CoAP/SRP/DNS uygulamaları yazılabilir; durum değişiklikleri geri çağırmalarla izlenir.
 - POSIX simülasyonu ve OTNS donanımsız geliştirme ve test imkânı sağlar.

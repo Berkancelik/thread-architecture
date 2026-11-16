@@ -5,21 +5,21 @@
 Thread adres mimarisinin kalbinde **kimlik (identifier)** ile **konum (locator)** ayrımı yatar:
 
 - **EID (Endpoint Identifier)**: Cihazın "kim" olduğunu söyleyen, topoloji değişse de **sabit kalan** adres. Uygulamalar bunu kullanır. (ML-EID, OMR/GUA adresi, DUA)
-- **RLOC (Routing Locator)**: Cihazın ağda "nerede" olduğunu söyleyen, **topolojiye bağlı** adres. Ebeveyn veya router kimliği değişince değişir. Yalnızca Thread'in iç kontrol trafiği tarafından kullanılır.
+- **RLOC (Routing Locator)**: Cihazın ağda "nerede" olduğunu söyleyen, **topolojiye bağlı** adres. Parent veya router kimliği değişince değişir. Yalnızca Thread'in iç kontrol trafiği tarafından kullanılır.
 
-Thread, bir EID'ye paket gönderirken önce o EID'nin güncel RLOC'unu bulur (**EID→RLOC eşlemesi**), sonra paketi RLOC16'ya göre yönlendirir. Bu sayede cihazlar ebeveyn değiştirdiğinde uygulamalar hiçbir şey fark etmez.
+Thread, bir EID'ye paket gönderirken önce o EID'nin güncel RLOC'unu bulur (**EID→RLOC eşlemesi**), sonra paketi RLOC16'ya göre yönlendirir. Bu sayede cihazlar parent değiştirdiğinde uygulamalar hiçbir şey fark etmez.
 
 ### 6.2 Kapsamlar (Scopes)
 
 | Kapsam | Değer | Thread'deki anlamı |
 |---|---|---|
-| **Link-local** | 2 | **Tek radyo atlaması** (doğrudan komşular) |
+| **Link-local** | 2 | **Tek kablosuz atlama** (doğrudan komşular) |
 | **Realm-local** | 3 | **Tüm Thread ağı** (partition) — mesh geneli |
 | Admin-local | 4 | Thread ağının ötesi; Backbone Router ile (Thread 1.2+) |
 | Site-local | 5 | Bina/site; Border/Backbone Router üzerinden |
 | Global | 14 (`e`) | İnternet |
 
-### 6.3 Tekil (Unicast) Adres Türleri
+### 6.3 Unicast Adres Türleri
 
 Örneklerde mesh-local önek `fdde:ad00:beef:0::/64` kabul edilmiştir.
 
@@ -48,7 +48,7 @@ Thread, bir EID'ye paket gönderirken önce o EID'nin güncel RLOC'unu bulur (**
 |---|---|
 | Router ID | 0–62 (63 geçersiz) |
 | Child ID = 0 | Router'ın kendisi |
-| Child ID = 1–511 | O router'ın çocuklarından biri |
+| Child ID = 1–511 | O router'ın child'larından biri |
 
 Örnekler:
 
@@ -57,11 +57,11 @@ Thread, bir EID'ye paket gönderirken önce o EID'nin güncel RLOC'unu bulur (**
 | Router 0 | 0 | 0 | `0x0000` |
 | Router 1 | 1 | 0 | `0x0400` |
 | Router 23 | 23 | 0 | `0x5C00` |
-| Router 23'ün 1. çocuğu | 23 | 1 | `0x5C01` |
-| Router 37'nin 2. çocuğu | 37 | 2 | `0x9402` |
+| Router 23'ün 1. child'ı | 23 | 1 | `0x5C01` |
+| Router 37'nin 2. child'ı | 37 | 2 | `0x9402` |
 | Router 62 | 62 | 0 | `0xF800` |
 
-**Pratik çıkarım:** Bir RLOC16'nın ebeveyn router'ını bulmak için alt 10 biti sıfırlamak yeterlidir: `0x9402 & 0xFC00 = 0x9400` → Router 37. Yönlendirme bu sayede çocukların ayrı ayrı tabloda tutulmasını gerektirmez.
+**Pratik çıkarım:** Bir RLOC16'nın parent router'ını bulmak için alt 10 biti sıfırlamak yeterlidir: `0x9402 & 0xFC00 = 0x9400` → Router 37. Yönlendirme bu sayede child'ların ayrı ayrı tabloda tutulmasını gerektirmez.
 
 Router ID 63 hiçbir zaman atanmadığı için `0xFC00–0xFFFF` aralığı serbest kalır; bu aralık **ALOC16** değerleri için kullanılır.
 
@@ -78,7 +78,7 @@ Router ID 63 hiçbir zaman atanmadığı için `0xFC00–0xFFFF` aralığı serb
 
 Bir cihaz Leader'a mesaj göndermek istediğinde Leader'ın kim olduğunu bilmek zorunda değildir: `<mesh-local önek>::ff:fe00:fc00` adresine gönderir. Yönlendirme katmanı, Leader Data TLV'sindeki **Leader Router ID**'yi kullanarak bunu doğru router'a ulaştırır.
 
-### 6.6 Çoklu Yayın (Multicast) Adresleri
+### 6.6 Multicast Adresleri
 
 | Adres | Ad | Kimler alır? |
 |---|---|---|
@@ -86,13 +86,13 @@ Bir cihaz Leader'a mesaj göndermek istediğinde Leader'ın kim olduğunu bilmek
 | `ff02::2` | Link-Local All Routers | Tek atlamadaki tüm FTD'ler (router, REED, FED) |
 | `ff03::1` | Realm-Local All Nodes | Tüm ağdaki FTD'ler ve MED'ler |
 | `ff03::2` | Realm-Local All Routers | Tüm ağdaki FTD'ler |
-| `ff03::fc` | Realm-Local All MPL Forwarders | Çoklu yayını ileten cihazlar (MPL) |
+| `ff03::fc` | Realm-Local All MPL Forwarders | Multicast'i ileten cihazlar (MPL) |
 | `ff32:40:<ML önek>::1` | **Link-Local All Thread Nodes** | Tek atlamadaki **tüm** Thread cihazları (SED'ler dahil) |
 | `ff33:40:<ML önek>::1` | **Realm-Local All Thread Nodes** | Ağdaki **tüm** Thread cihazları (SED'ler dahil) |
 
-Neden iki ayrı "tümü" adresi var? Çünkü uyuyan cihazlara çoklu yayın ulaştırmak pahalıdır (ebeveyn her SED'e ayrı ayrı dolaylı iletim yapmak zorundadır). `ff02::1` / `ff03::1` gibi standart adresler SED'leri kapsamaz; gerçekten herkese ulaşılması gerekiyorsa "All Thread Nodes" adresleri kullanılır.
+Neden iki ayrı "tümü" adresi var? Çünkü uyuyan cihazlara multicast ulaştırmak pahalıdır (parent her SED'e ayrı ayrı dolaylı iletim yapmak zorundadır). `ff02::1` / `ff03::1` gibi standart adresler SED'leri kapsamaz; gerçekten herkese ulaşılması gerekiyorsa "All Thread Nodes" adresleri kullanılır.
 
-`ff33:40:<önek>::1` biçimi, RFC 3306 **önek tabanlı çoklu yayın** adresidir: `ff3` (önek tabanlı, geçici), kapsam `3`, `40` = önek uzunluğu 64 bit, ardından mesh-local önek ve grup kimliği 1.
+`ff33:40:<önek>::1` biçimi, RFC 3306 **önek tabanlı multicast** adresidir: `ff3` (önek tabanlı, geçici), kapsam `3`, `40` = önek uzunluğu 64 bit, ardından mesh-local önek ve grup kimliği 1.
 
 ### 6.7 Adreslerin Yapılandırılması
 
@@ -113,33 +113,33 @@ Thread, standart IPv6 **Neighbor Discovery**'yi (Router Advertisement, Neighbor 
 
 ### 6.8 Uç Cihazların Adres Kaydı
 
-MTD çocuklar (MED, SED) ağ genelindeki adres sorgularını kendileri cevaplamaz; çünkü `ff03::2`'ye abone değildirler ve SED'ler çoğu zaman uykudadır. Bunun yerine adreslerini **ebeveynlerine kaydederler**:
+MTD child'lar (MED, SED) ağ genelindeki adres sorgularını kendileri cevaplamaz; çünkü `ff03::2`'ye abone değildirler ve SED'ler çoğu zaman uykudadır. Bunun yerine adreslerini **parent'larına kaydederler**:
 
 - Kayıt, MLE **Child ID Request** veya **Child Update Request** içindeki **Address Registration TLV** ile yapılır.
 - Adres bir bağlam öneki ile sıkıştırılabiliyorsa yalnızca 8 baytlık IID + bağlam kimliği gönderilir; değilse 16 baytın tamamı.
-- Ebeveyn, çocukları adına Address Query'leri cevaplar (vekil — proxy).
-- Ebeveyn, çocuklarının çoklu yayın aboneliklerini de bu yolla öğrenir.
+- Parent, child'ları adına Address Query'leri cevaplar (proxy olarak).
+- Parent, child'larının multicast aboneliklerini de bu yolla öğrenir.
 
-FTD çocuklar (FED, REED) ise sorguları kendileri cevaplar ve kendi EID→RLOC önbelleklerini tutar.
+FTD child'lar (FED, REED) ise sorguları kendileri cevaplar ve kendi EID→RLOC önbelleklerini tutar.
 
 ### 6.9 EID → RLOC Çözümleme: Address Query
 
 Bir cihaz bir EID'ye (ör. ML-EID veya OMR adresi) paket göndermek istediğinde:
 
 1. **EID→RLOC önbelleğine** (Address Cache) bakar. Kayıt varsa RLOC16 bellidir.
-2. Kayıt yoksa paketi bekletir ve **Address Query** (`a/aq`) mesajını `ff03::2` (Realm-Local All Routers) adresine çoklu yayınla gönderir. Mesaj **Target EID TLV** içerir.
-3. Adresin sahibi (veya sahibi MTD ise ebeveyni) **Address Notification** (`a/an`) ile tekil olarak cevap verir. İçerik: Target EID, **RLOC16**, **ML-EID IID**, (çocuk adına cevap veriliyorsa) **Last Transaction Time**.
+2. Kayıt yoksa paketi bekletir ve **Address Query** (`a/aq`) mesajını `ff03::2` (Realm-Local All Routers) adresine multicast ile gönderir. Mesaj **Target EID TLV** içerir.
+3. Adresin sahibi (veya sahibi MTD ise parent'ı) **Address Notification** (`a/an`) ile unicast olarak cevap verir. İçerik: Target EID, **RLOC16**, **ML-EID IID**, (child adına cevap veriliyorsa) **Last Transaction Time**.
 4. Sorgulayan önbelleğe yazar ve bekleyen paketi gönderir.
 
 ```mermaid
 sequenceDiagram
     participant S as Kaynak Cihaz
     participant R as Tüm Router'lar (ff03::2)
-    participant P as Hedefin Ebeveyni
+    participant P as Hedefin Parent'ı
     participant D as Hedef (SED)
     Note over S: Hedef EID için önbellekte kayıt yok,<br/>paket bekletiliyor
-    S->>R: a/aq Address Query (Target EID) — çoklu yayın
-    Note over P: Çocuğumun kayıtlı adresi!
+    S->>R: a/aq Address Query (Target EID) — multicast
+    Note over P: Child'ımın kayıtlı adresi!
     P->>S: a/an Address Notification<br/>(Target EID, RLOC16 = 0x9402, ML-EID IID, Last Transaction Time)
     Note over S: Önbelleğe yaz: EID → 0x9402
     S->>P: Bekletilen paket (Mesh Header ile)
@@ -161,7 +161,7 @@ sequenceDiagram
 
 ### 6.10 Çakışma Tespiti: Address Error
 
-İki farklı cihaz aynı EID'yi kullanıyorsa Address Query'ye **farklı ML-EID IID**'leriyle iki Address Notification gelir. Bu durumda sorgulayan, ilgili cihazlara **Address Error** (`a/ae`) gönderir; Target EID ve ML-EID IID'si eşleşen cihaz o adresi bırakır. Ebeveynler de çocukları adına benzer kontroller yapar.
+İki farklı cihaz aynı EID'yi kullanıyorsa Address Query'ye **farklı ML-EID IID**'leriyle iki Address Notification gelir. Bu durumda sorgulayan, ilgili cihazlara **Address Error** (`a/ae`) gönderir; Target EID ve ML-EID IID'si eşleşen cihaz o adresi bırakır. Parent'lar de child'ları adına benzer kontroller yapar.
 
 ### 6.11 Hangi Adres Ne İçin Kullanılmalı?
 
@@ -202,4 +202,4 @@ Done
 - RLOC16 = Router ID (6 bit) + Child ID (9 bit); aynı zamanda MAC kısa adresidir.
 - ALOC'lar (`0xFCxx`) Leader, commissioner, servis gibi rollere anycast erişim sağlar.
 - Standart IPv6 ND yerine Network Data, Address Query/Notification ve Address Error kullanılır.
-- SED'leri de kapsayan çoklu yayın için "All Thread Nodes" (`ff32:40:…::1`, `ff33:40:…::1`) adresleri vardır.
+- SED'leri de kapsayan multicast için "All Thread Nodes" (`ff32:40:…::1`, `ff33:40:…::1`) adresleri vardır.

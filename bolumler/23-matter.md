@@ -10,7 +10,7 @@
 | 1.1 | 2023 | Uyuyan cihaz (ICD) iyileştirmeleri |
 | 1.2 | 2023 | Yeni cihaz türleri (beyaz eşya, robot süpürge vb.) |
 | 1.3 | 2024 | Enerji yönetimi, yeni cihaz türleri |
-| 1.4 | Kasım 2024 | Thread BR içeren **Home Router and Access Point (HRAP)** cihaz türü; Thread ağ yönetimi kümeleri; çoklu yönetici iyileştirmeleri |
+| 1.4 | Kasım 2024 | Thread BR içeren **Home Router and Access Point (HRAP)** cihaz türü; Thread ağ yönetimi cluster'ları; çoklu yönetici iyileştirmeleri |
 
 Matter'ın katmanları:
 
@@ -43,8 +43,8 @@ Thread açısından Matter sıradan bir UDP uygulamasıdır. Matter açısından
 1. **Devreye almada** Thread kimlik bilgilerinin (Operational Dataset) cihaza verilmesi,
 2. **Servis keşfi** için SRP/DNS-SD,
 3. **Uyuyan cihaz** davranışının (ICD) Thread poll/CSL parametreleriyle eşlenmesi,
-4. **Grup iletişimi** için IPv6 çoklu yayın (MPL, MLR),
-5. **Teşhis** için Thread Network Diagnostics kümesi.
+4. **Grup iletişimi** için IPv6 multicast (MPL, MLR),
+5. **Teşhis** için Thread Network Diagnostics cluster'ı.
 
 ### 23.3 Keşif (Discovery)
 
@@ -103,13 +103,13 @@ Matter'ın **çoklu yönetici** özelliği, aynı cihazın birden fazla ekosiste
 - Cihaz ikinci ekosisteme eklendiğinde Thread ağı değişmez; ikinci ekosistemin denetleyicisi cihaza, cihazın bulunduğu Thread ağının **Border Router'ları üzerinden** ulaşır.
 - İkinci ekosistemin kendi BR'leri **ayrı bir Thread ağı** kurmuşsa, bu BR'ler cihaza yönlendirme yapamaz; erişim birinci ekosistemin BR'lerine bağımlı kalır.
 
-Bu nedenle ekosistemlerin **tek bir Thread ağı** üzerinde birleşmesi kritik önemdedir. Thread 1.4'ün ePSKc mekanizması, işletim sistemlerinin kimlik paylaşım API'leri ve Matter 1.4'ün Thread ağ yönetimi kümeleri bu hedefe hizmet eder.
+Bu nedenle ekosistemlerin **tek bir Thread ağı** üzerinde birleşmesi kritik önemdedir. Thread 1.4'ün ePSKc mekanizması, işletim sistemlerinin kimlik paylaşım API'leri ve Matter 1.4'ün Thread ağ yönetimi cluster'ları bu hedefe hizmet eder.
 
 ### 23.6 Uyuyan Matter Cihazları: ICD
 
 | Kavram | Değer / açıklama |
 |---|---|
-| **ICD Management** kümesi | `0x0046`; IdleModeDuration, ActiveModeDuration, ActiveModeThreshold öznitelikleri |
+| **ICD Management** cluster'ı | `0x0046`; IdleModeDuration, ActiveModeDuration, ActiveModeThreshold öznitelikleri |
 | **SIT ICD** (Short Idle Time) | Yavaş poll aralığı kısa (≈ 15 s ve altı); denetleyici her an (kısa gecikmeyle) ulaşabilir |
 | **LIT ICD** (Long Idle Time) | Çok uzun uyku aralıkları; denetleyiciyle **Check-In** protokolü (cihaz uyandığında kayıtlı denetleyicilere haber verir) |
 | **Active Mode** | Bir etkileşimden sonra cihaz belirli süre hızlı poll eder (ör. birkaç yüz ms) |
@@ -117,9 +117,9 @@ Bu nedenle ekosistemlerin **tek bir Thread ağı** üzerinde birleşmesi kritik 
 
 Thread karşılıkları: Idle Mode ↔ yavaş poll period (veya CSL period), Active Mode ↔ fast poll, Check-In ↔ cihazın uyandığında gönderdiği tek yönlü bildirim.
 
-### 23.7 Thread ile İlgili Matter Kümeleri
+### 23.7 Thread ile İlgili Matter Cluster'ları
 
-| Küme | ID | Amaç |
+| Cluster | ID | Amaç |
 |---|---|---|
 | Network Commissioning | `0x0031` | Thread ağı ekleme/bağlanma (AddOrUpdateThreadNetwork, ConnectNetwork), tarama |
 | Thread Network Diagnostics | `0x0035` | Thread durumu, sayaçlar, komşu/rota tabloları (Bölüm 21.5) |
@@ -130,12 +130,12 @@ Thread karşılıkları: Idle Mode ↔ yavaş poll period (veya CSL period), Act
 
 ### 23.8 Grup İletişimi
 
-Matter grup komutları (ör. "tüm salon ışıkları kapansın") IPv6 çoklu yayın kullanır:
+Matter grup komutları (ör. "tüm salon ışıkları kapansın") IPv6 multicast kullanır:
 
-- Grup adresleri **site-local** kapsamlı (scope 5), Fabric ve Grup kimliğinden türetilmiş önek tabanlı çoklu yayın adresleridir.
+- Grup adresleri **site-local** kapsamlı (scope 5), Fabric ve Grup kimliğinden türetilmiş önek tabanlı multicast adresleridir.
 - Thread cihazları bu gruplara abone olur ve (BBR varsa) **MLR** ile kaydeder; Thread ağı içinde paket **MPL** ile yayılır (Bölüm 14).
 - Grup mesajları grup anahtarlarıyla şifrelenir; MRP onayı yoktur (en iyi çaba).
-- SED'lere grup mesajı ulaştırmak, ebeveyn başına ayrı dolaylı iletim gerektirdiğinden maliyetlidir.
+- SED'lere grup mesajı ulaştırmak, parent başına ayrı dolaylı iletim gerektirdiğinden maliyetlidir.
 
 ### 23.9 Matter over Thread İçin Performans İpuçları
 

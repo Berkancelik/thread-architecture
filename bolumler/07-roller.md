@@ -11,27 +11,27 @@ Thread'de bir cihazı tanımlarken iki ayrı boyut vardır:
 
 ### 7.2 Full Thread Device (FTD)
 
-FTD'nin radyosu **her zaman açıktır** (rx-on-when-idle), router tablosu tutabilir, `ff03::2`/`ff02::2` adreslerine abonedir ve EID→RLOC önbelleği tutar.
+FTD'nin alıcısı **her zaman açıktır** (rx-on-when-idle), router tablosu tutabilir, `ff03::2`/`ff02::2` adreslerine abonedir ve EID→RLOC önbelleği tutar.
 
 | FTD türü | Açıklama |
 |---|---|
-| **Router** | Paketleri yönlendirir, çocuk cihazlara ebeveynlik yapar, MLE Advertisement gönderir, commissioning'de Joiner Router olabilir. |
-| **REED** (Router Eligible End Device) | Router olabilecek ama şu anda **çocuk** rolünde olan FTD. Ağa router gerektiğinde (router sayısı azsa ya da yakınındaki bir cihaz ebeveyn arıyorsa) router'a terfi eder. |
-| **FED** (Full End Device) | Router olmayacak şekilde yapılandırılmış FTD. Tam ağ verisini tutar, çoklu yayınları alır ama yönlendirme yapmaz. |
+| **Router** | Paketleri yönlendirir, child cihazlara parent'lık yapar, MLE Advertisement gönderir, commissioning'de Joiner Router olabilir. |
+| **REED** (Router Eligible End Device) | Router olabilecek ama şu anda **child** rolünde olan FTD. Ağa router gerektiğinde (router sayısı azsa ya da yakınındaki bir cihaz parent arıyorsa) router'a terfi eder. |
+| **FED** (Full End Device) | Router olmayacak şekilde yapılandırılmış FTD. Tam ağ verisini tutar, multicast mesajları alır ama yönlendirme yapmaz. |
 
 ### 7.3 Minimal Thread Device (MTD)
 
-MTD tüm trafiğini **ebeveyni üzerinden** gönderir ve alır; yönlendirme yapmaz, router olamaz.
+MTD tüm trafiğini **parent'ı üzerinden** gönderir ve alır; yönlendirme yapmaz, router olamaz.
 
-| MTD türü | Radyo | Ebeveynden veri alma | Tipik cihaz |
+| MTD türü | Alıcı (RX) | Parent'tan veri alma | Tipik cihaz |
 |---|---|---|---|
 | **MED** (Minimal End Device) | Her zaman açık | Doğrudan (anında) | Şebekeden beslenen ama router olması istenmeyen cihazlar |
 | **SED** (Sleepy End Device) | Çoğu zaman kapalı | Dolaylı: periyodik **poll** ile | Pilli sensörler, kapı/pencere sensörleri, uzaktan kumandalar |
-| **SSED** (Synchronized SED, Thread 1.2+) | Çoğu zaman kapalı; belirli aralıklarla kısa süre dinler | **CSL**: ebeveyn, SED'in dinleme anına denk gelecek şekilde gönderir | Düşük gecikme gereken pilli cihazlar (kilit, perde, termostat) |
+| **SSED** (Synchronized SED, Thread 1.2+) | Çoğu zaman kapalı; belirli aralıklarla kısa süre dinler | **CSL**: parent, SED'in dinleme anına denk gelecek şekilde gönderir | Düşük gecikme gereken pilli cihazlar (kilit, perde, termostat) |
 
 ### 7.4 Mode TLV: Cihazın Kendini Tanıtması
 
-Cihaz, ebeveynine MLE mesajlarında **Mode TLV** ile kendini tanıtır:
+Cihaz, parent'ına MLE mesajlarında **Mode TLV** ile kendini tanıtır:
 
 ```text
  bit:  7  6  5  4 |  3  |  2  |  1  |  0
@@ -40,7 +40,7 @@ Cihaz, ebeveynine MLE mesajlarında **Mode TLV** ile kendini tanıtır:
 
 | Bit | Maske | Ad | Anlamı |
 |---|---|---|---|
-| R | `0x08` | Receiver On When Idle | Radyo boştayken açık (MED/FTD). 0 ise uyuyan cihaz. |
+| R | `0x08` | Receiver On When Idle | Alıcı boştayken açık (MED/FTD). 0 ise uyuyan cihaz. |
 | (S) | `0x04` | (eski: Secure Data Requests) | Thread 1.0'dan kalma; artık kullanılmaz |
 | D | `0x02` | Full Thread Device | 1 = FTD |
 | N | `0x01` | Full Network Data | 1 = tam ağ verisini ister; 0 = yalnızca "stable" (kalıcı) alt kümeyi |
@@ -56,8 +56,8 @@ Cihaz, ebeveynine MLE mesajlarında **Mode TLV** ile kendini tanıtır:
 | Rol | Anlamı |
 |---|---|
 | **Disabled** | Thread yığını durdurulmuş |
-| **Detached** | Yığın çalışıyor ama hiçbir partition'a bağlı değil; ebeveyn veya partition arıyor |
-| **Child** | Bir ebeveyne bağlı uç cihaz (REED, FED, MED, SED, SSED) |
+| **Detached** | Yığın çalışıyor ama hiçbir partition'a bağlı değil; parent veya partition arıyor |
+| **Child** | Bir parent'a bağlı uç cihaz (REED, FED, MED, SED, SSED) |
 | **Router** | Aktif router (Router ID'si var) |
 | **Leader** | Partition'ın lideri olan router |
 
@@ -65,13 +65,13 @@ Cihaz, ebeveynine MLE mesajlarında **Mode TLV** ile kendini tanıtır:
 stateDiagram-v2
     [*] --> Disabled
     Disabled --> Detached: thread start
-    Detached --> Child: Ebeveyn bulundu<br/>(Parent Request → Child ID Response)
+    Detached --> Child: Parent bulundu<br/>(Parent Request → Child ID Response)
     Detached --> Leader: Partition bulunamadı<br/>(yeni partition kur)
     Child --> Router: REED terfisi<br/>(Address Solicit → Router ID)
     Router --> Child: Router fazlası<br/>(Address Release)
     Router --> Leader: Leader kayboldu,<br/>yeni partition
     Leader --> Router: Daha iyi partition'a katıldı
-    Child --> Detached: Ebeveyn kaybı / zaman aşımı
+    Child --> Detached: Parent kaybı / zaman aşımı
     Router --> Detached: Partition kaybı
     Leader --> Detached: Yeniden başlatma
     Detached --> Disabled: thread stop
@@ -85,13 +85,13 @@ stateDiagram-v2
 **REED → Router (terfi / upgrade):**
 
 - Ağdaki aktif router sayısı **`ROUTER_UPGRADE_THRESHOLD` = 16**'nın altındaysa REED, 0 ile **`ROUTER_SELECTION_JITTER` = 120 s** arasında rastgele bir süre bekleyip Leader'a **Address Solicit** gönderir.
-- Bir cihaz REED'i ebeveyn olarak seçip ona **Child ID Request** gönderirse, REED hemen terfi etmeye çalışır (çocuğu kabul edebilmek için router olmalıdır).
+- Bir cihaz REED'i parent olarak seçip ona **Child ID Request** gönderirse, REED hemen terfi etmeye çalışır (child'ı kabul edebilmek için router olmalıdır).
 - Rastgele bekleme, aynı anda çok sayıda REED'in router olmasını engeller.
 
 **Router → REED (düşürme / downgrade):**
 
 - Router sayısı **`ROUTER_DOWNGRADE_THRESHOLD` = 23**'ün üzerindeyse,
-- router'ın **hiç çocuğu yoksa**,
+- router'ın **hiç child'ı yoksa**,
 - ve yeterli sayıda (OpenThread'de 7+) iyi kaliteli router komşusu varsa (yani ağ bu router'a ihtiyaç duymuyorsa),
 - router rastgele bir beklemenin ardından **Address Release** ile Router ID'sini bırakıp REED olur.
 
@@ -123,22 +123,22 @@ Aşağıdaki roller ağ rollerinin **üzerine eklenen** işlevlerdir; bir router
 | **Commissioner** | Yeni cihazların ağa katılmasını yetkilendirir; ağda aynı anda bir tane aktif olabilir | Telefon uygulaması, hub |
 | **Joiner** | Ağa katılmaya çalışan yeni cihaz | Yeni cihaz |
 | **Joiner Router** | Joiner'a komşu olan ve onun DTLS trafiğini commissioner'a aktaran router | Herhangi bir router |
-| **Backbone Router (BBR)** | Thread 1.2+: Thread ağını omurga (backbone) bağlantısına çoklu yayın ve DUA açısından bağlar; Primary/Secondary | Border Router |
+| **Backbone Router (BBR)** | Thread 1.2+: Thread ağını omurga (backbone) bağlantısına multicast ve DUA açısından bağlar; Primary/Secondary | Border Router |
 | **SRP Server** | Thread cihazlarının DNS-SD servis kaydı yaptığı sunucu | Border Router |
-| **DHCPv6 Agent / ND Agent** | İlgili önekler için adres dağıtımı / komşu keşfi vekilliği | Border Router (nadir) |
+| **DHCPv6 Agent / ND Agent** | İlgili önekler için adres dağıtımı / komşu keşfi proxy'si | Border Router (nadir) |
 
 ### 7.9 Karşılaştırma Tablosu
 
 | Özellik | Router | REED | FED | MED | SED | SSED |
 |---|---|---|---|---|---|---|
 | Cihaz türü | FTD | FTD | FTD | MTD | MTD | MTD |
-| Radyo boştayken | Açık | Açık | Açık | Açık | Kapalı | Kapalı (periyodik kısa dinleme) |
+| Alıcı boştayken | Açık | Açık | Açık | Açık | Kapalı | Kapalı (periyodik kısa dinleme) |
 | Paket yönlendirme | Evet | Hayır | Hayır | Hayır | Hayır | Hayır |
-| Çocuk kabul etme | Evet | Hayır (önce terfi) | Hayır | Hayır | Hayır | Hayır |
+| Child kabul etme | Evet | Hayır (önce terfi) | Hayır | Hayır | Hayır | Hayır |
 | Router olabilir | — | Evet | Hayır | Hayır | Hayır | Hayır |
-| Ebeveyni var | Hayır | Evet | Evet | Evet | Evet | Evet |
+| Parent'ı var | Hayır | Evet | Evet | Evet | Evet | Evet |
 | Ağ verisi | Tam | Tam | Tam | Tam / stable | Genelde stable | Genelde stable |
-| Adres kaydı ebeveyne | — | Hayır | Hayır | Evet | Evet | Evet |
+| Adres kaydı parent'a | — | Hayır | Hayır | Evet | Evet | Evet |
 | Gecikme (aşağı yön) | Anında | Anında | Anında | Anında | Poll periyoduna bağlı | CSL periyoduna bağlı |
 | Güç tüketimi | Yüksek (mA) | Yüksek | Yüksek | Yüksek | Çok düşük (µA) | Çok düşük (µA) |
 | Tipik güç kaynağı | Şebeke | Şebeke | Şebeke | Şebeke | Pil | Pil |
@@ -157,7 +157,7 @@ Aşağıdaki roller ağ rollerinin **üzerine eklenen** işlevlerdir; bir router
 | Duvara takılı uzaktan kumanda / düğme | SED |
 
 > [!TIP]
-> Pilli bir cihazı asla router/REED olarak yapılandırmayın: radyosu sürekli açık kalır ve pil günler içinde biter. Tersine, şebekeden beslenen cihazların REED/router olması ağın kapsama ve dayanıklılığını artırır.
+> Pilli bir cihazı asla router/REED olarak yapılandırmayın: alıcısı sürekli açık kalır ve pil günler içinde biter. Tersine, şebekeden beslenen cihazların REED/router olması ağın kapsama ve dayanıklılığını artırır.
 
 ### 7.11 Bölüm Özeti
 

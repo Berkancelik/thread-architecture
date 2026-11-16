@@ -49,12 +49,12 @@ Bir cihazın (Initiator) bir komşusundan (Subject) bağlantı kalitesi ölçüm
 
 **Ölçülebilen değerler:** Layer 2 PDU sayısı, **LQI**, **Link Margin**, **RSSI**.
 
-**Kullanım alanları:** SSED'lerin ebeveyn bağlantısını izlemesi ve gerekirse CSL/TX gücü ayarlaması, ağ teşhisi, daha iyi ebeveyn seçimi.
+**Kullanım alanları:** SSED'lerin parent bağlantısını izlemesi ve gerekirse CSL/TX gücü ayarlaması, ağ teşhisi, daha iyi parent seçimi.
 
 ```mermaid
 sequenceDiagram
     participant I as Initiator (ör. SSED)
-    participant S as Subject (ebeveyn)
+    participant S as Subject (parent)
     I->>S: Link Metrics Management Request (Forward Series ID 1, ölçümler: LQI + Link Margin)
     S-->>I: Link Metrics Management Response (Status = Success)
     loop Ölçüm süresince
@@ -104,7 +104,7 @@ flowchart TB
 4. Çakışma yoksa kaydı kabul eder ve omurgada bu adres için **ND Proxy** olarak davranır: omurgadaki cihazlar DUA'ya NS gönderdiğinde PBBR kendi adına cevap verir ve paketleri Thread ağına yönlendirir.
 5. Cihaz kaydını periyodik olarak yeniler.
 
-**MLR (Multicast Listener Registration):** Cihazlar admin-local ve daha geniş kapsamlı çoklu yayın aboneliklerini **MLR.req** (`n/mr`) ile PBBR'ye kaydeder; PBBR omurgada MLD dinleyicisi olur ve eşleşen çoklu yayınları Thread'e aktarır (Bölüm 14.5).
+**MLR (Multicast Listener Registration):** Cihazlar admin-local ve daha geniş kapsamlı multicast aboneliklerini **MLR.req** (`n/mr`) ile PBBR'ye kaydeder; PBBR omurgada MLD dinleyicisi olur ve eşleşen multicast mesajları Thread'e aktarır (Bölüm 14.5).
 
 #### 20.2.5 Commercial Commissioning Mode (CCM)
 
@@ -123,7 +123,7 @@ Thread 1.3'ün ana teması **Border Router standardizasyonu ve Matter ile uyum**
 
 #### 20.3.1 Thread Border Router Özellikleri
 
-OMR önek yönetimi, RA/RIO, on-link önek, NAT64, SRP sunucusu, Advertising Proxy, Discovery Proxy, çoklu yayın yönlendirme — ayrıntılar Bölüm 19.
+OMR önek yönetimi, RA/RIO, on-link önek, NAT64, SRP sunucusu, Advertising Proxy, Discovery Proxy, multicast yönlendirme — ayrıntılar Bölüm 19.
 
 #### 20.3.2 Cihaz Tarafı Servisler
 
@@ -133,7 +133,7 @@ OMR önek yönetimi, RA/RIO, on-link önek, NAT64, SRP sunucusu, Advertising Pro
 
 #### 20.3.3 TREL — Thread Radio Encapsulation Link
 
-**TREL**, Thread'in MAC çerçevelerini **UDP/IPv6 içinde** altyapı ağları (Wi-Fi/Ethernet) üzerinden taşıyan ikinci bir "radyo" bağlantısıdır.
+**TREL**, Thread'in MAC çerçevelerini **UDP/IPv6 içinde** altyapı ağları (Wi-Fi/Ethernet) üzerinden taşıyan ikinci bir bağlantı türüdür (şartnamedeki adıyla *radio link*).
 
 ```mermaid
 flowchart LR
@@ -153,12 +153,12 @@ flowchart LR
 | Özellik | Açıklama |
 |---|---|
 | Keşif | Altyapı ağında DNS-SD **`_trel._udp`** servisi; TXT kaydında Extended Address (`xa`) ve Extended PAN ID (`xp`) |
-| Taşıma | Tekil UDP/IPv6 (çoklu yayın gerektiğinde altyapı çoklu yayını) |
+| Taşıma | Unicast UDP/IPv6 (multicast gerektiğinde altyapı multicast'i) |
 | Güvenlik | Thread güvenliği korunur; TREL için Network Key'den ayrı bir anahtar türetilir |
-| Çoklu radyo | Bir router'ın aynı komşuya hem 802.15.4 hem TREL ile bağlantısı olabilir; yönlendirme her bağlantının kalitesine göre en iyisini seçer |
-| Fayda | Farklı odalardaki/katlardaki BR'leri tek mesh'te birleştirir; çok atlamalı radyo yollarını kısaltır; Ethernet/Wi-Fi'ın yüksek bant genişliğini kullanır |
+| Çoklu bağlantı (multi-radio) | Bir router'ın aynı komşuya hem 802.15.4 hem TREL ile bağlantısı olabilir; yönlendirme her bağlantının kalitesine göre en iyisini seçer |
+| Fayda | Farklı odalardaki/katlardaki BR'leri tek mesh'te birleştirir; çok atlamalı kablosuz yolları kısaltır; Ethernet/Wi-Fi'ın yüksek bant genişliğini kullanır |
 
-TREL ile birleşen BR'ler, aralarında radyo bağlantısı olmasa bile **tek partition** oluşturur; böylece "aynı evde iki ayrı Thread adası" sorunu azalır.
+TREL ile birleşen BR'ler, aralarında 802.15.4 bağlantısı olmasa bile **tek partition** oluşturur; böylece "aynı evde iki ayrı Thread adası" sorunu azalır.
 
 ### 20.4 Thread 1.4
 
@@ -169,7 +169,7 @@ Thread 1.4 (Eylül 2024'te duyuruldu), Thread'in tüketici ekosistemlerinde yaş
 | **Border Router birlikte çalışabilirliği** | Daha önce isteğe bağlı olan birçok BR davranışı zorunlu hâle getirildi ve sertifikasyonla doğrulanıyor; farklı üreticilerin BR'leri aynı ağda daha öngörülebilir davranır |
 | **Kimlik bilgisi paylaşımı** | **ePSKc**: Border Agent'ın ürettiği kısa ömürlü kodla başka ekosistemlerin mevcut ağa güvenle katılması; ekosistemlerin tek ağ kullanması teşvik edilir |
 | **Gelişmiş internet bağlantısı** | **DHCPv6-PD** ile ISS'den alınan global öneklerin OMR olarak kullanılması → Thread cihazlarına global IPv6; NAT64 ve DNS iyileştirmeleri |
-| **Gelişmiş ağ teşhisi** | Çocuk tabloları, router komşuları, MLE sayaçları gibi yeni teşhis TLV'leri; sorgu kimlikli (Query ID) çoklu cevap mekanizması; ağ topolojisinin uzaktan çıkarılması |
+| **Gelişmiş ağ teşhisi** | Child tabloları, router komşuları, MLE sayaçları gibi yeni teşhis TLV'leri; sorgu kimlikli (Query ID) çoklu cevap mekanizması; ağ topolojisinin uzaktan çıkarılması |
 | **TCAT** | TLS ve sertifikalarla, BLE gibi bir taşıyıcı üzerinden Thread devreye alma (Bölüm 16.9) |
 
 ### 20.5 Sürüm Uyumluluğu Nasıl Yönetilir?

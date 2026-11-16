@@ -2,7 +2,7 @@
 
 ### 19.1 Görevi
 
-**Thread Border Router (BR)**, Thread mesh ağını Wi-Fi veya Ethernet gibi başka IP ağlarına (**altyapı ağı / infrastructure link**) bağlayan cihazdır. Önemli nokta: BR bir **protokol çeviricisi (gateway)** değil, bir **IP yönlendiricisidir**. Thread cihazları zaten IPv6 konuştuğu için BR paketleri çevirmeden yönlendirir (IPv4 erişimi için NAT64 istisnadır).
+**Thread Border Router (BR)**, Thread mesh ağını Wi-Fi veya Ethernet gibi başka IP ağlarına (**altyapı ağı / infrastructure link**) bağlayan cihazdır. Önemli nokta: BR bir **protokol çeviricisi (gateway)** değil, bir **IP router'ıdır**. Thread cihazları zaten IPv6 kullandığı için BR paketleri çevirmeden yönlendirir (IPv4 erişimi için NAT64 istisnadır).
 
 Thread 1.3 ile standartlaşan ve 1.4 ile zorunlu hâle gelen BR işlevleri:
 
@@ -17,7 +17,7 @@ Thread 1.3 ile standartlaşan ve 1.4 ile zorunlu hâle gelen BR işlevleri:
 | **Advertising Proxy** | Kayıtlı servisleri altyapı ağında mDNS ile duyurmak |
 | **Discovery Proxy** | Thread cihazlarının altyapı ağındaki servisleri keşfetmesi |
 | **Border Agent** | Harici commissioner erişimi (MeshCoP) |
-| **Backbone Router** (1.2+) | Çoklu yayın (MLR) ve DUA desteği |
+| **Backbone Router** (1.2+) | Multicast (MLR) ve DUA desteği |
 | **TREL** (1.3+) | Thread'i Wi-Fi/Ethernet üzerinden taşımak |
 | **DHCPv6-PD** (1.4) | ISS'den global önek alarak Thread cihazlarına global IPv6 sağlamak |
 
@@ -52,7 +52,7 @@ flowchart LR
 
 ### 19.2 OMR Öneki (Off-Mesh Routable Prefix)
 
-Mesh-local adresler (ML-EID, RLOC) ağ dışına yönlendirilmez. Thread cihazlarının dış dünyayla konuşabilmesi için **OMR öneki** gerekir:
+Mesh-local adresler (ML-EID, RLOC) ağ dışına yönlendirilmez. Thread cihazlarının dış dünyayla haberleşebilmesi için **OMR öneki** gerekir:
 
 1. **Kaynak seçimi**:
     - Altyapı ağı **DHCPv6-PD** (prefix delegation) sunuyorsa (Thread 1.4), BR bir **global** /64 alır → Thread cihazları global IPv6 adreslerine sahip olur.
@@ -68,8 +68,8 @@ Wi-Fi'daki bir telefonun, `fd4f:2d3c:ee9b:1::/64` önekindeki bir Thread cihazı
 | RA seçeneği | İçerik | Etkisi |
 |---|---|---|
 | **RIO** (Route Information Option, RFC 4191) | OMR öneki (/64) + ömür + tercih | Altyapıdaki cihazlar "bu öneğe BR'nin link-local adresi üzerinden git" rotası ekler |
-| **PIO** (Prefix Information Option) | On-link önek (yalnızca altyapıda IPv6 öneki yoksa) | Altyapıdaki cihazlar bu önekten adres alır; böylece IPv6 ile Thread'e konuşabilir |
-| RA bayrakları | Thread BR'ler kendilerini "stub router" olarak tanıtır | Varsayılan yönlendirici gibi davranmaz; yalnızca belirli öneklere rota sunar |
+| **PIO** (Prefix Information Option) | On-link önek (yalnızca altyapıda IPv6 öneki yoksa) | Altyapıdaki cihazlar bu önekten adres alır; böylece IPv6 ile Thread cihazlarına erişebilir |
+| RA bayrakları | Thread BR'ler kendilerini "stub router" olarak tanıtır | Varsayılan router (default router) gibi davranmaz; yalnızca belirli öneklere rota sunar |
 
 **Ters yön (Thread → altyapı):** BR, Network Data'ya **Has Route** girdileri ekler:
 
@@ -82,7 +82,7 @@ Wi-Fi'daki bir telefonun, `fd4f:2d3c:ee9b:1::/64` önekindeki bir Thread cihazı
 
 ### 19.4 NAT64 ve IPv4 Erişimi
 
-Thread yalnızca IPv6 konuşur; ama birçok bulut servisi hâlâ yalnızca IPv4 ile erişilebilir. Çözüm **NAT64**:
+Thread yalnızca IPv6 kullanır; ama birçok bulut servisi hâlâ yalnızca IPv4 ile erişilebilir. Çözüm **NAT64**:
 
 1. BR bir **NAT64 öneki** (/96) belirler:
     - Altyapı ağı NAT64 sunuyorsa (RA'daki PREF64 seçeneği, RFC 8781, veya `ipv4only.arpa` sorgusu ile keşfedilen) onu kullanır,
@@ -94,7 +94,7 @@ Thread yalnızca IPv6 konuşur; ama birçok bulut servisi hâlâ yalnızca IPv4 
 
 ### 19.5 Servis Keşfi: SRP, Advertising Proxy, Discovery Proxy
 
-Klasik yerel ağlarda servis keşfi **mDNS** (çoklu yayın DNS) ile yapılır. Thread'de mDNS kullanmak kötü bir fikirdir: çoklu yayın pahalıdır ve uyuyan cihazlar sorgulara cevap veremez. Thread 1.3 bu sorunu **unicast DNS-SD** ile çözer:
+Klasik yerel ağlarda servis keşfi **mDNS** (multicast DNS) ile yapılır. Thread'de mDNS kullanmak kötü bir fikirdir: multicast pahalıdır ve uyuyan cihazlar sorgulara cevap veremez. Thread 1.3 bu sorunu **unicast DNS-SD** ile çözer:
 
 #### SRP (Service Registration Protocol, RFC 9665)
 
@@ -175,7 +175,7 @@ flowchart TB
         FW["Güvenlik duvarı / NAT64"]
         ETH["eth0 / wlan0"]
     end
-    RCP["RCP<br/>(802.15.4 radyo + sub-MAC)<br/>ör. nRF52840, EFR32, ESP32-H2"]
+    RCP["RCP<br/>(802.15.4 RF + sub-MAC)<br/>ör. nRF52840, EFR32, ESP32-H2"]
     AG <-->|"Spinel / HDLC<br/>UART · SPI · USB"| RCP
     AG <--> WPAN
     AG <--> MDNS
@@ -187,14 +187,14 @@ flowchart TB
 
 | Bileşen | Görev |
 |---|---|
-| **otbr-agent** | OpenThread yığınını (FTD) Linux üzerinde çalıştırır; RCP ile Spinel protokolüyle konuşur; BR mantığı (Routing Manager, SRP, Border Agent, BBR, NAT64) buradadır |
-| **RCP** | Radyo eş işlemcisi: yalnızca 802.15.4 PHY/MAC alt katmanını (CSMA, ACK, zamanlama, şifreleme hızlandırma) çalıştırır |
+| **otbr-agent** | OpenThread yığınını (FTD) Linux üzerinde çalıştırır; RCP ile Spinel protokolü üzerinden haberleşir; BR mantığı (Routing Manager, SRP, Border Agent, BBR, NAT64) buradadır |
+| **RCP** | Radio Co-Processor (RF yardımcı işlemcisi): yalnızca 802.15.4 PHY/MAC alt katmanını (CSMA, ACK, zamanlama, şifreleme hızlandırma) çalıştırır |
 | **wpan0** | Thread ağını Linux'a sıradan bir ağ arayüzü olarak gösteren TUN arayüzü |
 | **mDNS** | Advertising/Discovery Proxy ve Border Agent ilanları |
 | **REST API / Web** | Yönetim ve izleme (ör. dataset okuma/yazma, teşhis) |
 | **Güvenlik duvarı** | Altyapıdan Thread'e yalnızca izin verilen trafiğin (ör. OMR hedefli) geçmesini sağlar; mesh-local öneki korur |
 
-Örnek radyo URL'si: `spinel+hdlc+uart:///dev/ttyACM0?uart-baudrate=460800`
+Örnek Radio URL: `spinel+hdlc+uart:///dev/ttyACM0?uart-baudrate=460800`
 
 ### 19.9 Güvenlik Duvarı ve Giriş Filtreleme
 
@@ -212,4 +212,4 @@ BR, altyapı ağından Thread'e giden trafiği filtreler:
 - NAT64 ile IPv4 erişimi, SRP + Advertising/Discovery Proxy ile multicast'siz servis keşfi sağlanır.
 - Border Agent `_meshcop._udp` ile ilan edilir; Thread 1.4 ePSKc geçici erişim sunar.
 - Birden fazla BR uzlaşma kurallarıyla tek OMR öneki ve SRP sunucusu üzerinde birleşir; yedeklilik ancak aynı ağdaysalar işe yarar.
-- OTBR: otbr-agent (Linux) + RCP (radyo) + Spinel; Home Assistant gibi sistemler bunu kullanır.
+- OTBR: otbr-agent (Linux) + RCP (802.15.4 çipi) + Spinel; Home Assistant gibi sistemler bunu kullanır.

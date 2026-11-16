@@ -7,7 +7,7 @@ Thread, bir cihazın başka bir cihazın iç durumunu uzaktan sorgulayabilmesi i
 | URI | Kullanım |
 |---|---|
 | `d/dg` | **Diagnostic Get**: Belirli bir cihazdan (RLOC/ML-EID) istenen TLV'leri ister; cevap aynı CoAP alışverişinde döner |
-| `d/dq` + `d/da` | **Diagnostic Get Query / Answer**: Çoklu yayın (ör. `ff03::1`) ile birçok cihaza sorgu; her cihaz ayrı bir Answer mesajıyla cevap verir |
+| `d/dq` + `d/da` | **Diagnostic Get Query / Answer**: Multicast (ör. `ff03::1`) ile birçok cihaza sorgu; her cihaz ayrı bir Answer mesajıyla cevap verir |
 | `d/dr` | **Diagnostic Reset**: Belirli sayaçları sıfırlar |
 
 #### Teşhis TLV'leri
@@ -17,7 +17,7 @@ Thread, bir cihazın başka bir cihazın iç durumunu uzaktan sorgulayabilmesi i
 | 0 | Extended MAC Address | Cihazın Extended Address'i |
 | 1 | Address16 | RLOC16 |
 | 2 | Mode | R/D/N bitleri |
-| 3 | Timeout | Child timeout (çocuklar için) |
+| 3 | Timeout | Child timeout (child'lar için) |
 | 4 | Connectivity | Connectivity TLV (Bölüm 9.6) |
 | 5 | Route64 | Yönlendirme bilgisi |
 | 6 | Leader Data | Partition, Leader, sürümler |
@@ -26,16 +26,16 @@ Thread, bir cihazın başka bir cihazın iç durumunu uzaktan sorgulayabilmesi i
 | 9 | MAC Counters | MAC katmanı sayaçları |
 | 14 | Battery Level | Pil seviyesi (%) |
 | 15 | Supply Voltage | Besleme gerilimi (mV) |
-| 16 | Child Table | Çocuk tablosu (router'lar için) |
+| 16 | Child Table | Child tablosu (router'lar için) |
 | 17 | Channel Pages | Desteklenen kanal sayfaları |
 | 18 | Type List | (İstekte) istenen TLV türlerinin listesi |
-| 19 | Max Child Timeout | Çocuklardan en büyük timeout |
+| 19 | Max Child Timeout | Child'lardan en büyük timeout |
 | 23 | EUI-64 | Fabrika EUI-64'ü |
 | 24 | Version | Thread sürümü |
 | 25 / 26 / 27 | Vendor Name / Model / SW Version | Üretici bilgileri |
 | 28 | Thread Stack Version | Yığın sürüm dizesi |
-| 29 | Child | (1.4) Ayrıntılı çocuk bilgisi |
-| 30 | Child IPv6 Address List | (1.4) Çocuğun adresleri |
+| 29 | Child | (1.4) Ayrıntılı child bilgisi |
+| 30 | Child IPv6 Address List | (1.4) Child'ın adresleri |
 | 31 | Router Neighbor | (1.4) Router komşu bilgisi |
 | 32 / 33 | Answer / Query ID | (1.4) Çok parçalı cevap yönetimi |
 | 34 | MLE Counters | (1.4) MLE rol/attach sayaçları |
@@ -54,7 +54,7 @@ MAC Counters: …
 Child Table: …
 ```
 
-OpenThread'in `meshdiag topology` gibi komutları, bu mekanizmayı kullanarak tüm ağın router/çocuk topolojisini tek komutla çıkarabilir.
+OpenThread'in `meshdiag topology` gibi komutları, bu mekanizmayı kullanarak tüm ağın router/child topolojisini tek komutla çıkarabilir.
 
 ### 21.2 Teşhis İçin OpenThread CLI Komutları
 
@@ -64,9 +64,9 @@ OpenThread'in `meshdiag topology` gibi komutları, bu mekanizmayı kullanarak t�
 | `rloc16`, `extaddr` | Adresler | Kimlik |
 | `leaderdata` | Partition ID, weighting, sürümler, Leader Router ID | Ağda birden çok partition var mı? (farklı cihazlarda farklı Partition ID) |
 | `router table` | Router'lar, LQ In/Out, yol maliyeti, sonraki atlama | Zayıf (LQ 1) bağlantılar, uzak router'lar |
-| `child table` | Çocuklar, timeout, yaş, mod, sürüm, CSL | Çocuk sayısı, kopan çocuklar |
-| `neighbor table` | Tüm komşular (router + çocuk) ve RSSI | Sinyal seviyeleri |
-| `parent` | Ebeveyn ve link kalitesi (çocuklar için) | Ebeveyn bağlantısı iyi mi? |
+| `child table` | Child'lar, timeout, yaş, mod, sürüm, CSL | Child sayısı, kopan child'lar |
+| `neighbor table` | Tüm komşular (router + child) ve RSSI | Sinyal seviyeleri |
+| `parent` | Parent ve link kalitesi (child'lar için) | Parent bağlantısı iyi mi? |
 | `counters mac` / `counters mle` | MAC ve MLE sayaçları | Yeniden iletim, CCA hatası, attach/rol değişim sayıları |
 | `netdata show` | Network Data | Önekler, rotalar, SRP/BBR servisleri |
 | `ipaddr`, `ipmaddr` | Adresler ve abonelikler | OMR adresi var mı? |
@@ -105,8 +105,8 @@ OpenThread'in `meshdiag topology` gibi komutları, bu mekanizmayı kullanarak t�
 |   2 | 0x5c02 |        240 |          3 |     2 |  118 |1|0|1|  4| 0 |     0 | b2f0c1d2e3a4b5c6 |
 ```
 
-- Çocuk 1: SED (R=0, D=0, N=0), 17 s önce duyuldu, kuyrukta mesajı yok.
-- Çocuk 2: MED (R=1, N=1), LQ 2.
+- Child 1: SED (R=0, D=0, N=0), 17 s önce duyuldu, kuyrukta mesajı yok.
+- Child 2: MED (R=1, N=1), LQ 2.
 
 ```text
 > counters mac
@@ -132,18 +132,18 @@ Yorum: ACK başarı oranı 6201 / 6380 ≈ %97.2; yeniden iletim oranı 912 / 63
 | Gösterge | Sağlıklı | Dikkat | Olası anlam |
 |---|---|---|---|
 | Partition sayısı | 1 | > 1 | Ağ bölünmüş; bölgeler arası bağlantı zayıf |
-| Router sayısı | 16–32 arasında, cihaz sayısına uygun | Çok az router ve çok sayıda çocuk | Kapsama zayıf, tek hata noktaları oluşabilir |
+| Router sayısı | 16–32 arasında, cihaz sayısına uygun | Çok az router ve çok sayıda child | Kapsama zayıf, tek hata noktaları oluşabilir |
 | Router komşu LQ'ları | Çoğunlukla 3 | Çok sayıda LQ 1 | Zayıf bağlantılar, yüksek yeniden iletim |
 | MAC yeniden iletim oranı | < %5–10 | > %20 | Girişim, zayıf link, gizli düğüm |
 | CCA hata oranı | Çok düşük | Yükselen | Kanal meşgul (Wi-Fi), kanal değiştirmeyi düşünün |
-| Attach / parent change sayaçları | Nadiren artar | Sürekli artar | Kararsız ebeveyn bağlantıları, ebeveyn kopmaları |
+| Attach / parent change sayaçları | Nadiren artar | Sürekli artar | Kararsız parent bağlantıları, parent kopmaları |
 | Leader / router rol değişimleri | Nadiren | Sık | Ağ kararsızlığı, partition birleşmeleri |
-| SED poll başarısı | Yüksek | Poll'lara cevap gelmiyor | Ebeveyn kaybı, aşırı yüklü ebeveyn |
+| SED poll başarısı | Yüksek | Poll'lara cevap gelmiyor | Parent kaybı, aşırı yüklü parent |
 | Address Query başarısızlıkları | Nadir | Sık | Cihazlar ağdan düşüyor veya önbellek sorunları |
 
 ### 21.4 Paket Yakalama (Sniffing)
 
-Radyo trafiğini görmek, Thread sorunlarını çözmenin en güçlü yoludur.
+Havadaki 802.15.4 trafiğini görmek, Thread sorunlarını çözmenin en güçlü yoludur.
 
 **Donanım seçenekleri:**
 
@@ -181,7 +181,7 @@ Sniffer, ağın **kanalına** ayarlanmalıdır (yakalama tek kanalda yapılır).
 
 ### 21.5 Matter Üzerinden Thread Teşhisi
 
-Matter, Thread cihazlarının ağ durumunu **Thread Network Diagnostics** kümesi (cluster ID `0x0035`) ile sunar. Önemli öznitelikler:
+Matter, Thread cihazlarının ağ durumunu **Thread Network Diagnostics** cluster'ı (ID `0x0035`) ile sunar. Önemli öznitelikler:
 
 | Grup | Öznitelikler |
 |---|---|
@@ -212,4 +212,4 @@ Ekosistem uygulamaları ve Home Assistant gibi platformlar bu verileri kullanara
 - `router table`, `child table`, `leaderdata`, `counters mac` gibi komutlar ağ sağlığının temel göstergeleridir.
 - Yeniden iletim oranı, CCA hataları, partition ve parent değişim sayaçları en kritik metriklerdir.
 - Wireshark'ta Network Key + "Thread hash", 6LoWPAN bağlam 0 ve doğru FCS formatı ile tüm trafik çözülebilir.
-- Matter'ın Thread Network Diagnostics kümesi bu bilgileri uygulama seviyesine taşır.
+- Matter'ın Thread Network Diagnostics cluster'ı bu bilgileri uygulama seviyesine taşır.

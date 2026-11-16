@@ -5,7 +5,7 @@
 Thread yönlendirmesi üç temel ilkeye dayanır:
 
 1. **Router'lar arası proaktif mesafe-vektör (distance-vector)**: Her router, ağdaki **her router'a** giden en düşük maliyetli yolu ve bu yolun **sonraki atlamasını** bilir. Bilgi MLE Advertisement'lardaki **Route64 TLV** ile yayılır.
-2. **Uç cihazlar yönlendirme yapmaz**: Her şeyi ebeveynlerine gönderirler. Bir çocuğa giden paket, onun ebeveyn router'ına yönlendirilir (RLOC16'nın üst 6 biti).
+2. **Uç cihazlar yönlendirme yapmaz**: Her şeyi parent'larına gönderirler. Bir child'a giden paket, onun parent router'ına yönlendirilir (RLOC16'nın üst 6 biti).
 3. **Bağlantı kalitesine dayalı maliyet**: Rota maliyeti atlama sayısı değil, **çift yönlü bağlantı kalitesine** göre hesaplanan link maliyetlerinin toplamıdır.
 
 En fazla 32 router olduğundan tablolar küçüktür ve tüm ağın rotaları birkaç Advertisement turunda yakınsar.
@@ -21,7 +21,7 @@ Her router, komşusundan aldığı çerçevelerin RSS değerlerinin ortalamasın
 | > 2 dB | **1** | **4** |
 | ≤ 2 dB | **0** | **∞** (kullanılmaz) |
 
-**Çift yönlü kalite:** Radyo bağlantıları asimetrik olabilir (A, B'yi iyi duyar ama B, A'yı zayıf duyar). Bu yüzden Thread iki değeri birlikte kullanır:
+**Çift yönlü kalite:** Kablosuz bağlantılar asimetrik olabilir (A, B'yi iyi duyar ama B, A'yı zayıf duyar). Bu yüzden Thread iki değeri birlikte kullanır:
 
 - **LQ In**: Bu router'ın komşudan gelen çerçeveler için ölçtüğü kalite.
 - **LQ Out**: Komşunun bu router'dan gelen çerçeveler için ölçtüğü ve Route64 TLV'sinde bildirdiği kalite.
@@ -103,7 +103,7 @@ Bir router'ın IPv6 paketi için verdiği kararın sadeleştirilmiş hâli:
 
 ```text
 1. Hedef link-local mi? (fe80::/ff02::)
-      → Doğrudan komşuya / yerel yayın olarak gönder. (Yönlendirilmez.)
+      → Doğrudan komşuya / yerel broadcast olarak gönder. (Yönlendirilmez.)
 
 2. Hedef RLOC16'yı belirle:
    a) Hedef RLOC veya ALOC ise   → RLOC16 adresin son 16 bitidir
@@ -113,7 +113,7 @@ Bir router'ın IPv6 paketi için verdiği kararın sadeleştirilmiş hâli:
    c) Hedef ağ dışında ise       → Network Data'daki rotalardan uygun Border Router'ı seç
                                     (en uzun önek eşleşmesi, sonra tercih, sonra yol maliyeti)
 
-3. Hedef RLOC16 benim çocuğum mu?
+3. Hedef RLOC16 benim child'ım mu?
       → Rx-on ise doğrudan; uyuyan ise dolaylı iletim kuyruğuna koy.
 
 4. Hedef RLOC16 kendim miyim?   → Yerel olarak teslim et.
@@ -122,7 +122,7 @@ Bir router'ın IPv6 paketi için verdiği kararın sadeleştirilmiş hâli:
    Sonraki atlama = yönlendirme tablosundan (hedef router veya ona giden yol)
 
 6. Sonraki atlama nihai hedef değilse 6LoWPAN Mesh Header ekle
-      (Originator = kendi RLOC16'm veya paketi bana veren çocuğun RLOC16'sı,
+      (Originator = kendi RLOC16'm veya paketi bana veren child'ın RLOC16'sı,
        Final Destination = hedef RLOC16)
 
 7. Gerekirse parçala, MAC çerçevesi oluştur (hedef = sonraki atlamanın RLOC16'sı), şifrele, gönder.
@@ -130,12 +130,12 @@ Bir router'ın IPv6 paketi için verdiği kararın sadeleştirilmiş hâli:
 
 **Ara router'daki işlem** çok daha basittir: Mesh Header'daki *Final Destination*'a bakıp sonraki atlamayı bulur, *Hops Left*'i bir azaltır ve çerçeveyi iletir. IPv6 başlığını açmaz, parçaları birleştirmez.
 
-### 10.7 Uç Cihazların ve Çocukların Yönlendirilmesi
+### 10.7 Uç Cihazların (Child) Yönlendirilmesi
 
-- **Çocuktan çıkan paket**: Çocuk (MED/SED/FED/REED), hedef ne olursa olsun paketi MAC seviyesinde **ebeveynine** gönderir. Ebeveyn, paketi kendi göndermiş gibi yönlendirir (Mesh Header'da Originator olarak çocuğun RLOC16'sı yazılır).
-- **Çocuğa giden paket**: Paket, RLOC16'nın üst bitlerinden belirlenen **ebeveyn router'a** yönlendirilir; ebeveyn teslim eder.
-- **FTD çocuklar (REED/FED)** kendi EID→RLOC önbelleklerini tutar ve Address Query yapabilir; ancak paketleri yine ebeveynlerine gönderir.
-- Bir çocuk ebeveyn değiştirdiğinde RLOC16'sı değişir. Eski RLOC16'yı önbelleğinde tutan cihazlar paketi eski ebeveyne gönderir; eski ebeveyn o çocuğu artık tanımadığı için paketi teslim edemez. Kaynaktaki önbellek kaydı geçersiz hâle gelip yenilendiğinde (yeni Address Query veya dinlenen trafikten öğrenme ile) doğru RLOC16 elde edilir; yeni sorguya artık çocuğun **yeni** ebeveyni cevap verir.
+- **Child'dan çıkan paket**: Child (MED/SED/FED/REED), hedef ne olursa olsun paketi MAC seviyesinde **parent'ına** gönderir. Parent, paketi kendi göndermiş gibi yönlendirir (Mesh Header'da Originator olarak child'ın RLOC16'sı yazılır).
+- **Child'a giden paket**: Paket, RLOC16'nın üst bitlerinden belirlenen **parent router'a** yönlendirilir; parent teslim eder.
+- **FTD child'lar (REED/FED)** kendi EID→RLOC önbelleklerini tutar ve Address Query yapabilir; ancak paketleri yine parent'larına gönderir.
+- Bir child parent değiştirdiğinde RLOC16'sı değişir. Eski RLOC16'yı önbelleğinde tutan cihazlar paketi eski parent'a gönderir; eski parent o child'ı artık tanımadığı için paketi teslim edemez. Kaynaktaki önbellek kaydı geçersiz hâle gelip yenilendiğinde (yeni Address Query veya dinlenen trafikten öğrenme ile) doğru RLOC16 elde edilir; yeni sorguya artık child'ın **yeni** parent'ı cevap verir.
 
 ### 10.8 Ağ Dışına Yönlendirme (Border Router Seçimi)
 
@@ -153,14 +153,14 @@ Bir cihaz ağ dışına paket gönderirken:
 
 ### 10.9 Uçtan Uca Örnek
 
-SED `0x5C01` (Router 23'ün çocuğu), SED `0x9402`'ye (Router 37'nin çocuğu) bir UDP paketi göndersin. Router'lar: 23 → 12 → 37.
+SED `0x5C01` (Router 23'ün child'ı), SED `0x9402`'ye (Router 37'nin child'ı) bir UDP paketi göndersin. Router'lar: 23 → 12 → 37.
 
 | Adım | Cihaz | İşlem | MAC kaynak → hedef | Mesh Header |
 |---|---|---|---|---|
-| 1 | SED 0x5C01 | Paketi ebeveynine gönderir | 0x5C01 → 0x5C00 | (yok) |
+| 1 | SED 0x5C01 | Paketi parent'ına gönderir | 0x5C01 → 0x5C00 | (yok) |
 | 2 | Router 23 | EID→RLOC: 0x9402; hedef router 37; sonraki atlama 12 | 0x5C00 → 0x3000 | Orig 0x5C01, Final 0x9402, Hops Left = n |
 | 3 | Router 12 | Mesh Header'a bakar; sonraki atlama 37 | 0x3000 → 0x9400 | Hops Left = n − 1 |
-| 4 | Router 37 | Hedef kendi çocuğu; SED olduğu için kuyruğa alır | — | — |
+| 4 | Router 37 | Hedef kendi child'ı; SED olduğu için kuyruğa alır | — | — |
 | 5 | SED 0x9402 | Poll gönderir, ACK'de Frame Pending = 1 görür | 0x9402 → 0x9400 (Data Request) | — |
 | 6 | Router 37 | Paketi teslim eder (Mesh Header kaldırılmış) | 0x9400 → 0x9402 | (yok) |
 
@@ -172,7 +172,7 @@ Her MAC atlamasında çerçeve, gönderenin Extended Address'i ve kendi frame co
 |---|---|
 | Geçici yönlendirme döngüsü | Mesh Header **Hops Left** 0'a inince paket atılır |
 | Hedef router ulaşılamaz | Paket atılır; kaynağa ICMPv6 Destination Unreachable dönebilir |
-| EID→RLOC kaydı eski | Paket eski ebeveyne gider ve teslim edilemez; önbellek kaydı yenilenince (yeni Address Query) trafik düzelir |
+| EID→RLOC kaydı eski | Paket eski parent'a gider ve teslim edilemez; önbellek kaydı yenilenince (yeni Address Query) trafik düzelir |
 | Address Query cevapsız | Paket atılır; aynı EID için yeniden sorgu artan gecikmelerle yapılır |
 | Çok fazla yeniden iletim | Link kalitesi düşer → maliyet artar → alternatif yol seçilir |
 
@@ -180,6 +180,6 @@ Her MAC atlamasında çerçeve, gönderenin Extended Address'i ve kendi frame co
 
 - Router'lar arası yönlendirme, Route64 TLV ile yayılan mesafe-vektör algoritmasıdır.
 - Maliyet, çift yönlü link kalitesine göre 1/2/4/∞ değerlerinden oluşur; atlama sayısı değil kalite optimize edilir.
-- Çocuklara giden trafik ebeveyn router'a yönlendirilir; çocuklar her şeyi ebeveynlerine gönderir.
+- Child'lara giden trafik parent router'a yönlendirilir; child'lar her şeyi parent'larına gönderir.
 - Ara router'lar yalnızca Mesh Header'a bakar; IPv6 paketini açmaz.
 - Ağ dışı trafik Network Data'daki rotalardan, en uzun önek → tercih → yol maliyeti sırasıyla seçilen Border Router'a gider.

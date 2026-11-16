@@ -17,9 +17,9 @@
 | Matter desteği | **Yerel taşıma** | Köprü (bridge) ile | Köprü ile | Yalnızca devreye alma için BLE | **Yerel taşıma** | — | — |
 | Tipik kullanım | Akıllı ev, bina | Akıllı ev, aydınlatma | Akıllı ev güvenlik | Aydınlatma, beacon | Kameralar, yüksek veri | Akıllı şehir, sayaçlar | Geniş alan sensörleri |
 
-### 28.2 Thread ve Zigbee: Aynı Radyo, Farklı Mimari
+### 28.2 Thread ve Zigbee: Aynı Fiziksel Katman, Farklı Mimari
 
-Thread ve Zigbee aynı 802.15.4 radyosunu kullandığı için en sık karşılaştırılan ikilidir:
+Thread ve Zigbee aynı IEEE 802.15.4 fiziksel katmanını kullandığı için en sık karşılaştırılan ikilidir:
 
 | Konu | Thread | Zigbee |
 |---|---|---|
@@ -60,5 +60,5 @@ Her ikisi de 802.15.4 + 6LoWPAN + IPv6 kullanır; ancak:
 ### 28.6 Bölüm Özeti
 
 - Thread'in ayırt edici özellikleri: IPv6'nın uç cihaza kadar gitmesi, tek hata noktasının olmaması, düşük güç ve Matter'ın yerel taşıması olması.
-- Zigbee aynı radyoyu kullanır ama IP tabanlı değildir ve coordinator'a bağımlıdır.
+- Zigbee aynı 802.15.4 fiziksel katmanını kullanır ama IP tabanlı değildir ve coordinator'a bağımlıdır.
 - Wi-Fi yüksek veri gerektiren cihazlar, Thread düşük güçlü kontrol/sensör cihazları için uygundur; Matter ikisini birlikte kullanır.

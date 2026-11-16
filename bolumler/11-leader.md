@@ -58,11 +58,11 @@ sequenceDiagram
     B-->>A: Parent Response
     A->>B: Child ID Request
     B-->>A: Child ID Response
-    Note over A: Artık Partition B'de çocuk (REED)
+    Note over A: Artık Partition B'de child (REED)
     A->>LB: a/as Address Solicit (eski Router ID'sini isteyerek)
     LB-->>A: Router ID atandı
     Note over A: Router oldu, Link Request ile komşularla bağlantı kurar
-    Note over A: A'nın eski çocukları ve diğer router'lar<br/>da aynı yolla B'ye geçer
+    Note over A: A'nın eski child'ları ve diğer router'lar<br/>da aynı yolla B'ye geçer
 ```
 
 Birleşme sırasında kısa süreli paket kayıpları olabilir; ancak cihazların EID'leri (ML-EID, OMR) değişmediği için uygulamalar birleşme sonrası kesintisiz devam eder.
@@ -84,7 +84,7 @@ Yük (TMF TLV'leri):
 | Değer | Neden |
 |---|---|
 | 2 | **Too Few Routers** — router sayısı eşik altında |
-| 3 | **Have Child ID Request** — bir cihaz beni ebeveyn seçti |
+| 3 | **Have Child ID Request** — bir cihaz beni parent seçti |
 | 4 | **Parent Partition Change** — partition değişimi sonrası eski rolüme dönüyorum |
 
 **Leader'ın yanıtı:**

@@ -63,7 +63,7 @@ flowchart TB
 
 | Bileşen | Kaynak | Thread'deki rolü |
 |---|---|---|
-| IEEE 802.15.4 PHY/MAC | IEEE | Radyo ve çerçeve erişimi |
+| IEEE 802.15.4 PHY/MAC | IEEE | RF iletim ve kanal/çerçeve erişimi |
 | 6LoWPAN çerçeveleme ve parçalama | RFC 4944 | IPv6'yı 127 baytlık çerçevelere sığdırma |
 | IPHC / NHC sıkıştırma | RFC 6282 | IPv6/UDP başlıklarını sıkıştırma |
 | IPv6 adresleme | RFC 4291, RFC 4193 (ULA), RFC 4862 (SLAAC) | Adres yapısı |
@@ -72,7 +72,7 @@ flowchart TB
 | DTLS 1.2 | RFC 6347 | Devreye alma oturumları |
 | EC-JPAKE | RFC 8236 (J-PAKE) temelli TLS uzantısı | Parola doğrulamalı anahtar değişimi |
 | Trickle | RFC 6206 | Advertisement zamanlaması |
-| MPL | RFC 7731 | Mesh içi çoklu yayın (multicast) iletimi |
+| MPL | RFC 7731 | Mesh içi multicast iletimi |
 | mDNS / DNS-SD / SRP | RFC 6762, RFC 6763, RFC 9665 | Servis keşfi (Border Router) |
 | NAT64 / DNS64 | RFC 6146, RFC 6147, RFC 6052 | IPv4 erişimi (Border Router) |
 
@@ -80,7 +80,7 @@ flowchart TB
 
 | Bileşen | Görevi |
 |---|---|
-| **MLE** (Mesh Link Establishment) | Komşu keşfi, bağlanma (attach), ebeveyn seçimi, bağlantı kalitesi ölçümü, yönlendirme bilgisinin yayılması, ağ parametrelerinin dağıtımı |
+| **MLE** (Mesh Link Establishment) | Komşu keşfi, bağlanma (attach), parent seçimi, bağlantı kalitesi ölçümü, yönlendirme bilgisinin yayılması, ağ parametrelerinin dağıtımı |
 | **Thread yönlendirme protokolü** | Router'lar arası mesafe-vektör (distance-vector) yönlendirme (Route64 TLV) |
 | **TMF** (Thread Management Framework) | CoAP tabanlı yönetim: adres sorgulama, router ID atama, ağ verisi kaydı, teşhis |
 | **Network Data** | Ağ genelinde önekler, rotalar, servisler, sıkıştırma bağlamları |
@@ -128,22 +128,22 @@ Bir uygulamanın Thread ağındaki başka bir cihaza UDP mesajı gönderdiğini 
 5. **6LoWPAN**: IPv6 ve UDP başlıkları sıkıştırılır; paket birden fazla atlama gidecekse **Mesh Header** (kaynak ve nihai hedef RLOC16) eklenir; paket 127 bayta sığmıyorsa **parçalanır** (FRAG1/FRAGN).
 6. **MAC**: Her parça, hedef MAC adresi = sonraki atlama olacak şekilde çerçevelenir, **AES-CCM*** ile şifrelenip doğrulanır, **CSMA-CA** ile kanala erişilip gönderilir, **ACK** beklenir; gelmezse yeniden denenir.
 7. **Ara router'lar** her çerçeveyi alır, MAC güvenliğini doğrular, Mesh Header'daki nihai hedefe bakar, *Hops Left* değerini azaltır ve sonraki atlamaya — paketi IPv6 seviyesinde birleştirmeden — iletir.
-8. **Hedef router** paketi doğrudan veya (uyuyan çocuk cihaz ise) **dolaylı iletim** ile teslim eder.
+8. **Hedef router** paketi doğrudan veya (uyuyan child cihaz ise) **dolaylı iletim** ile teslim eder.
 9. **Hedef cihaz** parçaları birleştirir, başlıkları açar ve UDP yükünü uygulamaya verir.
 
 ```mermaid
 sequenceDiagram
     participant A as Kaynak (SED)
-    participant P as Ebeveyn Router
+    participant P as Parent Router
     participant R as Ara Router
     participant H as Hedef Router
-    participant B as Hedef (Çocuk)
-    A->>P: MAC unicast (şifreli) — tüm trafik ebeveyne
+    participant B as Hedef (Child)
+    A->>P: MAC unicast (şifreli) — tüm trafik parent'a
     Note over P: EID→RLOC çöz, next hop bul,<br/>Mesh Header ekle
     P->>R: 802.15.4 çerçeve + Mesh Header
     Note over R: Hops Left bir azaltılır, sonraki atlamaya iletilir<br/>(IPv6 birleştirme yok)
     R->>H: 802.15.4 çerçeve + Mesh Header
-    Note over H: Hedef benim çocuğum
+    Note over H: Hedef benim child'ım
     H->>B: Doğrudan (rx-on) veya dolaylı (poll sonrası) teslim
 ```
 

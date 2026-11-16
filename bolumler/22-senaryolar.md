@@ -27,7 +27,7 @@ Kullanıcı pilli bir kapı sensörünü (SED) telefonla ekliyor:
 sequenceDiagram
     participant U as Telefon (Matter Commissioner)
     participant S as Kapı Sensörü (SED)
-    participant P as Ebeveyn Router (ör. akıllı priz)
+    participant P as Parent Router (ör. akıllı priz)
     participant L as Leader / BR
     U->>S: QR kod okutuldu, BLE ile bağlan
     U->>S: PASE (SPAKE2+), cihaz doğrulama, NOC yükleme
@@ -37,7 +37,7 @@ sequenceDiagram
     S->>P: Child ID Request (Mode = SED, Timeout, Address Registration)
     P-->>S: Child ID Response (RLOC16 0x5C01, stable Network Data)
     Note over S: Network Data'dan OMR öneki → SLAAC adresi,<br/>SRP sunucusu → servis kaydı
-    S->>L: SRP Update (_matter._tcp, OMR adresi) — ebeveyn üzerinden
+    S->>L: SRP Update (_matter._tcp, OMR adresi) — parent üzerinden
     L-->>S: SRP Update OK
     Note over L: Advertising Proxy, servisi Wi-Fi'da mDNS ile duyurur
     U->>S: CASE oturumu (UDP 5540, OMR adresine, BR üzerinden)
@@ -48,8 +48,8 @@ sequenceDiagram
 Bu süreçte Thread katmanında olanların özeti:
 
 1. **Kimlik bilgisi** BLE/PASE ile güvenli şekilde verilir (MeshCoP joiner akışı kullanılmaz).
-2. **Attach**: Sensör en iyi ebeveyni seçer (bağlantı kalitesine göre), RLOC16 alır.
-3. **Adresleme**: ML-EID (rastgele) ve OMR adresi (SLAAC) oluşur; adresler ebeveyne kaydedilir.
+2. **Attach**: Sensör en iyi parent'ı seçer (bağlantı kalitesine göre), RLOC16 alır.
+3. **Adresleme**: ML-EID (rastgele) ve OMR adresi (SLAAC) oluşur; adresler parent'a kaydedilir.
 4. **Servis kaydı**: SRP ile BR'ye; BR Wi-Fi tarafında mDNS ile duyurur.
 5. **Uygulama oturumu**: Telefon, mDNS ile bulduğu OMR adresine CASE ile bağlanır; trafik RIO rotası sayesinde BR'ye, oradan mesh'e gider.
 
@@ -68,7 +68,7 @@ sequenceDiagram
     Note over BR: OMR hedef, on-mesh. EID→RLOC önbelleği: 0x9400<br/>(yoksa Address Query)
     BR->>R: 802.15.4 çerçeve: Mesh Header (Orig 0x5C00, Final 0x9400) + IPHC + UDP + Matter
     R->>LA: Mesh Header'a göre ilet (Hops Left azalır)
-    Note over LA: Matter oturumu çöz, OnOff kümesini çalıştır, lambayı yak
+    Note over LA: Matter oturumu çöz, OnOff cluster'ını çalıştır, lambayı yak
     LA->>R: Matter yanıtı (Invoke Response + MRP ACK)
     R->>BR: ilet
     BR->>PH: IPv6 → Wi-Fi
@@ -94,31 +94,31 @@ sequenceDiagram
 
 ### 22.4 Senaryo D — Uyuyan Sensörün Rapor Göndermesi
 
-Kapı açıldı; sensör (SED `0x5C01`, ebeveyn `0x5C00`) Matter abonelik raporu gönderecek:
+Kapı açıldı; sensör (SED `0x5C01`, parent `0x5C00`) Matter abonelik raporu gönderecek:
 
 | Zaman | Olay |
 |---|---|
 | t = 0 | Reed anahtarı tetikler; MCU uyanır |
-| +2 ms | Radyo açılır, CSMA-CA, veri çerçevesi ebeveyne (MAC unicast, ACK istekli) |
-| +7 ms | Ebeveynden Enhanced ACK; Frame Pending = 0 |
+| +2 ms | Alıcı-verici açılır, CSMA-CA, veri çerçevesi parent'a (MAC unicast, ACK istekli) |
+| +7 ms | Parent'tan Enhanced ACK; Frame Pending = 0 |
 | +8 ms | Sensör, Matter MRP ACK'ini beklemek için **fast poll** moduna geçer (ör. 200–300 ms aralık) |
-| +10 ms | Ebeveyn paketi Mesh Header ile hedefe (ör. hub/telefon tarafına BR üzerinden) iletir |
-| ≈ +60 ms | Alıcının MRP ACK'i ebeveyne ulaşır ve kuyrukta bekler |
+| +10 ms | Parent paketi Mesh Header ile hedefe (ör. hub/telefon tarafına BR üzerinden) iletir |
+| ≈ +60 ms | Alıcının MRP ACK'i parent'a ulaşır ve kuyrukta bekler |
 | ≈ +250 ms | Sensörün fast poll'u: Data Request → ACK (Frame Pending = 1) → MRP ACK teslim |
 | ≈ +260 ms | Uygulama tamam; birkaç ek hızlı poll'dan sonra yavaş poll'a dönülür |
-| sonra | Radyo kapalı; bir sonraki yavaş poll veya olaya kadar uyku |
+| sonra | Alıcı-verici kapalı; bir sonraki yavaş poll veya olaya kadar uyku |
 
-Uyuyan cihazın tüm trafiği ebeveyni üzerinden geçer; cevaplar ebeveynde bekler ve poll ile alınır. Enhanced Frame Pending desteği varsa ebeveyn, cevabın geleceğini bildiğinde ACK'te Frame Pending = 1 ayarlayarak bir poll'u gereksiz kılabilir.
+Uyuyan cihazın tüm trafiği parent'ı üzerinden geçer; cevaplar parent'ta bekler ve poll ile alınır. Enhanced Frame Pending desteği varsa parent, cevabın geleceğini bildiğinde ACK'te Frame Pending = 1 ayarlayarak bir poll'u gereksiz kılabilir.
 
 ### 22.5 Senaryo E — Bir Router'ın Fişinin Çekilmesi
 
-Router `0x3000` (ara router) aniden kapanıyor; iki SED çocuğu (`0x3001`, `0x3002`) ve bir MED çocuğu (`0x3003`) var.
+Router `0x3000` (ara router) aniden kapanıyor; iki SED child'ı (`0x3001`, `0x3002`) ve bir MED child'ı (`0x3003`) var.
 
 | Zaman | Olay |
 |---|---|
 | t = 0 | Router kapanır |
 | ≈ t + 0–1 s | Ona paket göndermeye çalışan komşular ACK alamaz; MAC yeniden iletimleri başarısız olur |
-| ≈ t + birkaç s | **MED** (`0x3003`) gönderdiği çerçevelere ACK alamaz → ebeveyn kaybını hızla fark eder → Parent Request → yeni ebeveyn (yeni RLOC16) |
+| ≈ t + birkaç s | **MED** (`0x3003`) gönderdiği çerçevelere ACK alamaz → parent kaybını hızla fark eder → Parent Request → yeni parent (yeni RLOC16) |
 | ≈ t + poll period | **SED**'ler bir sonraki poll'da ACK alamaz; birkaç başarısız denemeden sonra yeniden bağlanır |
 | ≤ t + supervision timeout | Poll etmeyen SED'ler bile child supervision sayesinde en geç denetim zaman aşımı (OpenThread varsayılanı 190 s) sonunda durumu fark eder |
 | ≈ t + 100 s | Komşu router'lar `MAX_NEIGHBOR_AGE` sonunda `0x3000`'ü komşu tablosundan siler; ondan geçen rotalar alternatif yollardan yeniden hesaplanır (aslında link kalitesi düşüşüyle daha önce başlar) |
@@ -126,7 +126,7 @@ Router `0x3000` (ara router) aniden kapanıyor; iki SED çocuğu (`0x3001`, `0x3
 | + 100 s | Router ID 12, `ID_REUSE_DELAY` süresince başka cihaza verilmez |
 | sonrasında | Yeni RLOC16'ları öğrenmemiş cihazlar, eski RLOC16'ya gönderdikleri paketler başarısız olunca Address Query ile güncel konumu bulur |
 
-Uygulamalar (Matter) cihazlara **EID/OMR adresleriyle** konuştuğu için adresler değişmez; yalnızca birkaç saniyelik/dakikalık bir kesinti ve MRP yeniden iletimleri görülür.
+Uygulamalar (Matter) cihazlara **EID/OMR adresleriyle** haberleştiği için adresler değişmez; yalnızca birkaç saniyelik/dakikalık bir kesinti ve MRP yeniden iletimleri görülür.
 
 ### 22.6 Senaryo F — Leader'ın Kaybolması
 
@@ -150,10 +150,10 @@ Wi-Fi yeni kurulan bir erişim noktası yüzünden kanal 20'yi doldurmaya başla
 |---|---|
 | T | Kanal yöneticisi, kanal örneklemelerine (channel monitor) dayanarak daha iyi bir kanal seçer |
 | T | Leader'a **MGMT_PENDING_SET**: Channel = 25, Pending Timestamp, yeni Active Timestamp, Delay Timer = 300 s |
-| T + saniyeler | Pending Dataset tüm router'lara ve rx-on çocuklara yayılır |
-| T + dakikalar | SED'ler ebeveynlerinden gelen Leader Data / Child Update ile yeni Pending Timestamp'i görüp Data Request ile Pending Dataset'i alır |
+| T + saniyeler | Pending Dataset tüm router'lara ve rx-on child'lara yayılır |
+| T + dakikalar | SED'ler parent'larından gelen Leader Data / Child Update ile yeni Pending Timestamp'i görüp Data Request ile Pending Dataset'i alır |
 | T + 300 s | Tüm cihazlar **aynı anda** kanal 25'e geçer |
-| sonrası | Geçişi kaçıran cihazlar (kapalı/uzun uykuda olanlar) eski kanalda ebeveynlerini bulamaz; kanal taraması ve **Announce** mesajlarıyla kanal 25'e geçer |
+| sonrası | Geçişi kaçıran cihazlar (kapalı/uzun uykuda olanlar) eski kanalda parent'larını bulamaz; kanal taraması ve **Announce** mesajlarıyla kanal 25'e geçer |
 
 ### 22.8 Senaryo H — İki Adanın Birleşmesi
 
@@ -161,7 +161,7 @@ Bir evin iki katı arasındaki tek router kapanınca ağ ikiye bölünür (Parti
 
 1. Router, her iki partition'ın Advertisement'larını duyar.
 2. Partition karşılaştırması (singleton → weighting → Partition ID) yapılır; ör. B kazanır.
-3. A'daki router'lar B'ye bağlanır (önce çocuk olarak, sonra eski Router ID'lerini isteyerek router olarak); A'nın çocukları da onlarla birlikte gelir.
+3. A'daki router'lar B'ye bağlanır (önce child olarak, sonra eski Router ID'lerini isteyerek router olarak); A'nın child'ları da onlarla birlikte gelir.
 4. A'nın Network Data'sındaki BR girdileri B'nin Leader'ına yeniden kaydedilir.
 5. Kısa sürede tek partition kalır; uygulama adresleri değişmediği için Matter oturumları devam eder.
 

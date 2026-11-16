@@ -8,7 +8,7 @@
 |---|---|
 | Uygulama protokolü | **CoAP** (RFC 7252) |
 | Taşıma | UDP, port **61631** (`0xF0BF`) |
-| Adresler | RLOC, ALOC (ör. Leader ALOC), `ff03::2` gibi realm-local çoklu yayın |
+| Adresler | RLOC, ALOC (ör. Leader ALOC), `ff03::2` gibi realm-local multicast |
 | Yük | Thread TLV'leri (Network Layer TLV'leri, MeshCoP TLV'leri, Network Diagnostic TLV'leri) |
 | Güvenlik | Ayrı bir şifreleme yok; **MAC katmanı güvenliğine** dayanır. TMF mesajları yalnızca bağlantı katmanı güvenliği ile mesh'ten gelmişse kabul edilir |
 
@@ -41,7 +41,7 @@ CoAP, kısıtlı cihazlar için tasarlanmış, HTTP benzeri (GET/POST/PUT/DELETE
 
 **Güvenilirlik (CON mesajlar):** Varsayılan `ACK_TIMEOUT` = 2 s, `ACK_RANDOM_FACTOR` = 1.5, `MAX_RETRANSMIT` = 4; ACK gelmezse bekleme süresi her denemede ikiye katlanarak yeniden gönderilir.
 
-TMF'de tekil istekler genellikle **CON**, çoklu yayınlar (ör. Address Query) **NON** olarak gönderilir.
+TMF'de unicast istekler genellikle **CON**, multicast mesajlar (ör. Address Query) **NON** olarak gönderilir.
 
 ### 13.3 TMF URI'leri
 
@@ -50,8 +50,8 @@ TMF'de tekil istekler genellikle **CON**, çoklu yayınlar (ör. Address Query) 
 | URI | Ad | Yön | Amaç |
 |---|---|---|---|
 | `a/aq` | Address Query | `ff03::2` (NON) | Bir EID'nin RLOC16'sını sorma |
-| `a/an` | Address Notification | Tekil (CON) | Address Query cevabı |
-| `a/ae` | Address Error Notification | Tekil/çoklu | Çakışan adres bildirimi |
+| `a/an` | Address Notification | Unicast (CON) | Address Query cevabı |
+| `a/ae` | Address Error Notification | Unicast/multicast | Çakışan adres bildirimi |
 | `a/as` | Address Solicit | Leader ALOC (CON) | Router ID isteme |
 | `a/ar` | Address Release | Leader ALOC (CON) | Router ID bırakma |
 | `a/sd` | Server Data Notification | Leader ALOC (CON) | Yerel Network Data'yı kaydetme |
@@ -75,14 +75,14 @@ TMF'de tekil istekler genellikle **CON**, çoklu yayınlar (ör. Address Query) 
 | `c/ab` | Announce Begin | Cihazlara Announce gönderme emri |
 | `c/es` / `c/er` | Energy Scan / Report | Uzaktan enerji taraması ve raporu |
 | `c/pq` / `c/pc` | PAN ID Query / Conflict | PAN ID çakışması sorgusu ve bildirimi |
-| `c/ur` / `c/ut` | Proxy Receive / Transmit | Harici commissioner'ın mesh içindeki cihazlarla UDP üzerinden konuşması (Border Agent vekilliği) |
+| `c/ur` / `c/ut` | Proxy Receive / Transmit | Harici commissioner'ın mesh içindeki cihazlarla UDP üzerinden haberleşmesi (Border Agent proxy'si) |
 
 #### Teşhis (`d/…`)
 
 | URI | Ad | Amaç |
 |---|---|---|
-| `d/dg` | Diagnostic Get | Bir cihazdan teşhis TLV'leri isteme (tekil) |
-| `d/dq` | Diagnostic Get Query | Çoklu yayınla teşhis sorgusu |
+| `d/dg` | Diagnostic Get | Bir cihazdan teşhis TLV'leri isteme (unicast) |
+| `d/dq` | Diagnostic Get Query | Multicast ile teşhis sorgusu |
 | `d/da` | Diagnostic Get Answer | Sorguya cevap |
 | `d/dr` | Diagnostic Reset | Sayaçları sıfırlama |
 
@@ -91,7 +91,7 @@ TMF'de tekil istekler genellikle **CON**, çoklu yayınlar (ör. Address Query) 
 | URI | Ad | Amaç |
 |---|---|---|
 | `n/dr` | DUA Registration | Domain Unicast Address'i Primary BBR'ye kaydetme |
-| `n/mr` | Multicast Listener Registration | Çoklu yayın aboneliğini Primary BBR'ye kaydetme |
+| `n/mr` | Multicast Listener Registration | Multicast aboneliğini Primary BBR'ye kaydetme |
 | `b/bq` | Backbone Query | BBR'ler arası (omurga üzerinden) DUA çakışma/konum sorgusu |
 | `b/ba` | Backbone Answer | Backbone Query cevabı |
 | `b/bmr` | Backbone MLR | BBR'ler arası MLR bilgisi |
@@ -105,7 +105,7 @@ TMF'de tekil istekler genellikle **CON**, çoklu yayınlar (ör. Address Query) 
 | 2 | **RLOC16** | 2 | Routing locator |
 | 3 | **ML-EID** | 8 | ML-EID'nin IID kısmı (çakışma tespiti için) |
 | 4 | **Status** | 1 | Durum/neden kodu |
-| 6 | **Last Transaction Time** | 4 | Çocukla son iletişimden beri geçen süre |
+| 6 | **Last Transaction Time** | 4 | Child ile son iletişimden beri geçen süre |
 | 7 | **Router Mask** | 9 | ID Sequence + 64 bit router maskesi |
 | 8 | **ND Option** | değişken | Neighbor Discovery seçenekleri |
 | 9 | **ND Data** | değişken | ND verisi |
@@ -140,7 +140,7 @@ Bu mesaj UDP 61631 → 61631, IPv6 hedefi `ff03::2` ile gönderilir. 6LoWPAN tar
 00 10 <16 bayt Target EID>           Target EID TLV
 02 02 94 02                          RLOC16 TLV = 0x9402
 03 08 <8 bayt ML-EID IID>            ML-EID TLV
-06 04 00 00 01 2C                    Last Transaction Time = 300 s (vekil cevap)
+06 04 00 00 01 2C                    Last Transaction Time = 300 s (proxy cevabı)
 ```
 
 ### 13.6 Örnek Akış: Address Solicit
@@ -166,5 +166,5 @@ sequenceDiagram
 
 - TMF, UDP 61631 üzerinde CoAP ile taşınan, mesh geneli Thread yönetim mesajlarıdır.
 - URI ön ekleri: `a/` adres ve ağ, `c/` devreye alma ve dataset, `d/` teşhis, `n/` ve `b/` Thread 1.2 omurga işlemleri.
-- Tekil istekler CON, çoklu yayınlar NON olarak gönderilir.
+- Unicast istekler CON, multicast mesajlar NON olarak gönderilir.
 - TMF mesajlarının yükü Thread TLV'leridir; güvenliği MAC katmanından gelir.

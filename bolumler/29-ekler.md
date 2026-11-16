@@ -7,9 +7,9 @@
 | `aMaxPHYPacketSize` | 127 bayt | En büyük 802.15.4 çerçevesi | 3 |
 | Sembol süresi / bayt süresi | 16 µs / 32 µs | 250 kbit/s O-QPSK | 3 |
 | `aTurnaroundTime` | 192 µs | RX↔TX geçişi, ACK gecikmesi | 3, 4 |
-| `aUnitBackoffPeriod` | 320 µs | CSMA geri çekilme birimi | 4 |
+| `aUnitBackoffPeriod` | 320 µs | CSMA backoff birimi | 4 |
 | `macAckWaitDuration` | 864 µs | ACK bekleme süresi | 4 |
-| `macMinBE` / `macMaxBE` | 3 / 5 | CSMA geri çekilme üsleri | 4 |
+| `macMinBE` / `macMaxBE` | 3 / 5 | CSMA backoff üsleri | 4 |
 | `macMaxCSMABackoffs` | 4 | CCA deneme sınırı | 4 |
 | `macMaxFrameRetries` | 3 | ACK'siz yeniden iletim (OpenThread doğrudan iletim) | 4 |
 | IPv6 asgari MTU | 1280 bayt | 6LoWPAN parçalamayı zorunlu kılar | 5 |
@@ -99,7 +99,7 @@
 | RFC 4193 | Unique Local Addresses (ULA) |
 | RFC 4862 / RFC 7217 | SLAAC / kararlı-gizli arayüz kimlikleri |
 | RFC 6724 | IPv6 varsayılan adres seçimi |
-| RFC 3306 | Önek tabanlı çoklu yayın adresleri |
+| RFC 3306 | Önek tabanlı multicast adresleri |
 | RFC 4443 | ICMPv6 |
 | RFC 4191 | Router Advertisement Route Information Option (RIO) |
 | RFC 7252 | CoAP |
@@ -116,7 +116,7 @@
 | RFC 7050 / RFC 8781 | NAT64 önek keşfi / RA PREF64 seçeneği |
 | RFC 8415 | DHCPv6 (önek delegasyonu dahil) |
 | Thread Specification (Thread Group) | Thread 1.1 / 1.2 / 1.3 / 1.4 çekirdek ve Border Router şartnameleri |
-| Matter Specification (CSA) | Matter çekirdek, cihaz kütüphanesi ve küme şartnameleri |
+| Matter Specification (CSA) | Matter çekirdek, cihaz kütüphanesi ve cluster şartnameleri |
 
 ### Ek E — Sözlük
 
@@ -139,15 +139,15 @@
 | **CASE / PASE** | Matter'ın sertifika tabanlı / parola tabanlı güvenli oturum kurma protokolleri |
 | **CCA** | Clear Channel Assessment; göndermeden önce kanal boşluk kontrolü |
 | **CCM** | Commercial Commissioning Mode; sertifika tabanlı ticari devreye alma (1.2) |
-| **Child** | Bir ebeveyne bağlı uç cihaz (REED, FED, MED, SED, SSED) |
-| **Child Supervision** | Ebeveynin uyuyan çocuğa periyodik denetim çerçevesi göndermesi |
+| **Child** | Bir parent'a bağlı uç cihaz (REED, FED, MED, SED, SSED) |
+| **Child Supervision** | Parent'ın uyuyan child'a periyodik denetim çerçevesi göndermesi |
 | **CoAP** | Kısıtlı cihazlar için UDP tabanlı REST protokolü (RFC 7252) |
 | **Commissioner** | Yeni cihazların ağa katılmasını yetkilendiren rol |
-| **Connectivity TLV** | Ebeveyn adayının bağlantı durumu bilgisi |
+| **Connectivity TLV** | Parent adayının bağlantı durumu bilgisi |
 | **Context** | 6LoWPAN sıkıştırmasında paylaşılan önek (bağlam 0 = mesh-local önek) |
-| **CSL** | Coordinated Sampled Listening; ebeveynin zamanlanmış gönderimiyle SSED'e veri ulaştırma |
+| **CSL** | Coordinated Sampled Listening; parent'ın zamanlanmış gönderimiyle SSED'e veri ulaştırma |
 | **CSMA-CA** | Taşıyıcı dinlemeli çoklu erişim / çakışmadan kaçınma |
-| **Data Poll** | SED'in MAC Data Request ile ebeveynini sorgulaması |
+| **Data Poll** | SED'in MAC Data Request ile parent'ını sorgulaması |
 | **Delay Timer** | Pending Dataset'in Active olmasına kalan süre |
 | **Discovery Request/Response** | Güvenliksiz MLE ağ keşif mesajları |
 | **DNS-SD** | DNS tabanlı servis keşfi |
@@ -161,9 +161,9 @@
 | **Extended Address** | Cihazın ağdaki rastgele 64 bitlik MAC adresi |
 | **Extended PAN ID** | Thread ağının 8 baytlık benzersiz kimliği |
 | **FED** | Full End Device; router olmayan FTD |
-| **FEM** | Front-End Module; PA + LNA radyo ön ucu |
+| **FEM** | Front-End Module; PA + LNA RF ön ucu |
 | **Frame Counter** | Tekrar korumasında kullanılan, her mesajda artan 32 bitlik sayaç |
-| **Frame Pending** | Ebeveynde bekleyen veri olduğunu bildiren MAC biti |
+| **Frame Pending** | Parent'ta bekleyen veri olduğunu bildiren MAC biti |
 | **FTD / MTD** | Full / Minimal Thread Device |
 | **HDLC-lite** | Spinel'in UART üzerindeki çerçeveleme biçimi |
 | **ICD** | Intermittently Connected Device; Matter'ın uyuyan cihaz modeli (SIT/LIT) |
@@ -186,8 +186,8 @@
 | **MIC** | Message Integrity Code; bütünlük doğrulama kodu |
 | **ML-EID** | Mesh-Local EID; rastgele IID'li sabit mesh-local adres |
 | **MLE** | Mesh Link Establishment; Thread'in link seviyesi kontrol protokolü |
-| **MLR** | Multicast Listener Registration; çoklu yayın aboneliğini BBR'ye kaydetme |
-| **MPL** | Multicast Protocol for LLNs; mesh içi çoklu yayın yayma protokolü |
+| **MLR** | Multicast Listener Registration; multicast aboneliğini BBR'ye kaydetme |
+| **MPL** | Multicast Protocol for LLNs; mesh içi multicast yayma protokolü |
 | **MRP** | Matter Message Reliability Protocol |
 | **NAT64** | IPv6 ↔ IPv4 adres/protokol çevirisi |
 | **NCP / RCP** | Network / Radio Co-Processor mimarileri |

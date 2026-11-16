@@ -8,7 +8,7 @@ Thread, bunun için **MeshCoP (Mesh Commissioning Protocol)** protokolünü tan�
 
 | Yöntem | Nasıl? | Nerede kullanılır? |
 |---|---|---|
-| **MeshCoP (Thread-native)** | Joiner, radyo üzerinden DTLS + EC-JPAKE (PSKd) ile commissioner'a kendini doğrular; kimlik bilgilerini Joiner Entrust ile alır | Saf Thread ürünleri, geliştirme, OpenThread CLI |
+| **MeshCoP (Thread-native)** | Joiner, 802.15.4 üzerinden DTLS + EC-JPAKE (PSKd) ile commissioner'a kendini doğrular; kimlik bilgilerini Joiner Entrust ile alır | Saf Thread ürünleri, geliştirme, OpenThread CLI |
 | **Bant dışı (out-of-band)** | Kimlik bilgileri (Operational Dataset) başka bir güvenli kanalla verilir; cihaz doğrudan MLE ile bağlanır | **Matter** (BLE + PASE), TCAT (Thread 1.4), üretimde önceden yükleme |
 
 ### 16.2 MeshCoP Rolleri
@@ -157,7 +157,7 @@ sequenceDiagram
 
 ### 16.9 Thread 1.4: TCAT
 
-**TCAT (Thread Commissioning over Authenticated TLS)**, Thread 1.4 ile tanımlanan, cihazı radyo dışı bir taşıyıcı (tipik olarak **BLE**) üzerinden **sertifika tabanlı TLS** ile devreye alma yöntemidir:
+**TCAT (Thread Commissioning over Authenticated TLS)**, Thread 1.4 ile tanımlanan, cihazı 802.15.4 dışında bir taşıyıcı (tipik olarak **BLE**) üzerinden **sertifika tabanlı TLS** ile devreye alma yöntemidir:
 
 - Cihazda bir **TCAT Agent**, yönetici tarafında bir **TCAT Commander** bulunur.
 - Kimlik doğrulama X.509 sertifikalarıyla yapılır; yetkilendirme sertifikadaki izinlere göre belirlenir.

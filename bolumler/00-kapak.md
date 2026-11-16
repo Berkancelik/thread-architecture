@@ -1,11 +1,11 @@
 # Thread Ağ Mimarisi ve Haberleşme Yapısı — Kapsamlı Teknik Rehber
 
-> IEEE 802.15.4 radyosu üzerinde IPv6 konuşan, düşük güçlü, kendi kendini onaran mesh ağ protokolü **Thread**'in fiziksel katmandan uygulama katmanına (Matter) kadar tüm mimarisi, mesaj akışları, adresleme ve yönlendirme mantığı, güvenlik modeli, Border Router işlevleri ve pratik kullanımı.
+> IEEE 802.15.4 kablosuz bağlantısı üzerinden IPv6 kullanan, düşük güçlü, kendi kendini onaran mesh ağ protokolü **Thread**'in fiziksel katmandan uygulama katmanına (Matter) kadar tüm mimarisi, mesaj akışları, adresleme ve yönlendirme mantığı, güvenlik modeli, Border Router işlevleri ve pratik kullanımı.
 
 | Özellik | Değer |
 |---|---|
 | **Kapsam** | Thread 1.1 → 1.4, OpenThread, Thread Border Router, Matter over Thread |
-| **Dil** | Türkçe (teknik terimler orijinal İngilizce adlarıyla birlikte verilmiştir) |
+| **Dil** | Türkçe; yerleşik Türkçe karşılığı olmayan teknik terimler İngilizce bırakılmıştır (bkz. 0.4) |
 | **Seviye** | Temelden uzmanlığa: her bölüm önce kavramı, sonra bit/bayt seviyesindeki ayrıntıyı anlatır |
 | **Biçim** | Tek parça Markdown + aynı içeriğin kenar menülü HTML sürümü |
 | **Doküman sürümü** | 1.0 — Kasım 2026 |
@@ -24,7 +24,7 @@ Bu rehber şu okuyucular düşünülerek hazırlanmıştır:
 
 ### 0.2 Nasıl Okunmalı?
 
-Doküman katmanlı bir sırayla ilerler: önce büyük resim (Bölüm 1–2), sonra radyodan yukarıya doğru katmanlar (Bölüm 3–6), ardından Thread'in kendine özgü kontrol düzlemi (Bölüm 7–14), güvenlik ve devreye alma (Bölüm 15–17), enerji ve Border Router (Bölüm 18–19), sürüm özellikleri ve teşhis (Bölüm 20–21), uçtan uca senaryolar ve Matter (Bölüm 22–23), yazılım/donanım/tasarım (Bölüm 24–27), karşılaştırma ve ekler (Bölüm 28–29).
+Doküman katmanlı bir sırayla ilerler: önce büyük resim (Bölüm 1–2), sonra fiziksel katmandan yukarıya doğru katmanlar (Bölüm 3–6), ardından Thread'in kendine özgü kontrol düzlemi (Bölüm 7–14), güvenlik ve devreye alma (Bölüm 15–17), enerji ve Border Router (Bölüm 18–19), sürüm özellikleri ve teşhis (Bölüm 20–21), uçtan uca senaryolar ve Matter (Bölüm 22–23), yazılım/donanım/tasarım (Bölüm 24–27), karşılaştırma ve ekler (Bölüm 28–29).
 
 - Hızlı bir genel bakış için: **Bölüm 1, 2, 7, 8, 22**.
 - Paket seviyesinde derinlik için: **Bölüm 4, 5, 9, 10, 13**.
@@ -46,6 +46,33 @@ Doküman katmanlı bir sırayla ilerler: önce büyük resim (Bölüm 1–2), so
 
 > [!NOTE]
 > Thread şartnamesi (Thread Specification) Thread Group tarafından yayımlanır. Bu dokümandaki sabitler ve varsayılan değerler şartname ile yaygın açık kaynak uygulama OpenThread'deki karşılıkları esas alınarak verilmiştir. "OpenThread varsayılanı" ifadesi geçen değerler derleme zamanında veya çalışma anında değiştirilebilir; kesin ürün davranışı için kullandığınız SDK sürümünün belgelerine bakın.
+
+### 0.4 Terim Kullanımı
+
+Teknik terimleri zorla Türkçeleştirmek, okuyucunun şartnamede, OpenThread komutlarında ve loglarda göreceği adları tanımasını zorlaştırır. Bu yüzden dokümanda şu kural izlenir:
+
+| Terim türü | Kural | Örnekler |
+|---|---|---|
+| Thread, Matter ve ilgili standartlara özgü adlar | İngilizce bırakılır | Router, Leader, REED, Parent, Child, Commissioner, Joiner, Border Router, Network Data, Operational Dataset, cluster |
+| Sahada İngilizcesiyle kullanılan ağ terimleri | İngilizce bırakılır | unicast, multicast, broadcast, backoff, proxy, beacon, poll |
+| Türkçesi yerleşmiş genel terimler | Türkçe kullanılır, gerekirse ilk geçtiği yerde İngilizcesi parantez içinde verilir | katman, çerçeve (frame), paket, önek (prefix), yönlendirme (routing), şifreleme, anahtar (key), zaman damgası (timestamp) |
+
+Sık geçen ve karıştırılabilecek bazı karşılıklar:
+
+| İngilizce | Bu dokümanda |
+|---|---|
+| radio (çipteki RF donanımı) | alıcı-verici, RF |
+| radio link / 802.15.4 radio | 802.15.4 kablosuz bağlantısı, fiziksel katman |
+| receiver on / off | alıcı açık / kapalı |
+| hop | atlama |
+| sleepy device | uyuyan cihaz (SED, SSED) |
+| commissioning | devreye alma |
+| context (6LoWPAN) | bağlam |
+| co-processor (RCP, NCP) | yardımcı işlemci |
+| subscribe (multicast grubu) | abone olmak |
+| advertise (önek, servis) | ilan etmek |
+
+İngilizce terimlere Türkçe ekler kesme işaretiyle ve okunuşa göre eklenir: router'a, parent'ı, child'dan, multicast'e.
 
 ## İçindekiler
 
